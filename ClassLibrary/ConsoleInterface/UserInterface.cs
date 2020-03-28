@@ -16,6 +16,7 @@ namespace ClassLibrary {
             Console.ForegroundColor = primaryTextColor; 
             Console.OutputEncoding = Encoding.UTF8;
             Console.SetWindowSize(consoleWidth, consoleHeight);
+            Console.SetBufferSize(consoleWidth, consoleHeight);
         }
 
         //Fields

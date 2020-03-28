@@ -28,7 +28,7 @@
           <e p="UserInterface.cs" t="Include" />
         </e>
         <e p="Entities" t="Include">
-          <e p="Entity.cs" t="Include" />
+          <e p="GameEntity.cs" t="Include" />
         </e>
         <e p="GameEngine.cs" t="Include" />
         <e p="GameLogic.cs" t="Include" />

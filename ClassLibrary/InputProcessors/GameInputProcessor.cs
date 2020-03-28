@@ -1,6 +1,6 @@
-﻿// namespace ClassLibrary.InputProcessors {
-//     
-//     public class GameInputProcessor : InputProcessor  {
-//         
-//     }
-// }
+﻿namespace ClassLibrary.InputProcessors {
+    
+    public class GameInputProcessor : InputProcessor  {
+        
+    }
+}
