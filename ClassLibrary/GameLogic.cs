@@ -1,5 +1,5 @@
 ﻿namespace ClassLibrary {
-    public class CheckInput {
+    public class GameLogic {
         
     }
 }

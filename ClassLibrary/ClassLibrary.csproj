@@ -4,4 +4,12 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <None Remove="Files\menuTheme.wav" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Sounds\menuTheme.wav" />
+    </ItemGroup>
+
 </Project>
