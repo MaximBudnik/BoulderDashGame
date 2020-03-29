@@ -12,4 +12,8 @@
       <None Remove="Sounds\menuTheme.wav" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="levels" />
+    </ItemGroup>
+
 </Project>

@@ -25,7 +25,7 @@ namespace ClassLibrary.InputProcessors {
                             changeIsGame();
                             break;
                         case 4:
-                            Environment.Exit(0);
+                            exit();
                             break;
                         //TODO: add another switch case statements
                     }

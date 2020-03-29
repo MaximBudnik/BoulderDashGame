@@ -1,11 +1,11 @@
 ﻿// I use this class only to display everything in console. I`l replace it in Windows Forms version.
 
+
 using System;
 using System.ComponentModel;
 using System.Text;
 
 //dont know if i can delete it later
-
 
 namespace ClassLibrary {
     public class UserInterface {
@@ -13,16 +13,16 @@ namespace ClassLibrary {
         public UserInterface() {
             SetBackground(ConsoleBackgroundColor);
             Console.Title = "Miner Advenure";
-            Console.ForegroundColor = primaryTextColor; 
+            Console.ForegroundColor = primaryTextColor;
             Console.OutputEncoding = Encoding.UTF8;
             Console.SetWindowSize(consoleWidth, consoleHeight);
             Console.SetBufferSize(consoleWidth, consoleHeight);
         }
 
         //Fields
-        private int consoleWidth = 130;
-        private int consoleHeight = 40;
-        
+        private protected int consoleWidth = 130;
+        private protected int consoleHeight = 40;
+
         private protected System.ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
         private protected System.ConsoleColor primaryTextColor = ConsoleColor.White;
         private protected System.ConsoleColor secondTextColor = ConsoleColor.DarkGray;
@@ -44,15 +44,6 @@ namespace ClassLibrary {
             Console.WriteLine(stringoFiedData);
         }
 
-        //public methods
-        // public void Draw(string data) {
-        //     Console.Clear();
-        //     Console.Write(data);
-        // }
-        //
-        // public void Draw(int data) {
-        //     Console.Clear();
-        //     Console.Write(data);
-        // }
+        public void Draw() { }
     }
 }

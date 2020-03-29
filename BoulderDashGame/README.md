@@ -4,6 +4,8 @@ _I use Rider, so (unlikely) there can be troubles with opening it in VS_
 
 //TODO: 
 
+Refactor `GameEngine.cs` - remove static fields and methodsand divide menu from game _**!important**_ 
+
 rewrite infinite loops in threads
 
 add music
