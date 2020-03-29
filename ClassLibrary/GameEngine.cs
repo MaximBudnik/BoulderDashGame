@@ -5,7 +5,7 @@ using ClassLibrary.InputProcessors;
 
 namespace ClassLibrary {
     public class GameEngine {
-        private static int fps = 10; //TODO: carry it out in settings. Actually it must be much lover than 30!!!
+        private static int fps = 1; //TODO: carry it out in settings. Actually it must be much lover than 30!!!
         private static bool isGame = false;
 
         public static int currentMenuAction { get; set; } = 0;
@@ -92,7 +92,7 @@ namespace ClassLibrary {
                         
                         //IMPORTANT: we need to call gameLoop also while we input smth or save input out of the loop
                         GameInputProcessor gameInputProcessor = new GameInputProcessor();
-                        gameInputProcessor.processInput();
+                        gameInputProcessor.processInput(c.Key);
                         // gameLogic.GameLoop();
                     } while (c.Key != ConsoleKey.Escape);// TODO: carry it in iunput processor
                     ChangeIsGame();

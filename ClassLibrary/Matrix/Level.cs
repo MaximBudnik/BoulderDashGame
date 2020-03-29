@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace ClassLibrary {
     public class Level : Matrix {
-
         public Level(string levelName) {
             //TODO: retrieve data from json files
 
@@ -17,10 +16,11 @@ namespace ClassLibrary {
             //clown method TODO: refactor this
             List<int> numbers = new List<int>() {
                 //this values represent titles and probability of spawn
+                1,
                 2, 2, 2, 2,
                 3, 3,
                 4, 4,
-                5, 5,
+                5,
             };
             Random rand = new Random();
             int randNumber = numbers[rand.Next(numbers.Count)];
@@ -36,5 +36,6 @@ namespace ClassLibrary {
             matrix[5, 5] = 0;
         }
 
+        public int[] defaultPlayerPosition { get; }= {5, 5};// do smth with it on loading level
     }
 }

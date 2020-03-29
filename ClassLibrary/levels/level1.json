@@ -1,4 +1,6 @@
 ﻿{
   "levelWidth": 20,
-  "levelHeight":10
+  "levelHeight":10,
+  "defaultPlayerPositionX": 5,
+  "defaultPlayerPositionY": 5
 }

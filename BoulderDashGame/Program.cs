@@ -12,6 +12,7 @@ namespace BoulderDashGame {
             }
             catch {
                 Console.WriteLine("An error occured. Restart app and contact developer.");
+                Console.ReadKey();
             }
         }
     }
