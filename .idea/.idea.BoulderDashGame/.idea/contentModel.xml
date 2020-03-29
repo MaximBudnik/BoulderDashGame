@@ -37,8 +37,13 @@
           <e p="InputProcessor.cs" t="Include" />
           <e p="MenuInputProcessor.cs" t="Include" />
         </e>
-        <e p="Level.cs" t="Include" />
-        <e p="levels" t="Include" />
+        <e p="levels" t="Include">
+          <e p="level1.json" t="Include" />
+        </e>
+        <e p="Matrix" t="Include">
+          <e p="Level.cs" t="Include" />
+          <e p="Matrix.cs" t="Include" />
+        </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">

@@ -1,0 +1,7 @@
+0 - player;
+1 - void;
+2 - sand;
+3 - rock;
+4 - diamond;
+5 - wall;
+

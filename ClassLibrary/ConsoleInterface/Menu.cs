@@ -17,7 +17,7 @@ namespace ClassLibrary {
         
         
         //public methods
-        public void CreateMainMenu(int currentMenuAction) {
+        public void Draw(int currentMenuAction) {
             Console.Clear();
             // SetBackground(ConsoleBackgroundColor);
             Console.WriteLine('\n');

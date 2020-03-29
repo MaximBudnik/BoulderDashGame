@@ -8,9 +8,13 @@ Refactor `GameEngine.cs` - remove static fields and methodsand divide menu from 
 
 rewrite infinite loops in threads
 
+dont sure how to make levels - as class or as matrix
+
 add music
 
 add scores and leaders
+
+introduce virtual
 
 try to add emoji
 

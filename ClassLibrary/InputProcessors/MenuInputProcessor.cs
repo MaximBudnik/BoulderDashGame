@@ -19,7 +19,6 @@ namespace ClassLibrary.InputProcessors {
                     break;
                 case ConsoleKey.Enter:
                     int operation = getOperation();
-                
                     switch (operation) {
                         case 0:
                             changeIsGame();
@@ -29,8 +28,12 @@ namespace ClassLibrary.InputProcessors {
                             break;
                         //TODO: add another switch case statements
                     }
-                            
                     break;
+                
+                case ConsoleKey.Escape:
+                    changeIsGame();
+                    break;
+                
                 default:
                     break;
             }

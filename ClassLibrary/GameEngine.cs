@@ -1,10 +1,11 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Threading;
 using ClassLibrary.InputProcessors;
 
 namespace ClassLibrary {
     public class GameEngine {
-        private static int fps = 30; //TODO: carry it out in settings. Actually it must be much lover than 30!!!
+        private static int fps = 10; //TODO: carry it out in settings. Actually it must be much lover than 30!!!
         private static bool isGame = false;
 
         public static int currentMenuAction { get; set; } = 0;
@@ -18,7 +19,7 @@ namespace ClassLibrary {
 
         public delegate void MipChangeCurrentMenuAction(int i);
 
-        static void ChangeIsGame() {
+        public static void ChangeIsGame() {
             isGame = !isGame;
         }
         static void ChangeCurrentMenuAction(int i) {
@@ -35,56 +36,69 @@ namespace ClassLibrary {
         }
 
         //delegates for game input processor
-        
-        
-        
+
+        public static Menu menu = new Menu();
+        public static GameLogic gameLogic = new GameLogic();
+
         public static void Start() {
-            Menu menu = new Menu();
-            menu.CreateMainMenu(currentMenuAction);
-            GameLogic gameLogic = new GameLogic();
-            gameLogic.CreateLevel("level1");
-
+            menu.Draw(currentMenuAction);
+            gameLogic.CreateLevel("level1");//TODO: create level from menu
             ConsoleKeyInfo c = new ConsoleKeyInfo();
+            Frame();
 
-            //do while loop represents all actions and responses on it as in menu as in game
-            do {
-                //this actions perform constant times (fps) in second. It is not necessary for menu, so it can be refactored.
-                //As for isGame mode, we perform gameLoop() here (ex. here enemies are moved)
-                while (Console.KeyAvailable == false) {
-                    Console.CursorVisible = false; //TODO: Important! I constantly hide cursor here.
-                    Thread.Sleep(1000 / fps);
-                    //TODO: insert game loop here!!!
+            void Frame() {
+                menu.Draw(currentMenuAction);
+                if (!isGame) {
+                    do {
+                        c = Console.ReadKey(true); //read key without imputing it
+
+                        //i just give all methods to menuInputProcessor, so it looks on input and performs actions
+                        MipExit MipExit = delegate { Environment.Exit(0); };
+                        MipChangeIsGame MipChangeIsGame = delegate { ChangeIsGame(); };
+                        MipChangeCurrentMenuAction MipChangeCurrentMenuAction = delegate(int i) {
+                            ChangeCurrentMenuAction(i);
+                            menu.Draw(currentMenuAction);
+                        };
+                        MipGetOperation MipGetOperation = delegate { return currentMenuAction; };
+
+                        MenuInputProcessor menuInputProcessor = new MenuInputProcessor();
+                        menuInputProcessor.processInput(
+                            c.Key,
+                            MipExit,
+                            MipChangeIsGame,
+                            MipChangeCurrentMenuAction,
+                            MipGetOperation
+                        );
+                    } while (!isGame);
                 }
+                if (isGame) {
+                    Console.Clear();
+                    do {
+                        //do while loop represents all actions and responses on it as in menu as in game
 
-                c = Console.ReadKey(true); //read key without inputin it
+                        while (Console.KeyAvailable == false) {
+                            //this actions perform constant times (fps) in second.
+                            //As for isGame mode, we perform gameLoop() here (ex. here enemies are moved)
+                            Console.CursorVisible = false; //TODO: Important! I constantly hide cursor here.
+                            Thread.Sleep(1000 / fps);
+                            gameLogic.GameLoop();
+                            //TODO: insert game loop here!!!
+                        }
 
-                if (!isGame) { //i just give all methods to menuInputProcessor, so it looks on input and performs actions
-                    MipExit MipExit = delegate { Environment.Exit(0); };
-                    MipChangeIsGame MipChangeIsGame = delegate { ChangeIsGame(); };
-                    MipChangeCurrentMenuAction MipChangeCurrentMenuAction = delegate(int i) {
-                        ChangeCurrentMenuAction(i);
-                        menu.CreateMainMenu(currentMenuAction);
-                    };
-                    MipGetOperation MipGetOperation = delegate { return currentMenuAction; };
-
-                    MenuInputProcessor menuInputProcessor = new MenuInputProcessor();
-                    menuInputProcessor.processInput(
-                        c.Key,
-                        MipExit,
-                        MipChangeIsGame,
-                        MipChangeCurrentMenuAction,
-                        MipGetOperation
-                    );
+                        c = Console.ReadKey(true);
+                        //if it isGame mode (we are actually playing) So here our key pressings are processed, while independent game logic
+                        //is calculated in while loop
+                        
+                        
+                        //IMPORTANT: we need to call gameLoop also while we input smth or save input out of the loop
+                        GameInputProcessor gameInputProcessor = new GameInputProcessor();
+                        gameInputProcessor.processInput();
+                        // gameLogic.GameLoop();
+                    } while (c.Key != ConsoleKey.Escape);// TODO: carry it in iunput processor
+                    ChangeIsGame();
                 }
-                if (isGame) {//if it isGame mode (we are actually playing) So here our key pressings are processed, while independent game logic
-                             //is calculated in while loop
-                    Console.WriteLine("Zaebumba");
-                    GameInputProcessor gameInputProcessor = new GameInputProcessor();
-                    gameInputProcessor.processInput();
-                }
-            } while (c.Key != ConsoleKey.Escape); //TODO: easy and important but maybe some refactor? + its global restart(bad)
-            ChangeIsGame();
-            Start();
+                Frame();
+            }
         }
     }
 }
