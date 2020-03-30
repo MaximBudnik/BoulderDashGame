@@ -1,30 +1,26 @@
 ﻿using System;
 using ClassLibrary.Entities;
 
-namespace ClassLibrary.InputProcessors {
+namespace ClassLibrary.InputProcessors {//dont know ifgi can do such operations. maybe i need to refactor it using delegates
     public class GameInputProcessor : InputProcessor {
-        
-        delegate void MovePlayer(string message, int value);
-        
+
         public void processInput(
             ConsoleKey key
         ) {
-            
-            MovePlayer MovePlayer = delegate(string message, int value) {   };
+
 
             switch (key) {
                 case ConsoleKey.W:
-
+                    GameEngine.gameLogic.Player.Move("vertical",-1);
                     break;
                 case ConsoleKey.S:
-
+                    GameEngine.gameLogic.Player.Move("vertical",1);
                     break;
-
                 case ConsoleKey.A:
-
+                    GameEngine.gameLogic.Player.Move("horizontal",-1);
                     break;
                 case ConsoleKey.D:
-
+                    GameEngine.gameLogic.Player.Move("horizontal",1);
                     break;
                 default:
                     break;

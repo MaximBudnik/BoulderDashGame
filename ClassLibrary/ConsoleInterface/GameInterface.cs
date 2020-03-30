@@ -12,6 +12,8 @@ namespace ClassLibrary {
             {5, "│"},
         };
 
+        private int interfaceMultiplier = 2; //should be retrieved from settings
+        
         private void drawSprites(Level level, int i) {
             for (int j = 0; j < level.Height; j++) {
                 int item = level[i, j];
@@ -19,9 +21,10 @@ namespace ClassLibrary {
                     // TODO: actually can be refactored. Add changeColor method
                     case 0:
                         Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.Write(_sprites[0]);
-                        Console.Write(_sprites[0]);
 
+                        Console.Write(_sprites[0]);
+                        Console.Write(_sprites[0]);
+                        
                         Console.ForegroundColor = primaryTextColor;
                         // Console.ForegroundColor = primaryTextColor;
                         break;
@@ -65,7 +68,7 @@ namespace ClassLibrary {
         public void Draw(GameLogic.GiGetCurrentLevel currentLevel) {
             Console.Clear();
             Level level = currentLevel();
-            for (int i = 0; i < level.Width; i++) {
+            for (int i = 0; i < level.Width; i++) {//TODO: refactor me pls
                 drawSprites(level, i);
                 drawSprites(level, i);
             }
