@@ -1,7 +1,7 @@
 ﻿namespace ClassLibrary.Entities {
-    public class Diamond : GameEntity{
-        public Diamond(int i, int j) {
-            entityType = 4;
+    public class Sand : GameEntity {
+        public Sand(int i,int j){
+            this.entityType = 2;
             this.positionX = i;
             this.positionY = j;
         }

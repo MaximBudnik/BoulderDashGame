@@ -18,7 +18,7 @@
             positionY = posY;
             
             Level level =  GameEngine.gameLogic.CurrentLevel;
-            level[positionX, positionY] = new Void(); //making previous position empty
+            level[positionX, positionY] = new EmptySpace(positionX,positionY); //making previous position empty
             if (direction == "vertical") {
                 positionX += value;
                 if (positionX == level.Width || positionX == -1)

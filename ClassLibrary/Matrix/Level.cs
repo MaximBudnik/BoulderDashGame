@@ -12,10 +12,16 @@ namespace ClassLibrary {
             matrix = new GameEntity[width, height];
             CreateLevel();
         }
+        
+        private int _diamondsQuantity=0;
 
-        private GameEntity generateTile() {
+        public int DiamondsQuantity {
+            get => _diamondsQuantity;
+        }
+
+        private GameEntity generateTile(int i, int j) {
             //clown method TODO: refactor this
-            List<int> numbers = new List<int>() {
+            List<int> pool = new List<int>() {
                 //this values represent titles and probability of spawn
                 1,
                 2, 2, 2, 2,
@@ -24,18 +30,32 @@ namespace ClassLibrary {
                 5,
             };
             Random rand = new Random();
-            int randNumber = numbers[rand.Next(numbers.Count)];
-            GameEntity gameEntity = new GameEntity(randNumber);
+            int randNumber = pool[rand.Next(pool.Count)];
+           
+            switch (randNumber) {
+                case 1:
+                    return new EmptySpace(i,j);
+                case 2:
+                    return new Sand(i,j);
+                case 3:
+                    return new Rock(i,j);
+                case 4:
+                    _diamondsQuantity++;
+                    return new Diamond(i,j);
+                case 5:
+                    return new Wall(i,j);
+            }
+            GameEntity gameEntity = new GameEntity(randNumber,i,j);
             return gameEntity;
         }
 
         public void CreateLevel() {
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
-                    matrix[i, j] = generateTile();
+                    matrix[i, j] = generateTile(i,j);
                 }
             }
-            GameEntity player = new GameEntity(0);
+            GameEntity player = new GameEntity(0,5,5);
             matrix[5, 5] = player;
         }
 

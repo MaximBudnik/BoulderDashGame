@@ -29,12 +29,15 @@
         </e>
         <e p="Entities" t="Include">
           <e p="Diamond.cs" t="Include" />
+          <e p="EmptySpace.cs" t="Include" />
           <e p="GameEntity.cs" t="Include" />
           <e p="ItemCollectable.cs" t="Include" />
           <e p="Movable.cs" t="Include" />
           <e p="Player.cs" t="Include" />
+          <e p="Rock.cs" t="Include" />
           <e p="RockProcessor.cs" t="Include" />
-          <e p="Void.cs" t="Include" />
+          <e p="Sand.cs" t="Include" />
+          <e p="Wall.cs" t="Include" />
         </e>
         <e p="GameEngine.cs" t="Include" />
         <e p="GameLogic.cs" t="Include" />
