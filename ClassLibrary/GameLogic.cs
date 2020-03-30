@@ -5,10 +5,11 @@ using ClassLibrary.Entities;
 namespace ClassLibrary {
     public class GameLogic {
         private GameInterface _gameInterface = new GameInterface();
+        private RockProcessor _rockProcessor = new RockProcessor(); 
         private Level _currentLevel;
         private Player _player;
         private int _frameCounter = 0;
-        
+
         public Player Player {
             get => _player;
         }
@@ -16,6 +17,9 @@ namespace ClassLibrary {
         public Level CurrentLevel {
             get => _currentLevel;
             set => _currentLevel = value;
+        }
+        public RockProcessor RockProcessor {
+            get => _rockProcessor;
         }
         //initialize other fields
 
@@ -37,42 +41,26 @@ namespace ClassLibrary {
             _gameInterface.Draw(GiGetCurrentLevel);
         }
 
-        public void GameLoop() {
-            _frameCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
-            
+        // public void drawPart(int positionX, int positionY) {
+        //     GiGetCurrentLevel GiGetCurrentLevel = delegate { return GetCurrentLevel(); };
+        //     _gameInterface.DrawPart(GiGetCurrentLevel, positionX, positionY);
+        // }
 
+        public void GameLoop() {
             if (_frameCounter == 0) {
                 drawLevel();
             }
-            if (_frameCounter % 5 == 0) {
-                processRocks();
-                drawLevel();
-            }
+            _rockProcessor.ProcessRock();
             if (_frameCounter == 100) {
                 _frameCounter = 0;
             }
+            _frameCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
         }
 
-        public void processRocks() {// TODO: i think all 2x loops can be replaced with method + this method must be in entity.rock class
-            List<int[]> falledRocks = new List<int[]>();
-            for (int i = 0; i < _currentLevel.Width; i++) {
-                for (int j = 0; j <_currentLevel.Height; j++) {
-                    
-                    int[] currentArray = {i, j};
-                    
-                    if (_currentLevel[i, j] == 3 && i + 1 < _currentLevel.Width && _currentLevel[i + 1, j] == 1 && !falledRocks.Contains(currentArray)) {
-                        _currentLevel[i, j] = 1;
-                        int[] ArrayOfInts = {i + 1, j};
-                        falledRocks.Add(ArrayOfInts);
-                    _currentLevel[i + 1, j] = 3;
-                    }
-                    
-                }
-            }
+        public void processRocks() {
+
         }
 
-        public void moveEntity(Movable entity, int positionX, int positionY, int value, string direction) {
-            
-        }
+        public void moveEntity(Movable entity, int positionX, int positionY, int value, string direction) { }
     }
 }

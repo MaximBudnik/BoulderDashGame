@@ -5,7 +5,7 @@ using ClassLibrary.InputProcessors;
 
 namespace ClassLibrary {
     public class GameEngine {
-        private static int fps = 8; //TODO: carry it out in settings. Actually it must be much lover than 30!!!
+        private static int fps = 5; //TODO: carry it out in settings. Actually it must be much lover than 30!!!
         private static bool isGame = false;
 
         public static int currentMenuAction { get; set; } = 0;

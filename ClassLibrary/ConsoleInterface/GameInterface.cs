@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ClassLibrary {
     public class GameInterface : UserInterface {
@@ -65,6 +66,10 @@ namespace ClassLibrary {
             Console.WriteLine(' ');
         }
 
+        public string getSprite(int i ) {
+            return _sprites[i];
+        }
+
         public void Draw(GameLogic.GiGetCurrentLevel currentLevel) {
             Console.Clear();
             Level level = currentLevel();
@@ -73,5 +78,6 @@ namespace ClassLibrary {
                 drawSprites(level, i);
             }
         }
+        
     }
 }
