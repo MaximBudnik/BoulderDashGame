@@ -14,9 +14,9 @@ namespace ClassLibrary.Entities {
                 for (int j = 0; j < currentLevel.Height; j++) {
                     int[] currentArray = {i, j};
                     if (
-                        currentLevel[i, j] == 3 &&
+                        currentLevel[i, j].EntityType == 3 &&
                         i + 1 < currentLevel.Width &&
-                        currentLevel[i + 1, j] == 1 &&
+                        currentLevel[i + 1, j].EntityType == 1 &&
                         !falledRocks.Contains(currentArray)
                     ) {
                         Move("vertical", 1, i, j);
@@ -29,7 +29,7 @@ namespace ClassLibrary.Entities {
 
         public void PushRock(int posX, int posY, string direction, int value) {
             Level currentLevel = GameEngine.gameLogic.CurrentLevel;
-            if (posX + value <=currentLevel.Width&& posX + value >= 0 &&currentLevel[posX, posY + value]==1) {
+            if (posX + value <=currentLevel.Width&& posX + value >= 0 &&currentLevel[posX, posY + value].EntityType==1) {
                 Move(direction, value, posX, posY);
             }
         }

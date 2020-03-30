@@ -17,7 +17,7 @@ namespace ClassLibrary {
         
         private void drawSprites(Level level, int i) {
             for (int j = 0; j < level.Height; j++) {
-                int item = level[i, j];
+                int item = level[i, j].EntityType;
                 switch (item) {
                     // TODO: actually can be refactored. Add changeColor method
                     case 0:

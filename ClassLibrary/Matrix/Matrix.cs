@@ -1,6 +1,8 @@
-﻿namespace ClassLibrary {
+﻿using ClassLibrary.Entities;
+
+namespace ClassLibrary {
     public class Matrix {
-        protected  int[,] matrix;
+        protected  GameEntity[,] matrix;
 
         protected int width;
 
@@ -15,7 +17,7 @@
         }
 
         public Matrix(int width, int height ) {
-            matrix = new int[width, height];
+            matrix = new GameEntity[width, height];
         }
         
         public Matrix(string name) {
@@ -25,7 +27,7 @@
             //the same
         }
         
-        public int this[int x, int y] {
+        public GameEntity this[int x, int y] {
             get => matrix[x, y];
             set => matrix[x, y] = value;
         }
