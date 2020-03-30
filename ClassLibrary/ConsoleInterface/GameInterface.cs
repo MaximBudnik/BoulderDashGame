@@ -13,7 +13,7 @@ namespace ClassLibrary {
             {5, "│"},
         };
 
-        private int interfaceMultiplier = 2; //should be retrieved from settings
+        // private int interfaceMultiplier = 2; //should be retrieved from settings
         private protected new  System.ConsoleColor secondTextColor = ConsoleColor.DarkCyan;
         
         private void drawSprites(Level level, int i) {
@@ -22,7 +22,7 @@ namespace ClassLibrary {
                 switch (item) {
                     // TODO: actually can be refactored. Add changeColor method
                     case 0:
-                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        Console.ForegroundColor = ConsoleColor.Magenta;
 
                         Console.Write(_sprites[0]);
                         Console.Write(_sprites[0]);
@@ -73,6 +73,7 @@ namespace ClassLibrary {
 
         public void Draw(GameLogic.GiGetCurrentLevel currentLevel, int diamondsCollected, int maxEnergy,int currentEnergy) {
             Console.Clear();
+            DrawUpperInterface();
             Level level = currentLevel();
             for (int i = 0; i < level.Width; i++) {//TODO: refactor me pls
                 drawSprites(level, i);
@@ -81,7 +82,7 @@ namespace ClassLibrary {
             DrawPlayerInterface(diamondsCollected,maxEnergy,currentEnergy);
         }
 
-        public void DrawPlayerInterface(int diamondsCollected, int maxEnergy, int currentEnergy) {
+        private void DrawPlayerInterface(int diamondsCollected, int maxEnergy, int currentEnergy) {
 
             void writePart(string symbol, int fill, int all, ConsoleColor primary) {
                 Console.ForegroundColor = primary;
@@ -106,7 +107,11 @@ namespace ClassLibrary {
             int diamondsAll = 15;
             int currentHp = 8;
             int hpMax = 10;
-            Console.Write($" Name: {name}   HP: ");
+            Console.Write($" Name: ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"{name}   ");
+            Console.ForegroundColor = secondTextColor;
+            Console.Write ("HP: ");
             writePart("♥", currentHp, hpMax, ConsoleColor.Red);
             Console.Write("Energy: ");
             writePart("■", currentEnergy, maxEnergy, ConsoleColor.DarkYellow);
@@ -120,6 +125,30 @@ namespace ClassLibrary {
             Console.ForegroundColor = primaryTextColor;
 
         }
-        
+
+        private void DrawUpperInterface() {
+            string levelName = "Random level";
+            int score = 2150;
+            string aim = "Collect all diamonds";
+            
+            Console.ForegroundColor = secondTextColor;
+            Console.Write(" Level: ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"{levelName}   ");
+            Console.ForegroundColor = secondTextColor;
+            Console.Write("Score: ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"{score}   ");
+            Console.ForegroundColor = secondTextColor;
+            Console.Write("Aim: ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write($"{aim}   ");
+            Console.ForegroundColor = secondTextColor;
+            Console.Write("\n");
+            for (int i = 0; i < consoleWidth; i++) {
+                Console.Write("─");
+            }
+            Console.ForegroundColor = primaryTextColor;
+        }
     }
 }

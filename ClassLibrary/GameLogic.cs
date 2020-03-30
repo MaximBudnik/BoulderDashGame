@@ -10,6 +10,10 @@ namespace ClassLibrary {
         private Player _player;
         private int _frameCounter = 0;
 
+        public int FrameCounter {
+            get => _frameCounter;
+        }
+
         public Player Player {
             get => _player;
         }
@@ -50,14 +54,14 @@ namespace ClassLibrary {
             if (_frameCounter == 0) {
                 drawLevel();
             }
-            for (int i = 0; i < CurrentLevel.Width; i++) {//TODO: refactor me pls
-                for (int j = 0; j < CurrentLevel.Height; j++) {
+            //for (int i = 0; i < CurrentLevel.Width; i++) {//TODO: refactor me pls
+             //   for (int j = 0; j < CurrentLevel.Height; j++) {
                     //CurrentLevel[i, j].GameLoopAction(); //debugged for an hour, could find hy it is not working TODO: fix it
-                }                                          //problem is that we cant get element from game matrix. it exist, i can call GameLoopAction()
-            }                                              //for GameEntity but not for rocks
+               // }                                          //problem is that we cant get element from game matrix. it exist, i can call GameLoopAction()
+            //}                                              //for GameEntity but not for rocks
             
+            _player.GameLoopAction();
             _rockProcessor.ProcessRock();
-            
             if (_frameCounter == 100) {
                 _frameCounter = 0;
             }
