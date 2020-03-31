@@ -34,7 +34,7 @@ namespace ClassLibrary.Entities {
                     positionY -= value;
                 level[positionX, positionY] = this;
             }
-            GameEngine.gameLogic.drawLevel();
+            // GameEngine.gameLogic.drawLevel();
         }
         
         

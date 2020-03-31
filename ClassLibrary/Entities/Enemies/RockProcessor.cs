@@ -29,8 +29,12 @@ namespace ClassLibrary.Entities.Enemies {
                         falledRocks.Add(current);
                         currentArray[0] += 1;
                         fallling.Add(currentArray);
+                        
                     }
                 }
+            }
+            if (fallling.Count > 0) {
+                GameEngine.gameLogic.drawLevel();
             }
             RockDamage();
         }
