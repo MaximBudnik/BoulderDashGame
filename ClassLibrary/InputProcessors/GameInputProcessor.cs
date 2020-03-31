@@ -22,6 +22,9 @@ namespace ClassLibrary.InputProcessors {//dont know ifgi can do such operations.
                 case ConsoleKey.D:
                     GameEngine.gameLogic.Player.Move("horizontal",1);
                     break;
+                case ConsoleKey.T:
+                    GameEngine.gameLogic.Player.Teleport();
+                    break;
                 case ConsoleKey.Spacebar:
                     GameEngine.gameLogic.Player.HpInEnergy();
                     break;

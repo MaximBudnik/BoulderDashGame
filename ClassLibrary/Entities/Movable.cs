@@ -1,4 +1,6 @@
-﻿namespace ClassLibrary.Entities {
+﻿using ClassLibrary.Matrix;
+
+namespace ClassLibrary.Entities {
     public class Movable : GameEntity {
         
         

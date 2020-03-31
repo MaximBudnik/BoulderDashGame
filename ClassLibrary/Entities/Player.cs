@@ -1,4 +1,6 @@
 ﻿using System;
+using ClassLibrary.Entities.Collectable;
+using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities {
     public class Player : Movable {
@@ -14,12 +16,12 @@ namespace ClassLibrary.Entities {
             // CollectedDiamonds = 0;
         }
 
-        public int MaxHp { get; }= 10;
+        public int MaxHp= 10;
         public int Hp = 10;
         public int MaxEnergy{ get; } = 20;
         public int Energy = 20;
         public int CollectedDiamonds;
-        private int _energyRestoreTick = 2;
+        public int EnergyRestoreTick = 2;
         private int _moveEnergyCost = 1;
         private int _moveRockEnergyCost = 5;
 
@@ -28,7 +30,7 @@ namespace ClassLibrary.Entities {
             CheckLose();
 
             if (Energy < MaxEnergy && GameEngine.gameLogic.FrameCounter % 5 == 0) {
-                Energy += _energyRestoreTick;
+                Energy += EnergyRestoreTick;
                 GameEngine.gameLogic.drawLevel();
             }
         }
@@ -50,6 +52,9 @@ namespace ClassLibrary.Entities {
                 //checking on diamonds
                 if (level[positionX, positionY].EntityType==4) {
                     CollectDiamond(1);
+                }
+                if (level[positionX, positionY].EntityType==7) {
+                    CollectLuckyBox();
                 }
                 Energy-=_moveEnergyCost;
                 level[positionX, positionY] = this;//May cause bugs! check it out                 
@@ -73,6 +78,9 @@ namespace ClassLibrary.Entities {
                 if (level[positionX, positionY].EntityType==4) {
                     CollectDiamond(1);
                 }
+                if (level[positionX, positionY].EntityType==7) {
+                    CollectLuckyBox();
+                }
                 Energy -= _moveEnergyCost;
                 level[positionX, positionY] = this;
             }
@@ -86,8 +94,26 @@ namespace ClassLibrary.Entities {
             GameEngine.gameLogic.drawLevel();
         }
 
+        public void Teleport() {
+            if (Energy==MaxEnergy) {
+                Level level = GameEngine.gameLogic.CurrentLevel;
+                Energy = 0;
+                Random rnd = new Random();
+                int posX = rnd.Next(level.Width);
+                int posY = rnd.Next(level.Height);
+                level[positionX,positionY] = new EmptySpace(positionX,positionY);
+                positionX = posX;
+                positionY = posY;
+                level[positionX, positionY] = this;
+            }
+        }
+
         private void CollectDiamond(int value) {
             CollectedDiamonds+=value;
+        }
+
+        private void CollectLuckyBox() {
+            LuckyBox.pickUpBox();
         }
 
         private void CheckLose() {
@@ -97,7 +123,7 @@ namespace ClassLibrary.Entities {
         }
         
         private void CheckWin() {
-            if (CollectedDiamonds == GameEngine.gameLogic.CurrentLevel.DiamondsQuantity) {//TODO: must change depending on level
+            if (CollectedDiamonds >= GameEngine.gameLogic.CurrentLevel.DiamondsQuantity) {//TODO: must change depending on level
                 GameEngine.gameLogic.Win();
             }
         }

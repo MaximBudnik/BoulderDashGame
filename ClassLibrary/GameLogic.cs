@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary.ConsoleInterface;
 using ClassLibrary.Entities;
+using ClassLibrary.Entities.Enemies;
+using ClassLibrary.Matrix;
 
 namespace ClassLibrary {
     public class GameLogic {
@@ -11,6 +14,8 @@ namespace ClassLibrary {
         private Player _player;
         private int _frameCounter;
         private int _endScreen;
+        public List<EnemyWalker> LevelEnemyWalkers;
+        public List<EnemyRandomer> LevelEnemyRandomers;
 
         public int FrameCounter {
             get => _frameCounter;
@@ -43,6 +48,8 @@ namespace ClassLibrary {
             _gameInterface = new GameInterface();
             _rockProcessor = new RockProcessor();
             _afterLevelScreen= new AfterLevelScreen();
+            LevelEnemyWalkers = new List<EnemyWalker>();
+            LevelEnemyRandomers = new List<EnemyRandomer>();
             _currentLevel = new Level(levelName);
             _player = new Player(_currentLevel.defaultPlayerPosition); //TODO: clown theme. Refactor #1
         }
@@ -71,6 +78,18 @@ namespace ClassLibrary {
 
             
                 _player.GameLoopAction();
+                if (_frameCounter%10==0) {//processing enemies
+                    for (int i = 0; i < LevelEnemyWalkers.Count; i++) {
+                        LevelEnemyWalkers[i].GameLoopAction();
+                    }
+                }
+                if (_frameCounter%20==0) {//processing enemies
+                    for (int i = 0; i < LevelEnemyRandomers.Count; i++) {
+                        LevelEnemyRandomers[i].GameLoopAction();
+                    }
+                }
+                
+                
                 _rockProcessor.ProcessRock();
                 if (_frameCounter == 100) {
                     _frameCounter = 0;

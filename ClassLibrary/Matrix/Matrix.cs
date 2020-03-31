@@ -1,6 +1,6 @@
 ﻿using ClassLibrary.Entities;
 
-namespace ClassLibrary {
+namespace ClassLibrary.Matrix {
     public class Matrix {
         protected  GameEntity[,] matrix;
 

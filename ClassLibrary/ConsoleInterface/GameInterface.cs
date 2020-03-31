@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using ClassLibrary.Matrix;
 
-namespace ClassLibrary {
+namespace ClassLibrary.ConsoleInterface {
     public class GameInterface : UserInterface {
         private Dictionary<int, string> _sprites = new Dictionary<int, string>(5) {
             {0, "☺"},
@@ -11,6 +11,9 @@ namespace ClassLibrary {
             {3, "○"},
             {4, "×"},
             {5, "│"},
+            {6,"*"},
+            {7,"?"},
+            {8,"^"}
         };
 
         // private int interfaceMultiplier = 2; //should be retrieved from settings
@@ -61,6 +64,26 @@ namespace ClassLibrary {
                         Console.Write(_sprites[5]);
                         Console.Write(_sprites[5]);
                         Console.BackgroundColor = ConsoleBackgroundColor;
+                        break;
+                    case 6:
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(_sprites[6]);
+                        Console.Write(_sprites[6]);
+                        Console.ForegroundColor = primaryTextColor;
+                        Console.BackgroundColor = ConsoleBackgroundColor;
+                        break;
+                    case 7:
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                        Console.Write(_sprites[7]);
+                        Console.Write(_sprites[7]);
+                        Console.BackgroundColor = ConsoleBackgroundColor;
+                        break;
+                    case 8:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(_sprites[8]);
+                        Console.Write(_sprites[8]);
+                        Console.ForegroundColor = primaryTextColor;
                         break;
                 }
             }

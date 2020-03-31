@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using ClassLibrary.Matrix;
 
-namespace ClassLibrary.Entities {
+namespace ClassLibrary.Entities.Enemies {
     public class RockProcessor : Enemy {
         public RockProcessor() {
             entityType = 3;

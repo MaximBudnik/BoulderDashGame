@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClassLibrary {
+namespace ClassLibrary.ConsoleInterface {
     public class AfterLevelScreen : UserInterface {
         private ConsoleColor lose = ConsoleColor.Red;
         private ConsoleColor win = ConsoleColor.Green;

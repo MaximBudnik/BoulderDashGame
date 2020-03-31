@@ -31,16 +31,18 @@
         <e p="Entities" t="Include">
           <e p="Collectable" t="Include">
             <e p="Diamond.cs" t="Include" />
+            <e p="ItemCollectable.cs" t="Include" />
+            <e p="LuckyBox.cs" t="Include" />
           </e>
           <e p="EmptySpace.cs" t="Include" />
           <e p="Enemies" t="Include">
             <e p="Enemy.cs" t="Include" />
+            <e p="EnemyRandomer.cs" t="Include" />
             <e p="EnemyWalker.cs" t="Include" />
             <e p="Rock.cs" t="Include" />
             <e p="RockProcessor.cs" t="Include" />
           </e>
           <e p="GameEntity.cs" t="Include" />
-          <e p="ItemCollectable.cs" t="Include" />
           <e p="Movable.cs" t="Include" />
           <e p="Player.cs" t="Include" />
           <e p="Sand.cs" t="Include" />

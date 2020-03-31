@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Threading;
+using ClassLibrary.ConsoleInterface;
 using ClassLibrary.InputProcessors;
 
 namespace ClassLibrary {

@@ -2,12 +2,11 @@
 
 
 using System;
-using System.ComponentModel;
 using System.Text;
 
 //dont know if i can delete it later
 
-namespace ClassLibrary {
+namespace ClassLibrary.ConsoleInterface {
     public class UserInterface {
         //Constructor
         public UserInterface() {

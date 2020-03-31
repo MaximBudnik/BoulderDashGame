@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClassLibrary {
+namespace ClassLibrary.ConsoleInterface {
     public class Menu : UserInterface {
         //Fields
 

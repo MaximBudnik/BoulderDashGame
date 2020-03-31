@@ -25,8 +25,8 @@ namespace ClassLibrary.Entities {
             get => entityType;
         }
 
-        protected int positionX;
-        protected int positionY;
+        public int positionX;
+        public int positionY;
 
     }
 }
