@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ClassLibrary.Entities {
-    public class Rock : Movable {
+    public class Rock : Enemy {
         public Rock(int i, int j) {
             entityType = 3;
             this.positionX = i;

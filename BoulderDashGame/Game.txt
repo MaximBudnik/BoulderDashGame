@@ -4,4 +4,5 @@
 3 - rock;
 4 - diamond;
 5 - wall;
+6 - enemy walker;
 
