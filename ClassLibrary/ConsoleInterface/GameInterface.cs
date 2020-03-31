@@ -14,7 +14,7 @@ namespace ClassLibrary {
         };
 
         // private int interfaceMultiplier = 2; //should be retrieved from settings
-        private protected new  System.ConsoleColor secondTextColor = ConsoleColor.DarkCyan;
+        private new  System.ConsoleColor secondTextColor = ConsoleColor.DarkCyan;
         
         private void drawSprites(Level level, int i) {
             for (int j = 0; j < level.Height; j++) {
@@ -71,7 +71,7 @@ namespace ClassLibrary {
             return _sprites[i];
         }
 
-        public void Draw(GameLogic.GiGetCurrentLevel currentLevel, int diamondsCollected, int maxEnergy,int currentEnergy) {
+        public void Draw(GameLogic.GiGetCurrentLevel currentLevel,int diamondsAll,  int diamondsCollected, int maxEnergy,int currentEnergy, int hpMax, int currentHp) {
             Console.Clear();
             DrawUpperInterface();
             Level level = currentLevel();
@@ -79,10 +79,10 @@ namespace ClassLibrary {
                 drawSprites(level, i);
                 drawSprites(level, i);
             }
-            DrawPlayerInterface(diamondsCollected,maxEnergy,currentEnergy);
+            DrawPlayerInterface(diamondsAll,diamondsCollected,maxEnergy,currentEnergy, hpMax, currentHp);
         }
 
-        private void DrawPlayerInterface(int diamondsCollected, int maxEnergy, int currentEnergy) {
+        private void DrawPlayerInterface(int diamondsAll,int diamondsCollected, int maxEnergy, int currentEnergy, int hpMax, int currentHp) {
 
             void writePart(string symbol, int fill, int all, ConsoleColor primary) {
                 Console.ForegroundColor = primary;
@@ -104,9 +104,7 @@ namespace ClassLibrary {
                 Console.Write("─");
             }
             string name = "Maxim";
-            int diamondsAll = 15;
-            int currentHp = 8;
-            int hpMax = 10;
+            
             Console.Write($" Name: ");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write($"{name}   ");

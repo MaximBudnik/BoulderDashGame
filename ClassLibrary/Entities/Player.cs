@@ -7,19 +7,27 @@ namespace ClassLibrary.Entities {
             positionX = pos[0];
             positionY = pos[1];
             entityType = 0;
+            
+            
+            // Hp = MaxHp;
+            // Energy = MaxEnergy;
+            // CollectedDiamonds = 0;
         }
 
         public int MaxHp { get; }= 10;
-        public int Hp = 8;
+        public int Hp = 10;
         public int MaxEnergy{ get; } = 20;
         public int Energy = 20;
-        public int CollectedDiamonds = 0;
-        private int _energyRestoreTick = 1;
+        public int CollectedDiamonds;
+        private int _energyRestoreTick = 2;
         private int _moveEnergyCost = 1;
         private int _moveRockEnergyCost = 5;
 
         public new void  GameLoopAction() {
-            if (Energy < MaxEnergy && GameEngine.gameLogic.FrameCounter % 3 == 0) {
+            CheckWin();
+            CheckLose();
+
+            if (Energy < MaxEnergy && GameEngine.gameLogic.FrameCounter % 5 == 0) {
                 Energy += _energyRestoreTick;
                 GameEngine.gameLogic.drawLevel();
             }
@@ -41,7 +49,7 @@ namespace ClassLibrary.Entities {
                    
                 //checking on diamonds
                 if (level[positionX, positionY].EntityType==4) {
-                    collectDiamond(1);
+                    CollectDiamond(1);
                 }
                 Energy-=_moveEnergyCost;
                 level[positionX, positionY] = this;//May cause bugs! check it out                 
@@ -52,6 +60,7 @@ namespace ClassLibrary.Entities {
                 if (level[positionX, positionY].EntityType==3) {
                     if (Energy >= _moveRockEnergyCost) {
                         GameEngine.gameLogic.RockProcessor.PushRock(positionX, positionY, "horizontal",value);
+                        // level[positionX, positionY].PushRock("horizontal", value);
                         Energy -= _moveRockEnergyCost;
                     }
                 }
@@ -62,7 +71,7 @@ namespace ClassLibrary.Entities {
                 }
                 //checking on diamonds
                 if (level[positionX, positionY].EntityType==4) {
-                    collectDiamond(1);
+                    CollectDiamond(1);
                 }
                 Energy -= _moveEnergyCost;
                 level[positionX, positionY] = this;
@@ -71,8 +80,26 @@ namespace ClassLibrary.Entities {
             }
         }
 
-        public void collectDiamond(int value) {
+        public void HpInEnergy() {
+            Hp--;
+            Energy = MaxEnergy;
+            GameEngine.gameLogic.drawLevel();
+        }
+
+        private void CollectDiamond(int value) {
             CollectedDiamonds+=value;
+        }
+
+        private void CheckLose() {
+            if (Hp <= 0) {
+                GameEngine.gameLogic.Lose();
+            }
+        }
+        
+        private void CheckWin() {
+            if (CollectedDiamonds == GameEngine.gameLogic.CurrentLevel.DiamondsQuantity) {//TODO: must change depending on level
+                GameEngine.gameLogic.Win();
+            }
         }
     }
 }

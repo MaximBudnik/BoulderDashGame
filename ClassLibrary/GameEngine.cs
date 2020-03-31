@@ -19,6 +19,8 @@ namespace ClassLibrary {
 
         public delegate void MipChangeCurrentMenuAction(int i);
 
+        public delegate void MipCreateNewLevel();
+
         public static void ChangeIsGame() {
             isGame = !isGame;
         }
@@ -41,8 +43,8 @@ namespace ClassLibrary {
         public static GameLogic gameLogic = new GameLogic();
 
         public static void Start() {
+            gameLogic.CreateLevel("level1"); //TODO: create level from menu
             menu.Draw(currentMenuAction);
-            gameLogic.CreateLevel("level1");//TODO: create level from menu
             ConsoleKeyInfo c = new ConsoleKeyInfo();
             Frame();
 
@@ -60,6 +62,10 @@ namespace ClassLibrary {
                             menu.Draw(currentMenuAction);
                         };
                         MipGetOperation MipGetOperation = delegate { return currentMenuAction; };
+                        MipCreateNewLevel
+                            MipCreateNewLevel = delegate {
+                                gameLogic.CreateLevel("level1");
+                            }; //TODO: create level from menu 
 
                         MenuInputProcessor menuInputProcessor = new MenuInputProcessor();
                         menuInputProcessor.processInput(
@@ -67,12 +73,14 @@ namespace ClassLibrary {
                             MipExit,
                             MipChangeIsGame,
                             MipChangeCurrentMenuAction,
-                            MipGetOperation
+                            MipGetOperation,
+                            MipCreateNewLevel
                         );
                     } while (!isGame);
                 }
                 if (isGame) {
                     Console.Clear();
+                    gameLogic.drawLevel();
                     do {
                         //do while loop represents all actions and responses on it as in menu as in game
 
@@ -88,13 +96,12 @@ namespace ClassLibrary {
                         c = Console.ReadKey(true);
                         //if it isGame mode (we are actually playing) So here our key pressings are processed, while independent game logic
                         //is calculated in while loop
-                        
-                        
+
                         //IMPORTANT: we need to call gameLoop also while we input smth or save input out of the loop
                         GameInputProcessor gameInputProcessor = new GameInputProcessor();
                         gameInputProcessor.processInput(c.Key);
                         // gameLogic.GameLoop();
-                    } while (c.Key != ConsoleKey.Escape);// TODO: carry it in iunput processor
+                    } while (c.Key != ConsoleKey.Escape); // TODO: carry it in iunput processor
                     ChangeIsGame();
                 }
                 Frame();

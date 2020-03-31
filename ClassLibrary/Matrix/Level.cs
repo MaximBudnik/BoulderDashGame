@@ -19,7 +19,7 @@ namespace ClassLibrary {
             get => _diamondsQuantity;
         }
 
-        private GameEntity generateTile(int i, int j) {
+        private GameEntity GenerateTile(int i, int j) {
             //clown method TODO: refactor this
             List<int> pool = new List<int>() {
                 //this values represent titles and probability of spawn
@@ -34,25 +34,33 @@ namespace ClassLibrary {
            
             switch (randNumber) {
                 case 1:
-                    return new EmptySpace(i,j);
+                    EmptySpace emptySpace = new EmptySpace(i,j);
+                    return emptySpace;
                 case 2:
-                    return new Sand(i,j);
+                    Sand sand = new Sand(i,j);
+                    return sand;
                 case 3:
-                    return new Rock(i,j);
+                    Rock rock = new Rock(i,j);
+                    return rock;
                 case 4:
                     _diamondsQuantity++;
-                    return new Diamond(i,j);
+                    Diamond diamond = new Diamond(i,j);
+                    return diamond;
                 case 5:
-                    return new Wall(i,j);
+                    Wall wall = new Wall(i,j);
+                    return wall;
+                default:
+                    EmptySpace es = new EmptySpace(i,j);
+                    return es; 
             }
-            GameEntity gameEntity = new GameEntity(randNumber,i,j);
-            return gameEntity;
+            // GameEntity gameEntity = new GameEntity(randNumber,i,j);
+            // return gameEntity;
         }
 
         public void CreateLevel() {
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
-                    matrix[i, j] = generateTile(i,j);
+                    matrix[i, j] = GenerateTile(i,j);
                 }
             }
             GameEntity player = new GameEntity(0,5,5);

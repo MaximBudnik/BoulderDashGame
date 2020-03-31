@@ -7,7 +7,8 @@ namespace ClassLibrary.InputProcessors {
             GameEngine.MipExit exit,
             GameEngine.MipChangeIsGame changeIsGame,
             GameEngine.MipChangeCurrentMenuAction changeMenuAction,
-            GameEngine.MipGetOperation getOperation
+            GameEngine.MipGetOperation getOperation,
+            GameEngine.MipCreateNewLevel createNewLevel
         ) {
 
             switch (key) {
@@ -21,6 +22,10 @@ namespace ClassLibrary.InputProcessors {
                     int operation = getOperation();
                     switch (operation) {
                         case 0:
+                            changeIsGame();
+                            break;
+                        case 1:
+                            createNewLevel();
                             changeIsGame();
                             break;
                         case 4:

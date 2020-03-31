@@ -23,6 +23,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="ClassLibrary.csproj" t="IncludeRecursive" />
         <e p="ConsoleInterface" t="Include">
+          <e p="AfterLevelScreen.cs" t="Include" />
           <e p="GameInterface.cs" t="Include" />
           <e p="Menu.cs" t="Include" />
           <e p="UserInterface.cs" t="Include" />
@@ -30,6 +31,7 @@
         <e p="Entities" t="Include">
           <e p="Diamond.cs" t="Include" />
           <e p="EmptySpace.cs" t="Include" />
+          <e p="Enemy.cs" t="Include" />
           <e p="GameEntity.cs" t="Include" />
           <e p="ItemCollectable.cs" t="Include" />
           <e p="Movable.cs" t="Include" />

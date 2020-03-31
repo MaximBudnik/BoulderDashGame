@@ -23,7 +23,7 @@ namespace ClassLibrary.Entities {
             ProcessRock();
         }
 
-        public void PushRock(string direction, int value) {
+        public new void PushRock(string direction, int value) {
             Level currentLevel = GameEngine.gameLogic.CurrentLevel;
             if (positionX + value <= currentLevel.Width && positionX + value >= 0 &&
                 currentLevel[positionX, positionY + value].EntityType == 1) {

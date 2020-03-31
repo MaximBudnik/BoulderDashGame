@@ -4,11 +4,13 @@ using ClassLibrary.Entities;
 
 namespace ClassLibrary {
     public class GameLogic {
-        private GameInterface _gameInterface = new GameInterface();
-        private RockProcessor _rockProcessor = new RockProcessor(); 
+        private GameInterface _gameInterface;
+        private RockProcessor _rockProcessor; 
+        private AfterLevelScreen _afterLevelScreen;
         private Level _currentLevel;
         private Player _player;
-        private int _frameCounter = 0;
+        private int _frameCounter;
+        private int _endScreen;
 
         public int FrameCounter {
             get => _frameCounter;
@@ -36,13 +38,19 @@ namespace ClassLibrary {
         }
 
         public void CreateLevel(string levelName) {
+            _endScreen= 0;
+            _frameCounter = 0;
+            _gameInterface = new GameInterface();
+            _rockProcessor = new RockProcessor();
+            _afterLevelScreen= new AfterLevelScreen();
             _currentLevel = new Level(levelName);
             _player = new Player(_currentLevel.defaultPlayerPosition); //TODO: clown theme. Refactor #1
         }
 
         public void drawLevel() {
             GiGetCurrentLevel GiGetCurrentLevel = delegate { return GetCurrentLevel(); };
-            _gameInterface.Draw(GiGetCurrentLevel, _player.CollectedDiamonds, _player.MaxEnergy,_player.Energy);
+            _gameInterface.Draw(GiGetCurrentLevel,CurrentLevel.DiamondsQuantity ,_player.CollectedDiamonds,
+                _player.MaxEnergy,_player.Energy, _player.MaxHp, _player.Hp);
         }
 
         // public void drawPart(int positionX, int positionY) {
@@ -51,21 +59,37 @@ namespace ClassLibrary {
         // }
 
         public void GameLoop() {
-            if (_frameCounter == 0) {
-                drawLevel();
-            }
-            //for (int i = 0; i < CurrentLevel.Width; i++) {//TODO: refactor me pls
-             //   for (int j = 0; j < CurrentLevel.Height; j++) {
-                    //CurrentLevel[i, j].GameLoopAction(); //debugged for an hour, could find hy it is not working TODO: fix it
-               // }                                          //problem is that we cant get element from game matrix. it exist, i can call GameLoopAction()
-            //}                                              //for GameEntity but not for rocks
+            if (_endScreen == 0) {
+                if (_frameCounter == 0) {
+                    drawLevel();
+                }
+                //for (int i = 0; i < CurrentLevel.Width; i++) {//TODO: refactor me pls
+                //   for (int j = 0; j < CurrentLevel.Height; j++) {
+                //CurrentLevel[i, j].GameLoopAction(); //debugged for an hour, could find hy it is not working TODO: fix it
+                // }                                          //problem is that we cant get element from game matrix. it exist, i can call GameLoopAction()
+                //}                                              //for GameEntity but not for rocks
+
             
-            _player.GameLoopAction();
-            _rockProcessor.ProcessRock();
-            if (_frameCounter == 100) {
-                _frameCounter = 0;
+                _player.GameLoopAction();
+                _rockProcessor.ProcessRock();
+                if (_frameCounter == 100) {
+                    _frameCounter = 0;
+                }
+                _frameCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
             }
-            _frameCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
+            else {
+                
+            }
+        }
+
+        public void Win() {
+            _endScreen = 1;
+            _afterLevelScreen.DrawGameWin();
+        }
+
+        public void Lose() {
+            _endScreen = 1;
+            _afterLevelScreen.DrawGameLose();
         }
         
     }

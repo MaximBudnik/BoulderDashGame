@@ -15,7 +15,10 @@ namespace ClassLibrary.Entities {
         public void GameLoopAction() {// it is what action is performed by each class instance of game matrix on every gameLoop()
 
         }
-        
+
+        public void PushRock() {
+            
+        }
         
         protected int entityType;
         public int EntityType {
