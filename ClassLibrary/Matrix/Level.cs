@@ -75,22 +75,29 @@ namespace ClassLibrary.Matrix {
             }
             GameEntity player = new GameEntity(0,5,5);
             matrix[5, 5] = player;
+
+            for (int i = 0; i < 6; i++) {
+                Random rand = new Random();
+                int posX = rand.Next(width);
+                int posY = rand.Next(height);
+                EnemyWalker enemy = new EnemyWalker(posX,posY);
+                matrix[posX, posY] = enemy;
+                GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
+            }
             
-            EnemyWalker enemy = new EnemyWalker(2,25);
-            matrix[2, 25] = enemy;
-            GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
-            
-            enemy = new EnemyWalker(10,23);
-            matrix[10, 23] = enemy;
-            GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
-            
-            enemy = new EnemyWalker(5,10);
-            matrix[5, 10] = enemy;
-            GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
-            
-            enemy = new EnemyWalker(6,8);
-            matrix[6, 8] = enemy;
-            GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
+           
+            //
+            // enemy = new EnemyWalker(10,23);
+            // matrix[10, 23] = enemy;
+            // GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
+            //
+            // enemy = new EnemyWalker(5,10);
+            // matrix[5, 10] = enemy;
+            // GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
+            //
+            // enemy = new EnemyWalker(3,15);
+            // matrix[3, 15] = enemy;
+            // GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
             
         }
 
