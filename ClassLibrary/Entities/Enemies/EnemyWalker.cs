@@ -46,15 +46,19 @@ namespace ClassLibrary.Entities.Enemies {
             switch (action) {
                 case "up":
                     Move("vertical", -1, positionX, positionY);
+                    GameEngine.gameLogic.drawLevel();
                     break;
                 case "down":
                     Move("vertical", 1, positionX, positionY);
+                    GameEngine.gameLogic.drawLevel();
                     break;
                 case "right":
                     Move("horizontal", 1, positionX, positionY);
+                    GameEngine.gameLogic.drawLevel();
                     break;
                 case "left":
                     Move("horizontal", -1, positionX, positionY);
+                    GameEngine.gameLogic.drawLevel();
                     break;
                 case "hold":
                     break;

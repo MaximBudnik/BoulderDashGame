@@ -1,5 +1,18 @@
-﻿namespace ClassLibrary {
+﻿using System;
+using System.IO;
+using NetCoreAudio;
+using NetCoreAudio.Interfaces;
+
+namespace ClassLibrary {
     public class SoundPlayer {
+
+        public void playMusic() {
+            string fileName = Path.Combine(Environment.CurrentDirectory, @"Sounds\", "menuTheme.mp3");
+            var player = new Player();
+            // string fileName = @"D:\";
+            player.Play(fileName).Wait();
+        }
+        
         
     }
 }

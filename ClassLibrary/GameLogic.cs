@@ -82,7 +82,6 @@ namespace ClassLibrary {
                     for (int i = 0; i < LevelEnemyWalkers.Count; i++) {
                         LevelEnemyWalkers[i].GameLoopAction();
                     }
-                    GameEngine.gameLogic.drawLevel();
                 }
                 // if (_frameCounter%20==0) {//processing enemies
                 //     for (int i = 0; i < LevelEnemyRandomers.Count; i++) {

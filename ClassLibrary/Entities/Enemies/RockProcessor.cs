@@ -29,16 +29,13 @@ namespace ClassLibrary.Entities.Enemies {
                         falledRocks.Add(current);
                         currentArray[0] += 1;
                         fallling.Add(currentArray);
-                        
+                        GameEngine.gameLogic.drawLevel();
                     }
                 }
             }
-            if (fallling.Count > 0) {
-                GameEngine.gameLogic.drawLevel();
-            }
+
             RockDamage();
         }
-
         public void PushRock(int posX, int posY, string direction, int value) {
             Level currentLevel = GameEngine.gameLogic.CurrentLevel;
             if (posX + value <=currentLevel.Height&& posX + value >= 0 &&currentLevel[posX, posY + value].EntityType==1) {

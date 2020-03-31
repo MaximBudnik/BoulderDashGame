@@ -44,6 +44,8 @@ namespace ClassLibrary {
         public static GameLogic gameLogic = new GameLogic();
 
         public static void Start() {
+            SoundPlayer soundPlayer = new SoundPlayer();
+            soundPlayer.playMusic();
             gameLogic.CreateLevel("level1"); //TODO: create level from menu
             menu.Draw(currentMenuAction);
             ConsoleKeyInfo c = new ConsoleKeyInfo();

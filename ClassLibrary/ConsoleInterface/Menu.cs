@@ -52,7 +52,7 @@ namespace ClassLibrary.ConsoleInterface {
 
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 3;
             Console.WriteLine("To choose actions press W, S and Enter");
-            Console.WriteLine("Version: 0.1.2 (Only Continue is working) Esc is also working, but it is not forever");
+            Console.WriteLine("Version: 0.2.1(playable) (Only Help / Settings arent wotking)");
         }
     }
 }

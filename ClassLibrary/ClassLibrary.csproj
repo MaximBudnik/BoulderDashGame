@@ -12,4 +12,15 @@
       <None Remove="Sounds\menuTheme.wav" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Text\NetCoreAudio\NetCoreAudio\NetCoreAudio.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Sounds\menuTheme.mp3" />
+      <Content Include="Sounds\menuTheme.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

@@ -70,8 +70,32 @@
           </e>
         </e>
         <e p="SoundPlayer.cs" t="Include" />
+        <e p="Sounds" t="Include">
+          <e p="menuTheme.mp3" t="Include" />
+        </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />
+    </e>
+    <e p="D:\Projects\c#\Text\NetCoreAudio\NetCoreAudio" t="IncludeRecursive">
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="Interfaces" t="Include">
+        <e p="IPlayer.cs" t="Include" />
+      </e>
+      <e p="NetCoreAudio.csproj" t="IncludeRecursive" />
+      <e p="obj" t="ExcludeRecursive">
+        <e p="Debug" t="Include">
+          <e p="netstandard2.0" t="Include">
+            <e p="NetCoreAudio.AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="Player.cs" t="Include" />
+      <e p="Players" t="Include">
+        <e p="LinuxPlayer.cs" t="Include" />
+        <e p="MacPlayer.cs" t="Include" />
+        <e p="UnixPlayerBase.cs" t="Include" />
+        <e p="WindowsPlayer.cs" t="Include" />
+      </e>
     </e>
   </component>
 </project>

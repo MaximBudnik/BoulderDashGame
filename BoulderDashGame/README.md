@@ -2,6 +2,8 @@
 
 _I use Rider, so (unlikely) there can be troubles with opening it in VS_
 
+**I added NetCoreAudio library in order to play sounds**
+
 //TODO: 
 
 Refactor `GameEngine.cs` - remove static fields and methodsand divide menu from game _**!important**_

@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Text\NetCoreAudio\NetCoreAudio\NetCoreAudio.csproj" />
       <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
     </ItemGroup>
 
