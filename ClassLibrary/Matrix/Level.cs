@@ -76,14 +76,14 @@ namespace ClassLibrary.Matrix {
             GameEntity player = new GameEntity(0,5,5);
             matrix[5, 5] = player;
 
-            for (int i = 0; i < 6; i++) {
-                Random rand = new Random();
-                int posX = rand.Next(width);
-                int posY = rand.Next(height);
-                EnemyWalker enemy = new EnemyWalker(posX,posY);
-                matrix[posX, posY] = enemy;
-                GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
-            }
+            // for (int i = 0; i < 6; i++) {
+            //     Random rand = new Random();
+            //     int posX = rand.Next(width);
+            //     int posY = rand.Next(height);
+            //     EnemyWalker enemy = new EnemyWalker(posX,posY);
+            //     matrix[posX, posY] = enemy;
+            //     GameEngine.gameLogic.LevelEnemyWalkers.Add(enemy);
+            // }
             
            
             //

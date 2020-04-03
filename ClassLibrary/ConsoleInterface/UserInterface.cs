@@ -11,7 +11,7 @@ namespace ClassLibrary.ConsoleInterface {
         //Constructor
         public UserInterface() {
             SetBackground(ConsoleBackgroundColor);
-            Console.Title = "Miner Advenure";
+            Console.Title = "Miner Adventure";
             Console.ForegroundColor = primaryTextColor;
             Console.OutputEncoding = Encoding.UTF8;
             Console.SetWindowSize(consoleWidth, consoleHeight);
@@ -19,8 +19,8 @@ namespace ClassLibrary.ConsoleInterface {
         }
 
         //Fields
-        private protected int consoleWidth = 130;
-        private protected int consoleHeight = 40;
+        private protected int consoleWidth = 128;
+        private protected int consoleHeight = 39;
 
         private protected System.ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
         private protected System.ConsoleColor primaryTextColor = ConsoleColor.White;

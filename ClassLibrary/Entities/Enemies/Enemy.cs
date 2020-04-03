@@ -17,7 +17,7 @@
 
         protected void DealDamage(Player player, int value) {
             player.Hp -= value;
-            GameEngine.gameLogic.drawLevel();
+            GameEngine.gameLogic.updatePlayerInterface();
         }
 
 

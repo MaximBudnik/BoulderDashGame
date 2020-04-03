@@ -9,11 +9,6 @@ namespace ClassLibrary.Entities {
             positionX = pos[0];
             positionY = pos[1];
             entityType = 0;
-            
-            
-            // Hp = MaxHp;
-            // Energy = MaxEnergy;
-            // CollectedDiamonds = 0;
         }
 
         public int MaxHp= 10;
@@ -31,7 +26,7 @@ namespace ClassLibrary.Entities {
 
             if (Energy < MaxEnergy && GameEngine.gameLogic.FrameCounter % 5 == 0) {
                 Energy += EnergyRestoreTick;
-                GameEngine.gameLogic.drawLevel();
+                GameEngine.gameLogic.updatePlayerInterface();
             }
         }
         
@@ -91,7 +86,7 @@ namespace ClassLibrary.Entities {
         public void HpInEnergy() {
             Hp--;
             Energy = MaxEnergy;
-            GameEngine.gameLogic.drawLevel();
+            GameEngine.gameLogic.updatePlayerInterface();;
         }
 
         public void Teleport() {

@@ -56,8 +56,15 @@ namespace ClassLibrary {
 
         public void drawLevel() {
             GiGetCurrentLevel GiGetCurrentLevel = delegate { return GetCurrentLevel(); };
-            _gameInterface.Draw(GiGetCurrentLevel,CurrentLevel.DiamondsQuantity ,_player.CollectedDiamonds,
+            _gameInterface.newDraw(GiGetCurrentLevel);
+        }
+
+        public void updatePlayerInterface() {
+            _gameInterface.DrawPlayerInterface(CurrentLevel.DiamondsQuantity ,_player.CollectedDiamonds,
                 _player.MaxEnergy,_player.Energy, _player.MaxHp, _player.Hp);
+        }
+        public void updateUpperInterface() {
+            _gameInterface.DrawUpperInterface("Random level",2150,"Collect all diamonds");
         }
 
         // public void drawPart(int positionX, int positionY) {
@@ -68,6 +75,8 @@ namespace ClassLibrary {
         public void GameLoop() {
             if (_endScreen == 0) {
                 if (_frameCounter == 0) {
+                    updatePlayerInterface();
+                    updateUpperInterface();
                     drawLevel();
                 }
                 //for (int i = 0; i < CurrentLevel.Width; i++) {//TODO: refactor me pls
