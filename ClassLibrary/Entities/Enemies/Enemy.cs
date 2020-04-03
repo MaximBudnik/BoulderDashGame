@@ -1,25 +1,22 @@
 ﻿namespace ClassLibrary.Entities.Enemies {
     public class Enemy : Movable {
-
         protected int _damage;
 
         protected void EnemyDefaultDamage() {
-            int playerPosX = GameEngine.gameLogic.Player.positionX;
-            int playerPosY = GameEngine.gameLogic.Player.positionY;
-            bool one = ((playerPosX+1 == positionX)&&(playerPosY==positionY));
-            bool two = ((playerPosX-1 == positionX)&&(playerPosY==positionY));
-            bool three = ((playerPosX == positionX)&&(playerPosY+1==positionY));
-            bool four = ((playerPosX == positionX)&&(playerPosY-1==positionY));
+            int playerPosX = GameEngine.GameLogic.Player.PositionX;
+            int playerPosY = GameEngine.GameLogic.Player.PositionY;
+            bool one = ((playerPosX + 1 == PositionX) && (playerPosY == PositionY));
+            bool two = ((playerPosX - 1 == PositionX) && (playerPosY == PositionY));
+            bool three = ((playerPosX == PositionX) && (playerPosY + 1 == PositionY));
+            bool four = ((playerPosX == PositionX) && (playerPosY - 1 == PositionY));
             if (one || two || three || four) {
-                DealDamage(GameEngine.gameLogic.Player, _damage);
+                DealDamage(GameEngine.GameLogic.Player, _damage);
             }
         }
 
         protected void DealDamage(Player player, int value) {
             player.Hp -= value;
-            GameEngine.gameLogic.updatePlayerInterface();
+            GameEngine.GameLogic.UpdatePlayerInterface();
         }
-
-
     }
 }

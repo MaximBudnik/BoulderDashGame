@@ -5,16 +5,16 @@ namespace ClassLibrary.Entities.Collectable {
     public class LuckyBox : ItemCollectable {
         public LuckyBox(int i, int j) {
             entityType = 7;
-            this.positionX = i;
-            this.positionY = j;
+            PositionX = i;
+            PositionY = j;
         }
 
-        public static void pickUpBox() {
-            Player player = GameEngine.gameLogic.Player;
-            List<int> pool = new List<int>() {
+        public static void PickUpBox() {
+            Player player = GameEngine.GameLogic.Player;
+            List<int> pool = new List<int>{
                 1, 1, 1,
                 2, 2, 2,
-                3,3,
+                3, 3,
                 4,
                 5,
             };
@@ -35,7 +35,7 @@ namespace ClassLibrary.Entities.Collectable {
                     player.MaxHp = 15;
                     break;
                 case 5:
-                    player.EnergyRestoreTick *=2;
+                    player.EnergyRestoreTick *= 2;
                     break;
             }
         }

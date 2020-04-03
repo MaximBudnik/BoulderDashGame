@@ -6,6 +6,6 @@
 5 - wall;
 6 - enemy walker;
 7 - lucky box;
-8 - enemy randomers;
+
 
 

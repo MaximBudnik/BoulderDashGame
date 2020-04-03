@@ -4,122 +4,123 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities {
     public class Player : Movable {
-        
-        public Player(int[] pos){
-            positionX = pos[0];
-            positionY = pos[1];
-            entityType = 0;
-        }
-
-        public int MaxHp= 10;
+        public int MaxHp = 10;
         public int Hp = 10;
-        public int MaxEnergy{ get; } = 20;
+        public int MaxEnergy { get; } = 20;
         public int Energy = 20;
         public int CollectedDiamonds;
         public int EnergyRestoreTick = 2;
         private int _moveEnergyCost = 1;
         private int _moveRockEnergyCost = 5;
+        
+        public Player(int[] pos) {
+            PositionX = pos[0];
+            PositionY = pos[1];
+            entityType = 0;
+        }
 
-        public new void  GameLoopAction() {
+        public new void GameLoopAction() {
             CheckWin();
             CheckLose();
-
-            if (Energy < MaxEnergy && GameEngine.gameLogic.FrameCounter % 5 == 0) {
-                Energy += EnergyRestoreTick;
-                GameEngine.gameLogic.updatePlayerInterface();
-            }
+            RestoreEnergy();
         }
-        
-        
-        public void Move(string direction, int value) {// TODO: refactor me! i duplicate movable
+
+        public void Move(string direction, int value) {
+            // TODO: refactor me! i duplicate movable
             if (Energy >= _moveEnergyCost) {
-                Level level =  GameEngine.gameLogic.CurrentLevel;
-            level[positionX, positionY] = new EmptySpace(positionX,positionY);
-            if (direction == "vertical") {
-                positionX += value;
-                if (positionX == level.Width || positionX == -1 || level[positionX, positionY].EntityType == 5 ||
-                    level[positionX, positionY].EntityType == 3) {
-                    //  level[positionX, positionY]==5 || level[positionX, positionY]==3 means that if there are rocks or walls, player cant move there
-                    positionX -= value;  
-                    Energy+=_moveEnergyCost;
-                }
-                   
-                //checking on diamonds
-                if (level[positionX, positionY].EntityType==4) {
-                    CollectDiamond(1);
-                }
-                if (level[positionX, positionY].EntityType==7) {
-                    CollectLuckyBox();
-                }
-                Energy-=_moveEnergyCost;
-                level[positionX, positionY] = this;//May cause bugs! check it out                 
-            }
-            if (direction == "horizontal") {
-                positionY += value;
-                //pushing rock
-                if (level[positionX, positionY].EntityType==3) {
-                    if (Energy >= _moveRockEnergyCost) {
-                        GameEngine.gameLogic.RockProcessor.PushRock(positionX, positionY, "horizontal",value);
-                        // level[positionX, positionY].PushRock("horizontal", value);
-                        Energy -= _moveRockEnergyCost;
+                Level level = GameEngine.GameLogic.CurrentLevel;
+                level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+                if (direction == "vertical") {
+                    PositionX += value;
+                    if (PositionX == level.Width || PositionX == -1 || level[PositionX, PositionY].EntityType == 5 ||
+                        level[PositionX, PositionY].EntityType == 3) {
+                        //  level[positionX, positionY]==5 || level[positionX, positionY]==3 means that if there are rocks or walls, player cant move there
+                        PositionX -= value;
+                        Energy += _moveEnergyCost;
                     }
+                    //checking on diamonds
+                    if (level[PositionX, PositionY].EntityType == 4) {
+                        CollectDiamond(1);
+                    }
+                    if (level[PositionX, PositionY].EntityType == 7) {
+                        CollectLuckyBox();
+                    }
+                    Energy -= _moveEnergyCost;
+                    level[PositionX, PositionY] = this;               
                 }
-                if (positionY == level.Height || positionY == -1 || level[positionX, positionY].EntityType == 5 ||
-                    level[positionX, positionY].EntityType == 3) {
-                    Energy += _moveEnergyCost;
-                    positionY -= value;
+                if (direction == "horizontal") {
+                    PositionY += value;
+                    //pushing rock
+                    if (level[PositionX, PositionY].EntityType == 3) {
+                        if (Energy >= _moveRockEnergyCost) {
+                            GameEngine.GameLogic.RockProcessor.PushRock(PositionX, PositionY, "horizontal", value);
+                            Energy -= _moveRockEnergyCost;
+                        }
+                    }
+                    if (PositionY == level.Height || PositionY == -1 || level[PositionX, PositionY].EntityType == 5 ||
+                        level[PositionX, PositionY].EntityType == 3) {
+                        Energy += _moveEnergyCost;
+                        PositionY -= value;
+                    }
+                    //checking on diamonds
+                    if (level[PositionX, PositionY].EntityType == 4) {
+                        CollectDiamond(1);
+                    }
+                    if (level[PositionX, PositionY].EntityType == 7) {
+                        CollectLuckyBox();
+                    }
+                    Energy -= _moveEnergyCost;
+                    level[PositionX, PositionY] = this;
                 }
-                //checking on diamonds
-                if (level[positionX, positionY].EntityType==4) {
-                    CollectDiamond(1);
-                }
-                if (level[positionX, positionY].EntityType==7) {
-                    CollectLuckyBox();
-                }
-                Energy -= _moveEnergyCost;
-                level[positionX, positionY] = this;
-            }
-            GameEngine.gameLogic.drawLevel();
+                GameEngine.GameLogic.DrawLevel();
             }
         }
 
         public void HpInEnergy() {
             Hp--;
             Energy = MaxEnergy;
-            GameEngine.gameLogic.updatePlayerInterface();;
+            GameEngine.GameLogic.UpdatePlayerInterface();
         }
 
         public void Teleport() {
-            if (Energy==MaxEnergy) {
-                Level level = GameEngine.gameLogic.CurrentLevel;
+            if (Energy == MaxEnergy) {
+                Level level = GameEngine.GameLogic.CurrentLevel;
                 Energy = 0;
                 Random rnd = new Random();
                 int posX = rnd.Next(level.Width);
                 int posY = rnd.Next(level.Height);
-                level[positionX,positionY] = new EmptySpace(positionX,positionY);
-                positionX = posX;
-                positionY = posY;
-                level[positionX, positionY] = this;
+                level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+                PositionX = posX;
+                PositionY = posY;
+                level[PositionX, PositionY] = this;
             }
         }
 
         private void CollectDiamond(int value) {
-            CollectedDiamonds+=value;
+            CollectedDiamonds += value;
         }
 
         private void CollectLuckyBox() {
-            LuckyBox.pickUpBox();
+            LuckyBox.PickUpBox();
         }
 
         private void CheckLose() {
             if (Hp <= 0) {
-                GameEngine.gameLogic.Lose();
+                GameEngine.GameLogic.Lose();
             }
         }
-        
+
         private void CheckWin() {
-            if (CollectedDiamonds >= GameEngine.gameLogic.CurrentLevel.DiamondsQuantity) {//TODO: must change depending on level
-                GameEngine.gameLogic.Win();
+            if (CollectedDiamonds >= GameEngine.GameLogic.CurrentLevel.DiamondsQuantity) {
+                //TODO: must change depending on level
+                GameEngine.GameLogic.Win();
+            }
+        }
+
+        private void RestoreEnergy() {
+            if (Energy < MaxEnergy && GameEngine.GameLogic.FrameCounter % 3 == 0) {
+                Energy += EnergyRestoreTick;
+                GameEngine.GameLogic.UpdatePlayerInterface();
             }
         }
     }

@@ -2,42 +2,32 @@
 
 namespace ClassLibrary.Entities {
     public class Movable : GameEntity {
-        
-        
-
-        
         public Movable(int[] pos) {
-            positionX = pos[0];
-            positionY = pos[1];
+            PositionX = pos[0];
+            PositionY = pos[1];
         }
-        public Movable() {
-            
-        }
-        
-        public void Move(string direction, int value, int posX, int posY) {// TODO: can be refactored with delegates
+        protected Movable() { }
 
-            positionX = posX;
-            positionY = posY;
-            
-            Level level =  GameEngine.gameLogic.CurrentLevel;
-            level[positionX, positionY] = new EmptySpace(positionX,positionY); //making previous position empty
+        protected void Move(string direction, int value, int posX, int posY) {
+            // TODO: can be refactored with delegates
+
+            PositionX = posX;
+            PositionY = posY;
+
+            Level level = GameEngine.GameLogic.CurrentLevel;
+            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY); //making previous position empty
             if (direction == "vertical") {
-                positionX += value;
-                if (positionX == level.Width || positionX == -1)
-                    positionX -= value;   
-                level[positionX, positionY] = this;
-                       //  level[positionX, positionY]==5 || level[positionX, positionY]==3
+                PositionX += value;
+                if (PositionX == level.Width || PositionX == -1)
+                    PositionX -= value;
+                level[PositionX, PositionY] = this;
             }
             if (direction == "horizontal") {
-                positionY += value;
-                if (positionY == level.Height || positionY == -1)
-                    positionY -= value;
-                level[positionX, positionY] = this;
+                PositionY += value;
+                if (PositionY == level.Height || PositionY == -1)
+                    PositionY -= value;
+                level[PositionX, PositionY] = this;
             }
-            // GameEngine.gameLogic.drawLevel();
         }
-        
-        
-        
     }
 }

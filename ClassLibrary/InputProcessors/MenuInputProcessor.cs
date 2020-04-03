@@ -1,8 +1,8 @@
 ﻿using System;
 
 namespace ClassLibrary.InputProcessors {
-    public class MenuInputProcessor  : InputProcessor {
-        public void  processInput(
+    public class MenuInputProcessor : InputProcessor {
+        public void processInput(
             ConsoleKey key,
             GameEngine.MipExit exit,
             GameEngine.MipChangeIsGame changeIsGame,
@@ -10,7 +10,6 @@ namespace ClassLibrary.InputProcessors {
             GameEngine.MipGetOperation getOperation,
             GameEngine.MipCreateNewLevel createNewLevel
         ) {
-
             switch (key) {
                 case ConsoleKey.W:
                     changeMenuAction(-1);
@@ -34,11 +33,11 @@ namespace ClassLibrary.InputProcessors {
                         //TODO: add another switch case statements
                     }
                     break;
-                
+
                 case ConsoleKey.Escape:
                     changeIsGame();
                     break;
-                
+
                 default:
                     break;
             }

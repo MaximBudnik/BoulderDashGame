@@ -5,11 +5,12 @@ using ClassLibrary.ConsoleInterface;
 using ClassLibrary.InputProcessors;
 
 namespace ClassLibrary {
-    public class GameEngine {
+    public static class GameEngine {
         private static int fps = 5; //TODO: carry it out in settings. Actually it must be much lover than 30!!!
-        private static bool isGame = false;
+        private static bool _isGame = false;
 
-        public static int currentMenuAction { get; set; } = 0;
+        private static int CurrentMenuAction;
+        private static int _menuItems = 5;
 
         //delegates for menu input processor
         public delegate int MipGetOperation();
@@ -22,53 +23,57 @@ namespace ClassLibrary {
 
         public delegate void MipCreateNewLevel();
 
-        public static void ChangeIsGame() {
-            isGame = !isGame;
+        private static void ChangeIsGame() {
+            _isGame = !_isGame;
         }
         static void ChangeCurrentMenuAction(int i) {
-            if (currentMenuAction < 5 && currentMenuAction >= 0) {
-                //5 is number of items in menu Location: ConsoleInterface/Menu.cs TODO: refactor this.
-                currentMenuAction += i;
-                if (currentMenuAction == 5) {
-                    currentMenuAction = 0;
+            if (CurrentMenuAction < _menuItems && CurrentMenuAction >= 0) {
+                CurrentMenuAction += i;
+                if (CurrentMenuAction == _menuItems) {
+                    CurrentMenuAction = 0;
                 }
-                else if (currentMenuAction == -1) {
-                    currentMenuAction = 5 - 1;
+                else if (CurrentMenuAction == -1) {
+                    CurrentMenuAction = _menuItems - 1;
                 }
             }
         }
 
         //delegates for game input processor
 
-        public static Menu menu = new Menu();
-        public static GameLogic gameLogic = new GameLogic();
+        private static readonly Menu Menu = new Menu();
+        public static readonly GameLogic GameLogic = new GameLogic();
 
         public static void Start() {
-            // SoundPlayer soundPlayer = new SoundPlayer();
+            // SoundPlayer soundPlayer = new SoundPlayer(); //TODO: dont forget to enable music on build!
             // soundPlayer.playMusic();
-            gameLogic.CreateLevel("level1"); //TODO: create level from menu
-            menu.Draw(currentMenuAction);
+            GameLogic.CreateLevel("level1"); //TODO: create level from menu
+            Menu.Draw(CurrentMenuAction);
             ConsoleKeyInfo c = new ConsoleKeyInfo();
             Frame();
 
             void Frame() {
-                menu.Draw(currentMenuAction);
-                if (!isGame) {
+                Menu.Draw(CurrentMenuAction);
+                if (!_isGame) {
                     do {
                         c = Console.ReadKey(true); //read key without imputing it
 
                         //i just give all methods to menuInputProcessor, so it looks on input and performs actions
-                        MipExit MipExit = delegate { Environment.Exit(0); };
-                        MipChangeIsGame MipChangeIsGame = delegate { ChangeIsGame(); };
-                        MipChangeCurrentMenuAction MipChangeCurrentMenuAction = delegate(int i) {
+                        void MipExit() {
+                            Environment.Exit(0);
+                        }
+                        void MipChangeIsGame() {
+                            ChangeIsGame();
+                        }
+                        void MipChangeCurrentMenuAction(int i) {
                             ChangeCurrentMenuAction(i);
-                            menu.Draw(currentMenuAction);
-                        };
-                        MipGetOperation MipGetOperation = delegate { return currentMenuAction; };
-                        MipCreateNewLevel
-                            MipCreateNewLevel = delegate {
-                                gameLogic.CreateLevel("level1");
-                            }; //TODO: create level from menu 
+                            Menu.Draw(CurrentMenuAction);
+                        }
+                        int MipGetOperation() {
+                            return CurrentMenuAction;
+                        }
+                        void MipCreateNewLevel() {
+                            GameLogic.CreateLevel("level1");
+                        }
 
                         MenuInputProcessor menuInputProcessor = new MenuInputProcessor();
                         menuInputProcessor.processInput(
@@ -79,11 +84,13 @@ namespace ClassLibrary {
                             MipGetOperation,
                             MipCreateNewLevel
                         );
-                    } while (!isGame);
+                    } while (!_isGame);
                 }
-                if (isGame) {
+                if (_isGame) {
                     Console.Clear();
-                    gameLogic.drawLevel();
+                    // gameLogic.updateUpperInterface();
+                    // GameLogic.drawLevel();
+                    // gameLogic.updatePlayerInterface();
                     do {
                         //do while loop represents all actions and responses on it as in menu as in game
 
@@ -92,7 +99,7 @@ namespace ClassLibrary {
                             //As for isGame mode, we perform gameLoop() here (ex. here enemies are moved)
                             Console.CursorVisible = false; //TODO: Important! I constantly hide cursor here.
                             Thread.Sleep(1000 / fps);
-                            gameLogic.GameLoop();
+                            GameLogic.GameLoop();
                             //TODO: insert game loop here!!!
                         }
 
@@ -103,8 +110,8 @@ namespace ClassLibrary {
                         //IMPORTANT: we need to call gameLoop also while we input smth or save input out of the loop
                         GameInputProcessor gameInputProcessor = new GameInputProcessor();
                         gameInputProcessor.processInput(c.Key);
-                        // gameLogic.GameLoop();
-                    } while (c.Key != ConsoleKey.Escape); // TODO: carry it in iunput processor
+                        GameLogic.GameLoop();
+                    } while (c.Key != ConsoleKey.Escape); // TODO: carry it in input processor
                     ChangeIsGame();
                 }
                 Frame();

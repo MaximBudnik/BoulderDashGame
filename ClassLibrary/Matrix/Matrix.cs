@@ -2,7 +2,7 @@
 
 namespace ClassLibrary.Matrix {
     public class Matrix {
-        protected  GameEntity[,] matrix;
+        protected GameEntity[,] matrix;
 
         protected int width;
 
@@ -16,17 +16,17 @@ namespace ClassLibrary.Matrix {
             get => this.height;
         }
 
-        public Matrix(int width, int height ) {
+        public Matrix(int width, int height) {
             matrix = new GameEntity[width, height];
         }
-        
+
         public Matrix(string name) {
             //does nothing, just for Level constructor existence
         }
-        public Matrix() {
+        protected Matrix() {
             //the same
         }
-        
+
         public GameEntity this[int x, int y] {
             get => matrix[x, y];
             set => matrix[x, y] = value;

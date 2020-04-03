@@ -15,30 +15,18 @@ namespace ClassLibrary {
         private int _frameCounter;
         private int _endScreen;
         public List<EnemyWalker> LevelEnemyWalkers;
-        public List<EnemyRandomer> LevelEnemyRandomers;
 
-        public int FrameCounter {
-            get => _frameCounter;
-        }
+        public int FrameCounter => _frameCounter;
 
-        public Player Player {
-            get => _player;
-        }
+        public Player Player => _player;
 
-        public Level CurrentLevel {
-            get => _currentLevel;
-            set => _currentLevel = value;
-        }
-        public RockProcessor RockProcessor {
-            get => _rockProcessor;
-        }
-        //initialize other fields
+        public Level CurrentLevel => _currentLevel;
+
+        public RockProcessor RockProcessor => _rockProcessor;
 
         public delegate Level GiGetCurrentLevel();
 
-        // public delegate Player GipPlayer();
-
-        public Level GetCurrentLevel() {
+        private Level GetCurrentLevel() {
             return _currentLevel;
         }
 
@@ -49,42 +37,30 @@ namespace ClassLibrary {
             _rockProcessor = new RockProcessor();
             _afterLevelScreen= new AfterLevelScreen();
             LevelEnemyWalkers = new List<EnemyWalker>();
-            LevelEnemyRandomers = new List<EnemyRandomer>();
             _currentLevel = new Level(levelName);
-            _player = new Player(_currentLevel.defaultPlayerPosition); //TODO: clown theme. Refactor #1
+            _player = new Player(_currentLevel.DefaultPlayerPosition); //TODO: clown theme. Refactor #1
         }
 
-        public void drawLevel() {
-            GiGetCurrentLevel GiGetCurrentLevel = delegate { return GetCurrentLevel(); };
-            _gameInterface.newDraw(GiGetCurrentLevel);
+        public void DrawLevel() {
+            GiGetCurrentLevel GiGetCurrentLevel = GetCurrentLevel;
+            _gameInterface.NewDraw(GiGetCurrentLevel);
         }
 
-        public void updatePlayerInterface() {
+        public void UpdatePlayerInterface() {
             _gameInterface.DrawPlayerInterface(CurrentLevel.DiamondsQuantity ,_player.CollectedDiamonds,
                 _player.MaxEnergy,_player.Energy, _player.MaxHp, _player.Hp);
         }
-        public void updateUpperInterface() {
+        public void UpdateUpperInterface() {
             _gameInterface.DrawUpperInterface("Random level",2150,"Collect all diamonds");
         }
-
-        // public void drawPart(int positionX, int positionY) {
-        //     GiGetCurrentLevel GiGetCurrentLevel = delegate { return GetCurrentLevel(); };
-        //     _gameInterface.DrawPart(GiGetCurrentLevel, positionX, positionY);
-        // }
-
+        
         public void GameLoop() {
             if (_endScreen == 0) {
                 if (_frameCounter == 0) {
-                    updatePlayerInterface();
-                    updateUpperInterface();
-                    drawLevel();
+                    UpdateUpperInterface();
+                    UpdatePlayerInterface();
+                    DrawLevel();
                 }
-                //for (int i = 0; i < CurrentLevel.Width; i++) {//TODO: refactor me pls
-                //   for (int j = 0; j < CurrentLevel.Height; j++) {
-                //CurrentLevel[i, j].GameLoopAction(); //debugged for an hour, could find hy it is not working TODO: fix it
-                // }                                          //problem is that we cant get element from game matrix. it exist, i can call GameLoopAction()
-                //}                                              //for GameEntity but not for rocks
-
             
                 _player.GameLoopAction();
                 if (_frameCounter%10==0) {//processing enemies
@@ -92,12 +68,6 @@ namespace ClassLibrary {
                         LevelEnemyWalkers[i].GameLoopAction();
                     }
                 }
-                // if (_frameCounter%20==0) {//processing enemies
-                //     for (int i = 0; i < LevelEnemyRandomers.Count; i++) {
-                //         LevelEnemyRandomers[i].GameLoopAction();
-                //     }
-                // }
-                
                 
                 _rockProcessor.ProcessRock();
                 if (_frameCounter == 100) {
@@ -105,13 +75,16 @@ namespace ClassLibrary {
                 }
                 _frameCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
             }
-            else {
-                
+            else if(_endScreen == 1) {
+                _afterLevelScreen.DrawGameLose();
+            }
+            else if(_endScreen == 2) {
+                _afterLevelScreen.DrawGameWin();
             }
         }
 
         public void Win() {
-            _endScreen = 1;
+            _endScreen = 2;
             _afterLevelScreen.DrawGameWin();
         }
 
