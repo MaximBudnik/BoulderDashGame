@@ -9,8 +9,6 @@ namespace ClassLibrary.Entities {
         protected Movable() { }
 
         protected void Move(string direction, int value, int posX, int posY) {
-            // TODO: can be refactored with delegates
-
             PositionX = posX;
             PositionY = posY;
 

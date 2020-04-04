@@ -11,7 +11,6 @@ namespace ClassLibrary.Entities.Enemies {
         private List<int[]> _fallling = new List<int[]>();
 
         public void ProcessRock() {
-            // TODO: i think all 2x loops can be replaced with method
             Level currentLevel = GameEngine.GameLogic.CurrentLevel;
             List<int[]> fallenRocks = new List<int[]>();
             _fallling.Clear();

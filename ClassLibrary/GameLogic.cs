@@ -38,12 +38,12 @@ namespace ClassLibrary {
             _afterLevelScreen= new AfterLevelScreen();
             LevelEnemyWalkers = new List<EnemyWalker>();
             _currentLevel = new Level(levelName);
-            _player = new Player(_currentLevel.DefaultPlayerPosition); //TODO: clown theme. Refactor #1
+            _player = new Player(_currentLevel.DefaultPlayerPosition);
         }
 
         public void DrawLevel() {
-            GiGetCurrentLevel GiGetCurrentLevel = GetCurrentLevel;
-            _gameInterface.NewDraw(GiGetCurrentLevel);
+            GiGetCurrentLevel giGetCurrentLevel = GetCurrentLevel;
+            _gameInterface.NewDraw(giGetCurrentLevel);
         }
 
         public void UpdatePlayerInterface() {

@@ -21,6 +21,9 @@ namespace ClassLibrary {
 
         public delegate void MipChangeCurrentMenuAction(int i);
 
+        public delegate void MipDrawHelp();
+        public delegate void MipDrawSettings();
+
         public delegate void MipCreateNewLevel();
 
         public static void ChangeIsGame() {
@@ -47,12 +50,12 @@ namespace ClassLibrary {
             // SoundPlayer soundPlayer = new SoundPlayer(); //TODO: dont forget to enable music on build!
             // soundPlayer.playMusic();
             GameLogic.CreateLevel("level1"); //TODO: create level from menu
-            Menu.Draw(CurrentMenuAction);
+            Menu.DrawMenu(CurrentMenuAction);
             ConsoleKeyInfo c = new ConsoleKeyInfo();
             Frame();
 
             void Frame() {
-                Menu.Draw(CurrentMenuAction);
+                Menu.DrawMenu(CurrentMenuAction);
                 if (!_isGame) {
                     do {
                         c = Console.ReadKey(true); //read key without imputing it
@@ -66,8 +69,17 @@ namespace ClassLibrary {
                         }
                         void MipChangeCurrentMenuAction(int i) {
                             ChangeCurrentMenuAction(i);
-                            Menu.Draw(CurrentMenuAction);
+                            Menu.DrawMenu(CurrentMenuAction);
                         }
+                        
+                        void MipDrawHelp() {
+                            Menu.DrawHelp();
+                        }
+                        
+                        void MipDrawSettings() {
+                            Menu.DrawSettings();
+                        }
+                        
                         int MipGetOperation() {
                             return CurrentMenuAction;
                         }
@@ -82,7 +94,9 @@ namespace ClassLibrary {
                             MipChangeIsGame,
                             MipChangeCurrentMenuAction,
                             MipGetOperation,
-                            MipCreateNewLevel
+                            MipCreateNewLevel,
+                            MipDrawHelp,
+                            MipDrawSettings
                         );
                     } while (!_isGame);
                 }

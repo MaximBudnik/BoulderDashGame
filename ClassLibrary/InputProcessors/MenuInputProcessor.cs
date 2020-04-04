@@ -8,7 +8,9 @@ namespace ClassLibrary.InputProcessors {
             GameEngine.MipChangeIsGame changeIsGame,
             GameEngine.MipChangeCurrentMenuAction changeMenuAction,
             GameEngine.MipGetOperation getOperation,
-            GameEngine.MipCreateNewLevel createNewLevel
+            GameEngine.MipCreateNewLevel createNewLevel,
+            GameEngine.MipDrawHelp drawHelp,
+            GameEngine.MipDrawSettings drawSettings
         ) {
             switch (key) {
                 case ConsoleKey.W:
@@ -26,6 +28,12 @@ namespace ClassLibrary.InputProcessors {
                         case 1:
                             createNewLevel();
                             changeIsGame();
+                            break;
+                        case 2:
+                            drawSettings();
+                            break;
+                        case 3:
+                            drawHelp();
                             break;
                         case 4:
                             exit();

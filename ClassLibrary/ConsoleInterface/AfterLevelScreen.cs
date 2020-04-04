@@ -19,7 +19,9 @@ namespace ClassLibrary.ConsoleInterface {
             LogCentered("░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝  ░╚════╝░░░░╚═╝░░░╚══════╝╚═╝░░╚═╝");
             Console.WriteLine("\n");
             Console.WriteLine("\n");
-            LogCentered("Press Esc to return in menu...");
+            LogCentered("Press any key to return in menu...");
+            Console.ReadKey();
+            GameEngine.ChangeIsGame();
             Console.ForegroundColor = primaryTextColor;
         }
         public void DrawGameWin() {
@@ -35,7 +37,9 @@ namespace ClassLibrary.ConsoleInterface {
             LogCentered("╚══════╝╚══════╝░░░╚═╝░░░╚══════╝╚══════╝  ░╚════╝░░╚════╝░╚═╝░░░░░╚═╝╚═╝░░░░░╚══════╝╚══════╝░░░╚═╝░░░╚══════╝╚═════╝░");
             Console.WriteLine("\n");
             Console.WriteLine("\n");
-            LogCentered("Press Esc to return in menu...");
+            LogCentered("Press any key to return in menu...");
+            Console.ReadKey();
+            GameEngine.ChangeIsGame();
             Console.ForegroundColor = primaryTextColor;
         }
     }
