@@ -28,6 +28,9 @@ namespace ClassLibrary.InputProcessors {//dont know ifgi can do such operations.
                 case ConsoleKey.Spacebar:
                     GameEngine.GameLogic.Player.HpInEnergy();
                     break;
+                case ConsoleKey.Escape:
+                    GameEngine.ChangeIsGame();
+                    break;
                 default:
                     break;
             }

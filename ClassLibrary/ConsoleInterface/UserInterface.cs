@@ -42,6 +42,30 @@ namespace ClassLibrary.ConsoleInterface {
             Console.SetCursorPosition((Console.WindowWidth - stringoFiedData.Length) / 2, Console.CursorTop);
             Console.WriteLine(stringoFiedData);
         }
+        
+        protected void WriteColorBack(string str) {
+            Console.Write(str);
+        }
+        
+        protected void WriteColorBack(string str, ConsoleColor foreground) {
+            Console.ForegroundColor = foreground;
+            Console.Write(str);
+            Console.ForegroundColor = primaryTextColor;
+        }
+        
+        protected void WriteForeground(string str, ConsoleColor foreground, ConsoleColor previous) {
+            Console.ForegroundColor = foreground;
+            Console.Write(str);
+            Console.ForegroundColor = previous;
+        }
+        
+        protected void WriteColorBack(string str, ConsoleColor foreground, ConsoleColor background) {
+            Console.BackgroundColor = background;
+            Console.ForegroundColor = foreground;
+            Console.Write(str);
+            Console.ForegroundColor = primaryTextColor;
+            Console.BackgroundColor = ConsoleBackgroundColor;
+        }
 
         public void Draw() { }
     }

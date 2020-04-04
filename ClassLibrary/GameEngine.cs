@@ -23,7 +23,7 @@ namespace ClassLibrary {
 
         public delegate void MipCreateNewLevel();
 
-        private static void ChangeIsGame() {
+        public static void ChangeIsGame() {
             _isGame = !_isGame;
         }
         static void ChangeCurrentMenuAction(int i) {
@@ -100,7 +100,6 @@ namespace ClassLibrary {
                             Console.CursorVisible = false; //TODO: Important! I constantly hide cursor here.
                             Thread.Sleep(1000 / fps);
                             GameLogic.GameLoop();
-                            //TODO: insert game loop here!!!
                         }
 
                         c = Console.ReadKey(true);
@@ -111,8 +110,7 @@ namespace ClassLibrary {
                         GameInputProcessor gameInputProcessor = new GameInputProcessor();
                         gameInputProcessor.processInput(c.Key);
                         GameLogic.GameLoop();
-                    } while (c.Key != ConsoleKey.Escape); // TODO: carry it in input processor
-                    ChangeIsGame();
+                    } while (_isGame);
                 }
                 Frame();
             }

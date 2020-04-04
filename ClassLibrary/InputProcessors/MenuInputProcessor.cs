@@ -33,11 +33,9 @@ namespace ClassLibrary.InputProcessors {
                         //TODO: add another switch case statements
                     }
                     break;
-
                 case ConsoleKey.Escape:
                     changeIsGame();
                     break;
-
                 default:
                     break;
             }

@@ -25,70 +25,54 @@ namespace ClassLibrary.ConsoleInterface {
             int origRow =_topHeight;
             for (int i = 0; i < level.Width; i++) {
                 for (int j = 0; j < level.Height; j++) {
+                    int tmp = level[i, j].EntityType;
                     Console.SetCursorPosition(2 * j, (2 * i + origRow));
                     Console.Write(" ");
                     Console.Write(" ");
                     Console.SetCursorPosition(2 * j, (2 * i + origRow));
-                    DrawSprite(level[i, j].EntityType);
-                    DrawSprite(level[i, j].EntityType);
+                    DrawSprite(tmp);
+                    DrawSprite(tmp);
                     
                     Console.SetCursorPosition(2 * j, (2 * i + origRow + 1));
                     Console.Write(" ");
                     Console.Write(" ");
                     Console.SetCursorPosition(2 * j, (2 * i + origRow + 1));
-                    DrawSprite(level[i, j].EntityType);
-                    DrawSprite(level[i, j].EntityType);
+                    DrawSprite(tmp);
+                    DrawSprite(tmp);
                 }
             }
         }
         private void DrawSprite(int item) {
             switch (item) {
-                // TODO: actually can be refactored. Add changeColor method
                 case 0:
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.Write(_sprites[0]);
-                    Console.ForegroundColor = primaryTextColor;
+                    WriteColorBack(_sprites[0],ConsoleColor.Magenta);
                     break;
                 case 1:
-                    Console.Write(_sprites[1]);
+                    WriteColorBack(_sprites[1]);
                     break;
-
                 case 2:
-                    Console.Write(_sprites[2]);
+                    WriteColorBack(_sprites[2]);
                     break;
                 case 3:
-                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.Write(_sprites[3]);
-                    Console.ForegroundColor = primaryTextColor;
-                    Console.BackgroundColor = ConsoleBackgroundColor;
+                    WriteColorBack(_sprites[3],ConsoleColor.Gray,ConsoleColor.DarkGray);
                     break;
                 case 4:
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write(_sprites[4]);
-
-                    Console.ForegroundColor = primaryTextColor;
+                    WriteColorBack(_sprites[4],ConsoleColor.Cyan);
                     break;
                 case 5:
-                    Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.Write(_sprites[5]);
-                    Console.BackgroundColor = ConsoleBackgroundColor;
+                    WriteColorBack(_sprites[5], primaryTextColor,ConsoleColor.Gray);
                     break;
                 case 6:
-                    Console.BackgroundColor = ConsoleColor.DarkRed;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.Write(_sprites[6]);
-                    Console.ForegroundColor = primaryTextColor;
-                    Console.BackgroundColor = ConsoleBackgroundColor;
+                    WriteColorBack(_sprites[6],ConsoleColor.Black,ConsoleColor.DarkRed);
                     break;
                 case 7:
-                    Console.BackgroundColor = ConsoleColor.DarkYellow;
-                    Console.Write(_sprites[7]);
-                    Console.BackgroundColor = ConsoleBackgroundColor;
+                    WriteColorBack(_sprites[7],primaryTextColor,ConsoleColor.DarkYellow);
                     break;
             }
         }
 
+
+        
         public void DrawPlayerInterface(int diamondsAll, int diamondsCollected, int maxEnergy, int currentEnergy,
             int hpMax, int currentHp) {
             void WritePart(string symbol, int fill, int all, ConsoleColor primary) {
@@ -114,40 +98,30 @@ namespace ClassLibrary.ConsoleInterface {
             string name = "Maxim";
 
             Console.Write(" Name: ");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write($"{name}   ");
-            Console.ForegroundColor = secondTextColor;
+            WriteForeground($"{name}   ",ConsoleColor.White,secondTextColor);
             Console.Write("HP: ");
             WritePart("♥", currentHp, hpMax, ConsoleColor.Red);
             Console.Write("Energy: ");
             WritePart("■", currentEnergy, maxEnergy, ConsoleColor.DarkYellow);
             Console.Write("Diamonds: ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write($"{diamondsCollected}/{diamondsAll}   ");
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            WriteForeground($"{diamondsCollected}/{diamondsAll}   ",ConsoleColor.Cyan,secondTextColor);
             Console.Write("I/A: ");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("n/a");
+            WriteForeground("n/a",ConsoleColor.Green,secondTextColor);
             Console.ForegroundColor = primaryTextColor;
         }
 
         public void DrawUpperInterface(string levelName, int score, string aim) {
+            Console.CursorTop = 0;
             Console.WriteLine();
             Console.WriteLine();
             Console.CursorTop = 0;
             Console.ForegroundColor = secondTextColor;
             Console.Write(" Level: ");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write($"{levelName}   ");
-            Console.ForegroundColor = secondTextColor;
+            WriteForeground($"{levelName}   ",ConsoleColor.White,secondTextColor);
             Console.Write("Score: ");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write($"{score}   ");
-            Console.ForegroundColor = secondTextColor;
+            WriteForeground($"{score}   ",ConsoleColor.White,secondTextColor);
             Console.Write("Aim: ");
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write($"{aim}   ");
-            Console.ForegroundColor = secondTextColor;
+            WriteForeground($"{aim}   ",ConsoleColor.Blue,secondTextColor);
             Console.Write("\n");
             for (int i = 0; i < consoleWidth; i++) {
                 Console.Write("─");

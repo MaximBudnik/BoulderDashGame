@@ -2,8 +2,8 @@
 
 namespace ClassLibrary.ConsoleInterface {
     public class Menu : UserInterface {
-        private new System.ConsoleColor secondTextColor = ConsoleColor.Red;
-        private string[] menuActions = {"Continue", "New game", "Settings", "Help", "Exit",};
+        private new ConsoleColor secondTextColor = ConsoleColor.Red;
+        private readonly string[] _menuActions = {"Continue", "New game", "Settings", "Help", "Exit"};
         public void Draw(int currentMenuAction) {
             Console.Clear();
             Console.WriteLine('\n');
@@ -27,14 +27,14 @@ namespace ClassLibrary.ConsoleInterface {
             LogCentered("█▄█ ██▄ █▄█ █ █░▀█   ░█░ █▄█ █▄█ █▀▄   █▄█ █▄█ █▄█ █▀▄ █░▀█ ██▄ ░█░");
             Console.ForegroundColor = primaryTextColor;
             Console.WriteLine('\n');
-            for (int i = 0; i < menuActions.Length; i++) {
+            for (int i = 0; i < _menuActions.Length; i++) {
                 if (i == currentMenuAction) {
                     Console.ForegroundColor = secondTextColor;
-                    LogCentered(menuActions[i]);
+                    LogCentered(_menuActions[i]);
                     Console.ForegroundColor = primaryTextColor;
                 }
                 else {
-                    LogCentered(menuActions[i]);
+                    LogCentered(_menuActions[i]);
                 }
             }
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 3;
