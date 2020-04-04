@@ -9,14 +9,18 @@ namespace ClassLibrary.Entities.Collectable {
             PositionY = j;
         }
 
+        public static new int PickUpValue = 3;
+        
         public static void PickUpBox() {
             Player player = GameEngine.GameLogic.Player;
             List<int> pool = new List<int>{
-                1, 1, 1,
-                2, 2, 2,
-                3, 3,
-                4,
+                1,1,1,1,1,
+                2,2,2,2,2,
+                3,3,3,3,
+                4,4,
                 5,
+                6,6,
+                7,
             };
             Random rand = new Random();
             int effect = pool[rand.Next(pool.Count)];
@@ -36,6 +40,12 @@ namespace ClassLibrary.Entities.Collectable {
                     break;
                 case 5:
                     player.EnergyRestoreTick *= 2;
+                    break;
+                case 6:
+                    player.Score +=rand.Next(100,300);
+                    break;
+                case 7:
+                    player.ScoreMultiplier *=rand.Next(2,5);
                     break;
             }
         }

@@ -74,7 +74,7 @@ namespace ClassLibrary.ConsoleInterface {
 
         
         public void DrawPlayerInterface(int diamondsAll, int diamondsCollected, int maxEnergy, int currentEnergy,
-            int hpMax, int currentHp) {
+            int hpMax, int currentHp, string name) {
             void WritePart(string symbol, int fill, int all, ConsoleColor primary) {
                 Console.ForegroundColor = primary;
                 for (int i = 0; i < fill; i++) {
@@ -95,7 +95,6 @@ namespace ClassLibrary.ConsoleInterface {
             for (int i = 0; i < consoleWidth; i++) {
                 Console.Write("─");
             }
-            string name = "Maxim";
 
             Console.Write(" Name: ");
             WriteForeground($"{name}   ",ConsoleColor.White,secondTextColor);

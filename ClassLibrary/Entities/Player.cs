@@ -6,10 +6,14 @@ namespace ClassLibrary.Entities {
     public class Player : Movable {
         public int MaxHp = 10;
         public int Hp = 10;
+        public string Name = "Maxim";
         public int MaxEnergy { get; } = 20;
         public int Energy = 20;
         public int CollectedDiamonds;
         public int EnergyRestoreTick = 2;
+        public int ScoreMultiplier = 10;
+        public int Score = 0; //diamonds and lucky boxes + are multiplied in setter
+        
         private int _moveEnergyCost = 1;
         private int _moveRockEnergyCost = 5;
         
@@ -40,7 +44,7 @@ namespace ClassLibrary.Entities {
                     }
                     //checking on diamonds
                     if (level[PositionX, PositionY].EntityType == 4) {
-                        CollectDiamond(1);
+                        CollectDiamond();
                     }
                     if (level[PositionX, PositionY].EntityType == 7) {
                         CollectLuckyBox();
@@ -64,7 +68,7 @@ namespace ClassLibrary.Entities {
                     }
                     //checking on diamonds
                     if (level[PositionX, PositionY].EntityType == 4) {
-                        CollectDiamond(1);
+                        CollectDiamond();
                     }
                     if (level[PositionX, PositionY].EntityType == 7) {
                         CollectLuckyBox();
@@ -96,12 +100,17 @@ namespace ClassLibrary.Entities {
             }
         }
 
-        private void CollectDiamond(int value) {
+        private void CollectDiamond() {
+            int value = Diamond.PickUpValue;
             CollectedDiamonds += value;
+            Score += value*ScoreMultiplier;
+            GameEngine.GameLogic.UpdateUpperInterface();
         }
 
         private void CollectLuckyBox() {
             LuckyBox.PickUpBox();
+            Score += LuckyBox.PickUpValue*ScoreMultiplier;
+            GameEngine.GameLogic.UpdateUpperInterface();
         }
 
         private void CheckLose() {

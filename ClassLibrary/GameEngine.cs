@@ -84,7 +84,7 @@ namespace ClassLibrary {
                             return CurrentMenuAction;
                         }
                         void MipCreateNewLevel() {
-                            GameLogic.CreateLevel("level1");
+                            GameLogic.CreateLevel("Insert_level_name");
                         }
 
                         MenuInputProcessor menuInputProcessor = new MenuInputProcessor();

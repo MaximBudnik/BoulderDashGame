@@ -48,10 +48,10 @@ namespace ClassLibrary {
 
         public void UpdatePlayerInterface() {
             _gameInterface.DrawPlayerInterface(CurrentLevel.DiamondsQuantity ,_player.CollectedDiamonds,
-                _player.MaxEnergy,_player.Energy, _player.MaxHp, _player.Hp);
+                _player.MaxEnergy,_player.Energy, _player.MaxHp, _player.Hp, _player.Name);
         }
         public void UpdateUpperInterface() {
-            _gameInterface.DrawUpperInterface("Random level",2150,"Collect all diamonds");
+            _gameInterface.DrawUpperInterface(_currentLevel.LevelName,_player.Score,_currentLevel.Aim);
         }
         
         public void GameLoop() {

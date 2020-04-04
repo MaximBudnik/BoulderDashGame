@@ -9,6 +9,7 @@ namespace ClassLibrary.Matrix {
         public int DiamondsQuantity { get; } = 20;
         public int[] DefaultPlayerPosition { get; } = {5, 5}; // do smth with it on loading level
         public string LevelName { get; } = "level_name";
+        public string Aim { get; } = "Collect diamonds";
         public int WalkersCount { get; } = 0;
 
         public Level(string levelName) {
