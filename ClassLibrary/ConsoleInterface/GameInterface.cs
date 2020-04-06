@@ -14,31 +14,32 @@ namespace ClassLibrary.ConsoleInterface {
             {6, "*"},
             {7, "?"},
         };
-
         // private int interfaceMultiplier = 2; //should be retrieved from settings
         private new ConsoleColor secondTextColor = ConsoleColor.DarkCyan;
         private int _topHeight = 2;
         private int bottomHeight = 3;
 
-        public void NewDraw(GameLogic.GiGetCurrentLevel currentLevel) {
+        public void NewDraw(GameLogic.GiGetCurrentLevel currentLevel) {//TODO: optimization
             Level level = currentLevel();
             int origRow =_topHeight;
             for (int i = 0; i < level.Width; i++) {
                 for (int j = 0; j < level.Height; j++) {
-                    int tmp = level[i, j].EntityType;
-                    Console.SetCursorPosition(2 * j, (2 * i + origRow));
-                    Console.Write(" ");
-                    Console.Write(" ");
-                    Console.SetCursorPosition(2 * j, (2 * i + origRow));
-                    DrawSprite(tmp);
-                    DrawSprite(tmp);
                     
-                    Console.SetCursorPosition(2 * j, (2 * i + origRow + 1));
-                    Console.Write(" ");
-                    Console.Write(" ");
-                    Console.SetCursorPosition(2 * j, (2 * i + origRow + 1));
-                    DrawSprite(tmp);
-                    DrawSprite(tmp);
+                            int tmp = level[i, j].EntityType;
+                            Console.SetCursorPosition(2 * j, (2 * i + origRow));
+                            Console.Write(" ");
+                            Console.Write(" ");
+                            Console.SetCursorPosition(2 * j, (2 * i + origRow));
+                            DrawSprite(tmp);
+                            DrawSprite(tmp);
+                    
+                            Console.SetCursorPosition(2 * j, (2 * i + origRow + 1));
+                            Console.Write(" ");
+                            Console.Write(" ");
+                            Console.SetCursorPosition(2 * j, (2 * i + origRow + 1));
+                            DrawSprite(tmp);
+                            DrawSprite(tmp);
+                            
                 }
             }
         }

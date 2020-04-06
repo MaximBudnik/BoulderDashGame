@@ -1,0 +1,54 @@
+﻿public void DiggerAlgorithm() {
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    matrix[i, j] = fillOneTitle(i, j, 5);
+                }
+            }
+            Random rand = new Random();
+            int startPosX = rand.Next(0, Width);
+            int startPosY = rand.Next(0, Height);
+            int diggerPoxX = startPosX;
+            int diggerPoxY = startPosY;
+            int diggerMoves = rand.Next(10, 10);
+            for (int i = 0; i < diggerMoves; i++) {
+                int randomX = rand.Next(0, Width);
+                int randomY = rand.Next(0, Height);
+                while (diggerPoxX != randomX || diggerPoxY != randomY) {
+                    matrix[diggerPoxX, diggerPoxY] = fillOneTitle(diggerPoxX, diggerPoxY, 1);
+                    List<string> possibleMove = new List<string>();
+                    if (randomX > diggerPoxX) {
+                        possibleMove.Add("down");
+                    }
+                    if (randomX < diggerPoxX) {
+                        possibleMove.Add("up");
+                    }
+                    if (randomY > diggerPoxY) {
+                        possibleMove.Add("right");
+                    }
+                    if (randomY < diggerPoxY) {
+                        possibleMove.Add("left");
+                    }
+                    int number = rand.Next(rand.Next(possibleMove.Count));
+                    string move = possibleMove[number];
+                    switch (move) {
+                        case "down":
+                            diggerPoxX++;
+                            break;
+                        case "up":
+                            diggerPoxX--;
+                            break;
+                        case "right":
+                            diggerPoxY++;
+                            break;
+                        case "left":
+                            diggerPoxY--;
+                            break;
+                    }
+                }
+            }
+
+            GameEntity player = new GameEntity(0, startPosX, startPosY);
+            matrix[startPosX, startPosY] = player;
+            PlayerPosition[0] = startPosX;
+            PlayerPosition[1] = startPosY;
+        }

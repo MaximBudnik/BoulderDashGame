@@ -97,6 +97,7 @@ namespace ClassLibrary.Entities {
                 PositionX = posX;
                 PositionY = posY;
                 level[PositionX, PositionY] = this;
+                GameEngine.GameLogic.DrawLevel();
             }
         }
 

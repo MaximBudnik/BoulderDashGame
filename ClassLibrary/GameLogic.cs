@@ -38,7 +38,7 @@ namespace ClassLibrary {
             _afterLevelScreen= new AfterLevelScreen();
             LevelEnemyWalkers = new List<EnemyWalker>();
             _currentLevel = new Level(levelName);
-            _player = new Player(_currentLevel.DefaultPlayerPosition);
+            _player = new Player(_currentLevel.PlayerPosition);
         }
 
         public void DrawLevel() {

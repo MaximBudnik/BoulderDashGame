@@ -19,12 +19,12 @@ namespace ClassLibrary.ConsoleInterface {
         }
 
         //Fields
-        private protected int consoleWidth = 128;
-        private protected int consoleHeight = 39;
+        private protected int consoleWidth = 131;
+        private protected int consoleHeight = 45;
 
-        private protected System.ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
-        private protected System.ConsoleColor primaryTextColor = ConsoleColor.White;
-        private protected System.ConsoleColor secondTextColor = ConsoleColor.DarkGray;
+        private protected ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
+        private protected ConsoleColor primaryTextColor = ConsoleColor.White;
+        private protected ConsoleColor secondTextColor = ConsoleColor.DarkGray;
 
         //Private methods
         private protected void SetBackground(System.ConsoleColor color) {

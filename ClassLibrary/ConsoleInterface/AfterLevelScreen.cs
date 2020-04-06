@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace ClassLibrary.ConsoleInterface {
     public class AfterLevelScreen : UserInterface {
@@ -20,6 +21,7 @@ namespace ClassLibrary.ConsoleInterface {
             Console.WriteLine("\n");
             Console.WriteLine("\n");
             LogCentered("Press any key to return in menu...");
+            Thread.Sleep(3000);
             Console.ReadKey();
             GameEngine.ChangeIsGame();
             Console.ForegroundColor = primaryTextColor;
@@ -38,6 +40,7 @@ namespace ClassLibrary.ConsoleInterface {
             Console.WriteLine("\n");
             Console.WriteLine("\n");
             LogCentered("Press any key to return in menu...");
+            Thread.Sleep(3000);
             Console.ReadKey();
             GameEngine.ChangeIsGame();
             Console.ForegroundColor = primaryTextColor;

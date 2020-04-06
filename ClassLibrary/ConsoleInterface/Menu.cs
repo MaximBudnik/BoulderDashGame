@@ -40,7 +40,7 @@ namespace ClassLibrary.ConsoleInterface {
             }
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 3;
             Console.WriteLine("To choose actions press W, S and Enter");
-            Console.WriteLine("Version: 0.2.3(playable) (Only Help / Settings aren't working)");
+            Console.WriteLine("Version: 0.2.4");
         }
 
         public void DrawHelp() {
