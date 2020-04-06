@@ -52,7 +52,7 @@ namespace ClassLibrary.ConsoleInterface {
                     WriteColorBack(_sprites[1]);
                     break;
                 case 2:
-                    WriteColorBack(_sprites[2]);
+                    WriteColorBack(_sprites[2],ConsoleColor.DarkYellow,ConsoleColor.Yellow);
                     break;
                 case 3:
                     WriteColorBack(_sprites[3],ConsoleColor.Gray,ConsoleColor.DarkGray);
@@ -68,6 +68,9 @@ namespace ClassLibrary.ConsoleInterface {
                     break;
                 case 7:
                     WriteColorBack(_sprites[7],primaryTextColor,ConsoleColor.DarkYellow);
+                    break;
+                case 8:
+                    WriteColorBack(_sprites[2], ConsoleColor.DarkGray);
                     break;
             }
         }

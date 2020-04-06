@@ -6,6 +6,11 @@
 5 - wall;
 6 - enemy walker;
 7 - lucky box;
+8 - sandTranslucent;
 
+
+
+
+100 - dedicated_emty_space - only for generating;
 
 
