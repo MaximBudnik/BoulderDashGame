@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using ClassLibrary.Entities;
+using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Enemies;
 
@@ -15,17 +16,19 @@ namespace ClassLibrary.Matrix {
         public int WalkersCount { get; } = 0;
 
         //fields for creating level
+        public string levelType { get; private set; } = "red";
         private List<int> _quarterPool;
-
-        private int _createRoomChance = 0;
-
-        // 0/5/10/100
+        private int _createRoomChance = 0; // 0/5/10/100
         private int _roomChanceGrow = 5; // the bigger the  chance, the bigger open spaces on level will be
+        private int diggerMovesLower = 20;
+        private int diggerMovesUpper = 40;
+        private int createRoomMaxSizeX = 10;
+        private int createRoomMaxSizeY = 10;
 
         public Level(string levelName) {
             //TODO: retrieve data from json files
-            width = 20;
-            height = 65;
+            width = 20; //20
+            height = 65; //65
             LevelName = levelName;
             WalkersCount = 6;
             matrix = new GameEntity[width, height];
@@ -108,9 +111,12 @@ namespace ClassLibrary.Matrix {
             int startPosY = rand.Next(0, Height);
             int diggerPoxX = startPosX;
             int diggerPoxY = startPosY;
+
+            //2.1) randomize values for level generation to be sure every level is unique
+            randomizeSeedValues();
             //3) the quantity of digger moves is determined
             //Digger moves through field in different positions and leaves behind empty space
-            int diggerMoves = rand.Next(30, 50);
+            int diggerMoves = rand.Next(diggerMovesLower, diggerMovesUpper);
             //4) flag makes sure that he changes axis of movement after he gets every position
             bool flag = false;
             //5) quarters are created to make sure that digger wiil be in all parts of field     
@@ -146,7 +152,7 @@ namespace ClassLibrary.Matrix {
                     //moves next tile
                     straightDig(flag, ref diggerPoxX, ref diggerPoxY, randomX, randomY);
                     //has a chance to create new room
-                    CreateRoom(_createRoomChance, diggerPoxX, diggerPoxY, 10, 4);
+                    CreateRoom(_createRoomChance, diggerPoxX, diggerPoxY, createRoomMaxSizeX, createRoomMaxSizeY);
                     //chance of creating room always growing
                     _createRoomChance += _roomChanceGrow;
                 }
@@ -157,6 +163,42 @@ namespace ClassLibrary.Matrix {
 
             //secondary generation
 
+            //TODO: optimize following processes
+            // here i fill matrix with hand-made objects
+            int numberOfFeatures = rand.Next(0, 4);
+
+            while (numberOfFeatures > 0) {
+                int feature = rand.Next(1, 5);
+                int randomI = rand.Next(0, Width - 6);
+                int randomJ = rand.Next(0, Height - 6);
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        if (i == randomI && j == randomJ) {
+                            int sizeX = rand.Next(5, Width - i - 1);
+                            int sizeY = rand.Next(5, Height - j - 1);
+                            switch (feature) {
+                                case 1:
+                                    CreateColumnHall(i, j, sizeX, sizeY);
+                                    break;
+                                case 2:
+                                    createMegaRoom(i, j, sizeX, sizeY);
+                                    break;
+                                case 3:
+                                    createBox(i, j, sizeX, sizeY);
+                                    break;
+                                case 4:
+                                    CreateCorridorVertical();
+                                    break;
+                                case 5:
+                                    CreateCorridorHorizontal();
+                                    break;
+                            }
+                        }
+                    }
+                }
+                numberOfFeatures--;
+            }
+
             //the we need to replace walls and empty spaces with different blocks, spawn keys, doors,+enemies
             //here i work with out place(walls and their surroundings)
             for (int i = 0; i < width; i++) {
@@ -165,32 +207,27 @@ namespace ClassLibrary.Matrix {
                         // i make wal sand but only if it doesnt border wit empty space
                         //so player just cant get out the map so easily
                         matrix[i, j] = fillOneTitle(i, j, 2);
-                        if (i + 1 < Width && (matrix[i + 1, j].EntityType == 1 || matrix[i + 1, j].EntityType == 7)) {
+                        if (i + 1 < Width && (matrix[i + 1, j].EntityType == 1 || matrix[i + 1, j].EntityType == 7 ||
+                                              matrix[i + 1, j].EntityType == 9)) {
                             matrix[i, j] = fillOneTitle(i, j, 5);
                         }
-                        else if (i - 1 >= 0 && (matrix[i - 1, j].EntityType == 1 || matrix[i - 1, j].EntityType == 7)) {
+                        else if (i - 1 >= 0 && (matrix[i - 1, j].EntityType == 1 || matrix[i - 1, j].EntityType == 7 ||
+                                                matrix[i - 1, j].EntityType == 9)) {
                             matrix[i, j] = fillOneTitle(i, j, 5);
                         }
                         else if (j + 1 < Height &&
-                                 (matrix[i, j + 1].EntityType == 1 || matrix[i, j + 1].EntityType == 7)) {
+                                 (matrix[i, j + 1].EntityType == 1 || matrix[i, j + 1].EntityType == 7 ||
+                                  matrix[i, j + 1].EntityType == 9)) {
                             matrix[i, j] = fillOneTitle(i, j, 5);
                         }
-                        else if (j - 1 >= 0 && (matrix[i, j - 1].EntityType == 1 || matrix[i, j - 1].EntityType == 7)) {
+                        else if (j - 1 >= 0 && (matrix[i, j - 1].EntityType == 1 || matrix[i, j - 1].EntityType == 7 ||
+                                                matrix[i, j - 1].EntityType == 9)) {
                             matrix[i, j] = fillOneTitle(i, j, 5);
                         }
                     }
                 }
             }
-            //TODO: optimize following processes
-            // here i fill matrix with hand-made objects
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    if (i==7&&j==7) {
-                        columnHall(i, j,6,20);
-                    }
-                }
-            }
-            
+
             // here i fill the rest of empty space that was created be rooms 
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
@@ -204,12 +241,7 @@ namespace ClassLibrary.Matrix {
                         };
                         matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
                     }
-                }
-            }
-            // fill empty space created be corridors(digger moves)
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    if (matrix[i, j].EntityType == 1) {
+                    else if (matrix[i, j].EntityType == 1) {
                         List<int> pool = new List<int>() {
                             //this values represent titles and probability of spawn
                             8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -219,13 +251,44 @@ namespace ClassLibrary.Matrix {
                         };
                         matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
                     }
+                    else if (matrix[i, j].EntityType == 101) {
+                        matrix[i, j] = fillOneTitle(i, j, 1);
+                    }
                 }
+            }
+            // fill empty space created be corridors(digger moves)
+            // for (int i = 0; i < width; i++) {
+            //     for (int j = 0; j < height; j++) {
+            //
+            //     }
+            // }
+            
+            //create enemies in random points
+            for (int i = 0; i < WalkersCount; i++) {
+                int posX = rand.Next(width);
+                int posY = rand.Next(height);
+                EnemyWalker enemy = new EnemyWalker(posX, posY);
+                matrix[posX, posY] = enemy;
+                GameEngine.GameLogic.LevelEnemyWalkers.Add(enemy);
             }
 
             GameEntity player = new GameEntity(0, startPosX, startPosY);
             matrix[startPosX, startPosY] = player;
             PlayerPosition[0] = startPosX;
             PlayerPosition[1] = startPosY;
+        }
+
+        private void randomizeSeedValues() {
+            Random rnd = new Random();
+            List<int> roomChancePercents = new List<int>() {0, 5, 10, 100};
+            _createRoomChance = roomChancePercents[rnd.Next(roomChancePercents.Count)]; // 0/5/10/100
+            _roomChanceGrow = rnd.Next(0, 8); // the bigger the  chance, the bigger open spaces on level will be
+            diggerMovesLower = rnd.Next(10, 20);
+            diggerMovesUpper = rnd.Next(30, 50);
+            createRoomMaxSizeX = rnd.Next(7, 15);
+            createRoomMaxSizeY = rnd.Next(7, 15);
+            List<string> levelTypes = new List<string>() {"default","blue","red"};
+            levelType = levelTypes[rnd.Next(levelTypes.Count)];
         }
         private bool checkMoved(bool flag, int digX, int digY, int ranX, int ranY) {
             if (flag) {
@@ -324,33 +387,75 @@ namespace ClassLibrary.Matrix {
                 case 8:
                     SandTranclucent sandTranclucent = new SandTranclucent(i, j);
                     return sandTranclucent;
+                case 9:
+                    Wood wood = new Wood(i, j);
+                    return wood;
+                case 101:
+                    DedicatedEmptySpace dedicatedEmptySpace = new DedicatedEmptySpace(i, j);
+                    return dedicatedEmptySpace;
                 default:
                     EmptySpace es = new EmptySpace(i, j);
                     return es;
             }
         }
-        private void createCross() {
-            
+        private void CreateColumnHall(int i, int j, int sizeX, int sizeY) {
+            bool flag = true;
+            for (int k = i; k < i + sizeX; k++) {
+                for (int l = j; l < j + sizeY; l++) {
+                    if (l % 2 == 0 && flag) {
+                        matrix[k, l] = fillOneTitle(k, l, 5);
+                    }
+                    else {
+                        matrix[k, l] = fillOneTitle(k, l, 1);
+                    }
+                }
+                flag = !flag;
+            }
         }
-        private void columnHall(int i,int j,int sizeX,int sizeY) {
-            for (int k = i; k < i+sizeX; k++) {
-                if (k%2==0) {
-                    for (int l = 0; l < j+sizeY; l++) {
-                        if (l % 2 == 0) {
-                            matrix[k, l] = fillOneTitle(k, l, 5);
-                        }
-                        else {
-                            matrix[k, l] = fillOneTitle(k, l, 1);
-                        }
+        private void createMegaRoom(int i, int j, int sizeX, int sizeY) {
+            for (int k = i; k < i + sizeX; k++) {
+                for (int l = j; l < j + sizeY; l++) {
+                    matrix[k, l] = fillOneTitle(k, l, 7);
+                }
+            }
+        }
+        private void createBox(int i, int j, int sizeX, int sizeY) {
+            for (int k = i; k < i + sizeX; k++) {
+                for (int l = j; l < j + sizeY; l++) {
+                    if ((k == (i + sizeX - sizeX / 2) && (l == j || l == j + sizeY - 1)) ||
+                        (l == (j + sizeY - sizeY / 2) && (k == i || k == i + sizeX - 1))) {
+                        matrix[k, l] = fillOneTitle(k, l, 8);
+                    }
+                    else if (k == i || k == i + sizeX - 1 || l == j || l == j + sizeY - 1) {
+                        matrix[k, l] = fillOneTitle(k, l, 5);
+                    }
+                    else {
+                        matrix[k, l] = fillOneTitle(k, l, 7);
                     }
                 }
             }
         }
-        private void createMegaRoom() {
-            
+        private void CreateCorridorHorizontal() {
+            Random rnd = new Random();
+            int row = rnd.Next(0, Width);
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    if (i == row) {
+                        matrix[i, j] = fillOneTitle(i, j, 9);
+                    }
+                }
+            }
         }
-        private void createCircleRoom() {
-            
+        private void CreateCorridorVertical() {
+            Random rnd = new Random();
+            int col = rnd.Next(0, Height);
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    if (j == col) {
+                        matrix[i, j] = fillOneTitle(i, j, 9);
+                    }
+                }
+            }
         }
     }
 }

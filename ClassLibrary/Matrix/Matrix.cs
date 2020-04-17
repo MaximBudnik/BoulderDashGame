@@ -1,4 +1,5 @@
-﻿using ClassLibrary.Entities;
+﻿using System;
+using ClassLibrary.Entities;
 
 namespace ClassLibrary.Matrix {
     public class Matrix {
@@ -15,7 +16,6 @@ namespace ClassLibrary.Matrix {
         public int Height {
             get => this.height;
         }
-
         public Matrix(int width, int height) {
             matrix = new GameEntity[width, height];
         }

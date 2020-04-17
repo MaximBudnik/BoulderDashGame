@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary.Entities {
+﻿namespace ClassLibrary.Entities.Basic {
     public class DedicatedEmptySpace : GameEntity {
         public DedicatedEmptySpace(int i, int j) {
             entityType = 101;

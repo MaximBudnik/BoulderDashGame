@@ -8,9 +8,11 @@ namespace ClassLibrary.InputProcessors {
             GameEngine.MipChangeIsGame changeIsGame,
             GameEngine.MipChangeCurrentMenuAction changeMenuAction,
             GameEngine.MipGetOperation getOperation,
-            GameEngine.MipCreateNewLevel createNewLevel,
+            GameEngine.MipCreateNewGame createNewGame,
             GameEngine.MipDrawHelp drawHelp,
-            GameEngine.MipDrawSettings drawSettings
+            GameEngine.MipDrawSettings drawSettings,
+            GameEngine.MipShowBestScores showBestScores,
+            GameEngine.MipDrawContinue drawContinue
         ) {
             switch (key) {
                 case ConsoleKey.W:
@@ -23,22 +25,24 @@ namespace ClassLibrary.InputProcessors {
                     int operation = getOperation();
                     switch (operation) {
                         case 0:
-                            changeIsGame();
+                            drawContinue();
                             break;
                         case 1:
-                            createNewLevel();
+                            createNewGame();
                             changeIsGame();
                             break;
                         case 2:
                             drawSettings();
                             break;
                         case 3:
-                            drawHelp();
+                            showBestScores();
                             break;
                         case 4:
+                            drawHelp();
+                            break;
+                        case 5:
                             exit();
                             break;
-                        //TODO: add another switch case statements
                     }
                     break;
                 case ConsoleKey.Escape:

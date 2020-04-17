@@ -1,0 +1,16 @@
+﻿save 1
+name Zebra
+levelName level5
+score 6790
+save 2
+name Lev
+levelName level16
+score 18960
+save 3
+name Crocodile
+levelName level2
+score 365
+save 4
+name Dog
+levelName level9
+score 890

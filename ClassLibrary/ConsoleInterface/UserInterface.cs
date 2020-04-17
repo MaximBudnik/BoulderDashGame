@@ -66,6 +66,12 @@ namespace ClassLibrary.ConsoleInterface {
             Console.ForegroundColor = primaryTextColor;
             Console.BackgroundColor = ConsoleBackgroundColor;
         }
+        
+        protected void DrawLine() {
+            for (int i = 0; i < consoleWidth; i++) {
+                Console.Write("─");
+            }
+        }
 
         public void Draw() { }
     }

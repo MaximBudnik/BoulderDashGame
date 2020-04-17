@@ -21,6 +21,17 @@
       <Content Include="Sounds\menuTheme.mp3">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="gameFiles\saves.json" />
+      <None Remove="gameFiles\scores.json" />
+      <None Remove="gameFiles\NewFile1.txt" />
+      <None Remove="gameFiles\scores.txt" />
+      <Content Include="gameFiles\scores.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="gameFiles\saves.txt" />
+      <Content Include="gameFiles\saves.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

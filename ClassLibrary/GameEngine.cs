@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Threading;
 using ClassLibrary.ConsoleInterface;
@@ -10,7 +11,7 @@ namespace ClassLibrary {
         private static bool _isGame = false;
 
         private static int CurrentMenuAction;
-        private static int _menuItems = 5;
+        private static int _menuItems = 6;
 
         //delegates for menu input processor
         public delegate int MipGetOperation();
@@ -22,9 +23,14 @@ namespace ClassLibrary {
         public delegate void MipChangeCurrentMenuAction(int i);
 
         public delegate void MipDrawHelp();
+
         public delegate void MipDrawSettings();
 
-        public delegate void MipCreateNewLevel();
+        public delegate void MipCreateNewGame();
+
+        public delegate void MipShowBestScores();
+
+        public delegate void MipDrawContinue();
 
         public static void ChangeIsGame() {
             _isGame = !_isGame;
@@ -45,6 +51,7 @@ namespace ClassLibrary {
 
         private static readonly Menu Menu = new Menu();
         public static readonly GameLogic GameLogic = new GameLogic();
+        public static DataInterlayer dataInterlayer = new DataInterlayer();
 
         public static void Start() {
             // SoundPlayer soundPlayer = new SoundPlayer(); //TODO: dont forget to enable music on build!
@@ -71,20 +78,45 @@ namespace ClassLibrary {
                             ChangeCurrentMenuAction(i);
                             Menu.DrawMenu(CurrentMenuAction);
                         }
-                        
+
                         void MipDrawHelp() {
                             Menu.DrawHelp();
                         }
-                        
+
                         void MipDrawSettings() {
                             Menu.DrawSettings();
                         }
-                        
+
                         int MipGetOperation() {
                             return CurrentMenuAction;
                         }
-                        void MipCreateNewLevel() {
-                            GameLogic.CreateLevel("Insert_level_name");
+                        void MipCreateNewGame() {
+                            Menu.DrawNewGame();
+                            string name = Console.ReadLine();
+                            dataInterlayer.AddGameSave(name);
+                            GameLogic.CreateLevel("Level 1");
+                            GameLogic.Player.Name = name;
+                            GameLogic.SaveId = dataInterlayer.saves.Count - 1;
+                        }
+
+                        void MipShowBestScores() {
+                            SortedDictionary<int, string> results = dataInterlayer.getBestSccores();
+                            Menu.DrawScores(results);
+                        }
+
+                        void MipDrawContinue() {
+                            dataInterlayer.GetGameSaves();
+                            List<save> saves = dataInterlayer.saves;
+                            Menu.DrawSaves(saves);
+                            string id = Console.ReadLine();
+                            foreach (var save in saves) {
+                                if (save.id == Int32.Parse(id)) {
+                                    GameLogic.CreateLevel(save.levelName);
+                                    GameLogic.Player.Name = save.name;
+                                    GameLogic.SaveId = dataInterlayer.saves.Count - 1;
+                                    MipChangeIsGame();
+                                }
+                            }
                         }
 
                         MenuInputProcessor menuInputProcessor = new MenuInputProcessor();
@@ -94,9 +126,11 @@ namespace ClassLibrary {
                             MipChangeIsGame,
                             MipChangeCurrentMenuAction,
                             MipGetOperation,
-                            MipCreateNewLevel,
+                            MipCreateNewGame,
                             MipDrawHelp,
-                            MipDrawSettings
+                            MipDrawSettings,
+                            MipShowBestScores,
+                            MipDrawContinue
                         );
                     } while (!_isGame);
                 }

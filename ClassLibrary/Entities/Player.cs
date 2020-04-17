@@ -1,4 +1,5 @@
 ﻿using System;
+using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Matrix;
 

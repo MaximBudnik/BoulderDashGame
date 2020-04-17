@@ -1,0 +1,4 @@
+﻿Maxim1 250
+Maxim2 36750
+Maxim4 1890
+Maxim3 1760
