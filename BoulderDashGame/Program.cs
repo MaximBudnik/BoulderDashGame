@@ -11,8 +11,10 @@ namespace BoulderDashGame {
                 GameEngine.Start();
 
             }
-            catch {
+            catch(Exception e) {
+                Console.Clear();
                 Console.WriteLine("An error occured. Restart app and contact developer.");
+                Console.WriteLine(e.Message);
                 Console.ReadKey();
             }
         }

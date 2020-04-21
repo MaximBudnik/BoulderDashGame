@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Matrix;
@@ -13,15 +14,22 @@ namespace ClassLibrary.Entities {
         public int CollectedDiamonds;
         public int EnergyRestoreTick = 2;
         public int ScoreMultiplier = 10;
-        public int Score = 0; //diamonds and lucky boxes + are multiplied in setter
-        
+        public int Score = 0;
+        public Dictionary<string, int[]> allScores;
+
         private int _moveEnergyCost = 1;
         private int _moveRockEnergyCost = 5;
-        
+
         public Player(int[] pos) {
             PositionX = pos[0];
             PositionY = pos[1];
             entityType = 0;
+            allScores = new Dictionary<string, int[]>() {
+                {"Collected diamonds" , new int[] {0,0}},
+                {"Collected lucky boxes" , new int[] {0,0}},
+                {"Diamonds from lucky box" , new int[] {0,0}},
+                {"Score from lucky box" , new int[] {0,0}},
+            };
         }
 
         public new void GameLoopAction() {
@@ -51,7 +59,7 @@ namespace ClassLibrary.Entities {
                         CollectLuckyBox();
                     }
                     Energy -= _moveEnergyCost;
-                    level[PositionX, PositionY] = this;               
+                    level[PositionX, PositionY] = this;
                 }
                 if (direction == "horizontal") {
                     PositionY += value;
@@ -105,13 +113,18 @@ namespace ClassLibrary.Entities {
         private void CollectDiamond() {
             int value = Diamond.PickUpValue;
             CollectedDiamonds += value;
-            Score += value*ScoreMultiplier;
+            allScores["Collected diamonds"][0] += 1;
+            allScores["Collected diamonds"][1] += value * ScoreMultiplier;
+            Score += value * ScoreMultiplier;
             GameEngine.GameLogic.UpdateUpperInterface();
         }
 
         private void CollectLuckyBox() {
             LuckyBox.PickUpBox();
-            Score += LuckyBox.PickUpValue*ScoreMultiplier;
+            int tmp = LuckyBox.PickUpValue * ScoreMultiplier;
+            allScores["Collected lucky boxes"][0] += 1;
+            allScores["Collected lucky boxes"][1] += tmp;
+            Score += tmp;
             GameEngine.GameLogic.UpdateUpperInterface();
         }
 

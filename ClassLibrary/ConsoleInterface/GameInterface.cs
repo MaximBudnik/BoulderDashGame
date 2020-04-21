@@ -200,14 +200,14 @@ namespace ClassLibrary.ConsoleInterface {
             Console.ForegroundColor = primaryTextColor;
         }
 
-        public void DrawUpperInterface(string levelName, int score, string aim) {
+        public void DrawUpperInterface(int levelName, int score, string aim) {
             Console.CursorTop = 0;
             Console.WriteLine();
             Console.WriteLine();
             Console.CursorTop = 0;
             Console.ForegroundColor = secondTextColor;
             Console.Write(" Level: ");
-            WriteForeground($"{levelName}   ", ConsoleColor.White, secondTextColor);
+            WriteForeground($"Level {levelName}   ", ConsoleColor.White, secondTextColor);
             Console.Write("Score: ");
             WriteForeground($"{score}   ", ConsoleColor.White, secondTextColor);
             Console.Write("Aim: ");

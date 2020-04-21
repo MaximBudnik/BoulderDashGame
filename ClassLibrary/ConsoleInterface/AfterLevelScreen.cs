@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace ClassLibrary.ConsoleInterface {
@@ -26,7 +27,7 @@ namespace ClassLibrary.ConsoleInterface {
             GameEngine.ChangeIsGame();
             Console.ForegroundColor = primaryTextColor;
         }
-        public void DrawGameWin() {
+        public void DrawGameWin(int score, Dictionary<string, int[]> allScores) {
             Console.Clear();
             Console.ForegroundColor = win;
             Console.WriteLine("\n");
@@ -39,10 +40,15 @@ namespace ClassLibrary.ConsoleInterface {
             LogCentered("╚══════╝╚══════╝░░░╚═╝░░░╚══════╝╚══════╝  ░╚════╝░░╚════╝░╚═╝░░░░░╚═╝╚═╝░░░░░╚══════╝╚══════╝░░░╚═╝░░░╚══════╝╚═════╝░");
             Console.WriteLine("\n");
             Console.WriteLine("\n");
-            LogCentered("Press any key to return in menu...");
-            Thread.Sleep(3000);
-            Console.ReadKey();
-            GameEngine.ChangeIsGame();
+            Console.ForegroundColor = primaryTextColor;
+            LogCentered($"Your score: {score}");
+            LogCentered($"Level score\n");
+            foreach (var key in allScores) {
+                LogCentered($"{key.Key}...x{key.Value[0]}...{key.Value[1]}\n");
+            }
+            Console.WriteLine("\n\n\n");
+            
+            LogCentered("Press Enter to play next level or press any key to return in menu...");
             Console.ForegroundColor = primaryTextColor;
         }
     }

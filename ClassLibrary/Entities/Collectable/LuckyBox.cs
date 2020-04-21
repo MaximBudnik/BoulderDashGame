@@ -25,9 +25,14 @@ namespace ClassLibrary.Entities.Collectable {
             Random rand = new Random();
             int effect = pool[rand.Next(pool.Count)];
             // maybe i need to put this part of the logic in player
+            int tmp;
             switch (effect) {
                 case 1:
-                    player.CollectedDiamonds += rand.Next(10);
+                    tmp = rand.Next(10);
+                    player.CollectedDiamonds += tmp;
+                    player.Score += tmp*player.ScoreMultiplier;
+                    player.allScores["Diamonds from lucky box"][0] += 1;
+                    player.allScores["Diamonds from lucky box"][1] += tmp*player.ScoreMultiplier;
                     break;
                 case 2:
                     player.Hp = player.MaxHp;
@@ -42,7 +47,10 @@ namespace ClassLibrary.Entities.Collectable {
                     player.EnergyRestoreTick *= 2;
                     break;
                 case 6:
-                    player.Score +=rand.Next(100,300);
+                    tmp = rand.Next(10,30);
+                    player.Score += tmp*player.ScoreMultiplier;
+                    player.allScores["Score from lucky box"][0] += 1;
+                    player.allScores["Score from lucky box"][1] += tmp*player.ScoreMultiplier;
                     break;
                 case 7:
                     player.ScoreMultiplier *=rand.Next(2,5);

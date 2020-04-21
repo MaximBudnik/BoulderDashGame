@@ -8,9 +8,9 @@ using ClassLibrary.Entities.Enemies;
 
 namespace ClassLibrary.Matrix {
     public class Level : Matrix {
-        public int DiamondsQuantity { get; } = 20;
+        public int DiamondsQuantity { get; } = 3;//TODO: change
         public int[] PlayerPosition = {0, 0}; // do smth with it on loading level
-        public string LevelName { get; } = "level_name";
+        public int LevelName { get; } = 0;
         public string Aim { get; } = "Collect diamonds";
 
         public int WalkersCount { get; } = 0;
@@ -25,7 +25,7 @@ namespace ClassLibrary.Matrix {
         private int createRoomMaxSizeX = 10;
         private int createRoomMaxSizeY = 10;
 
-        public Level(string levelName) {
+        public Level(int levelName) {
             //TODO: retrieve data from json files
             width = 20; //20
             height = 65; //65

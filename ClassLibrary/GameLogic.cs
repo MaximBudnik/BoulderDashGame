@@ -16,7 +16,7 @@ namespace ClassLibrary {
         private int _frameCounter;
         private int _endScreen;
         public List<EnemyWalker> LevelEnemyWalkers;
-        public int SaveId=0;
+        public save currentSave = null;
 
         public int FrameCounter => _frameCounter;
 
@@ -32,7 +32,7 @@ namespace ClassLibrary {
             return _currentLevel;
         }
 
-        public void CreateLevel(string levelName) {
+        public void CreateLevel(int levelName) {
             _endScreen = 0;
             _frameCounter = 0;
             _gameInterface = new GameInterface();
@@ -41,6 +41,9 @@ namespace ClassLibrary {
             LevelEnemyWalkers = new List<EnemyWalker>();
             _currentLevel = new Level(levelName);
             _player = new Player(_currentLevel.PlayerPosition);
+            UpdateUpperInterface();
+            DrawLevel();
+            UpdatePlayerInterface();
         }
 
         public void DrawLevel() {
@@ -63,7 +66,7 @@ namespace ClassLibrary {
                     UpdatePlayerInterface();
                     DrawLevel();
                 }
-            
+
                 _player.GameLoopAction();
                 if (_frameCounter % 10 == 0) {
                     //processing enemies
@@ -71,7 +74,7 @@ namespace ClassLibrary {
                         LevelEnemyWalkers[i].GameLoopAction();
                     }
                 }
-            
+
                 _rockProcessor.ProcessRock();
                 if (_frameCounter == 100) {
                     _frameCounter = 0;
@@ -82,17 +85,30 @@ namespace ClassLibrary {
                 _afterLevelScreen.DrawGameLose();
             }
             else if (_endScreen == 2) {
-                _afterLevelScreen.DrawGameWin();
+                _afterLevelScreen.DrawGameWin(Player.Score, Player.allScores);
             }
         }
 
         public void Win() {
             _endScreen = 2;
-            _afterLevelScreen.DrawGameWin();
+            _afterLevelScreen.DrawGameWin(Player.Score, Player.allScores);
+            GameEngine.dataInterlayer.ChangeGameSave(currentSave, _currentLevel.LevelName, Player.Score);
+            Thread.Sleep(3000);
+            ConsoleKeyInfo key = Console.ReadKey();
+
+            if (key.Key == ConsoleKey.Enter) {
+                GameEngine.ResumeGame(currentSave);
+            }
+            else {
+                GameEngine.ChangeIsGame();
+            }
         }
 
         public void Lose() {
             _endScreen = 1;
+            GameEngine.dataInterlayer.addBestScore(_player.Name, _player.Score);
+            GameEngine.dataInterlayer.DeleteGameSave(currentSave.id);
+            GameEngine.dataInterlayer.GetGameSaves();
             _afterLevelScreen.DrawGameLose();
         }
     }

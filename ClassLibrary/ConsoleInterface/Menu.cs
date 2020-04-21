@@ -48,7 +48,7 @@ namespace ClassLibrary.ConsoleInterface {
             }
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 3;
             Console.WriteLine("To choose actions press W, S and Enter");
-            Console.WriteLine("Version: 0.2.4");
+            Console.WriteLine("Version: 0.5.1");
         }
 
         public void DrawHelp() {
@@ -96,15 +96,16 @@ namespace ClassLibrary.ConsoleInterface {
             LogCentered("█▄▄ █▀█ █▄█ █▄█ ▄█ ██▄   ▄█ █▀█ ▀▄▀ ██▄");
             Console.WriteLine("\n");
 
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.Blue;
             DrawLine();
             foreach (var save in saves) {
-                Console.Write($"{save.id} {save.name} {save.levelName} {save.score} \n");
+                Console.WriteLine();
+                Console.Write($" {save.id}. Player name: {save.name} Level: {save.levelName} Score: {save.score} \n");
+                Console.WriteLine();
                 DrawLine();
             }
             Console.WriteLine("\n");
-            Console.ForegroundColor = primaryTextColor;
-            Console.Write("Enter id of save:");
+            Console.Write(" Enter id of save:");
             Console.ForegroundColor = ConsoleColor.Red;
 
         }
@@ -129,7 +130,7 @@ namespace ClassLibrary.ConsoleInterface {
             Console.WriteLine('\n');
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             DrawLine();
-            Console.Write(" Please enter your name:");
+            Console.Write(" Please enter your name: ");
             Console.ForegroundColor = ConsoleColor.Red;
 
         }

@@ -35,6 +35,10 @@ namespace ClassLibrary {
         public static void ChangeIsGame() {
             _isGame = !_isGame;
         }
+
+        public static void createGame() {
+            
+        }
         static void ChangeCurrentMenuAction(int i) {
             if (CurrentMenuAction < _menuItems && CurrentMenuAction >= 0) {
                 CurrentMenuAction += i;
@@ -56,7 +60,6 @@ namespace ClassLibrary {
         public static void Start() {
             // SoundPlayer soundPlayer = new SoundPlayer(); //TODO: dont forget to enable music on build!
             // soundPlayer.playMusic();
-            GameLogic.CreateLevel("level1"); //TODO: create level from menu
             Menu.DrawMenu(CurrentMenuAction);
             ConsoleKeyInfo c = new ConsoleKeyInfo();
             Frame();
@@ -94,9 +97,11 @@ namespace ClassLibrary {
                             Menu.DrawNewGame();
                             string name = Console.ReadLine();
                             dataInterlayer.AddGameSave(name);
-                            GameLogic.CreateLevel("Level 1");
-                            GameLogic.Player.Name = name;
-                            GameLogic.SaveId = dataInterlayer.saves.Count - 1;
+                            dataInterlayer.GetGameSaves();
+                            save currentSave = dataInterlayer.saves[dataInterlayer.saves.Count - 1];
+                            GameLogic.CreateLevel(currentSave.levelName);
+                            GameLogic.Player.Name = currentSave.name;
+                            GameLogic.currentSave = currentSave;
                         }
 
                         void MipShowBestScores() {
@@ -111,9 +116,7 @@ namespace ClassLibrary {
                             string id = Console.ReadLine();
                             foreach (var save in saves) {
                                 if (save.id == Int32.Parse(id)) {
-                                    GameLogic.CreateLevel(save.levelName);
-                                    GameLogic.Player.Name = save.name;
-                                    GameLogic.SaveId = dataInterlayer.saves.Count - 1;
+                                    ResumeGame(save);
                                     MipChangeIsGame();
                                 }
                             }
@@ -162,6 +165,12 @@ namespace ClassLibrary {
                 }
                 Frame();
             }
+        }
+        public static void ResumeGame(save save) {
+            GameLogic.CreateLevel(save.levelName);
+            GameLogic.Player.Name = save.name;
+            GameLogic.Player.Score = save.score;
+            GameLogic.currentSave = save;
         }
     }
 }
