@@ -33,25 +33,25 @@
           <e p="basic" t="Include">
             <e p="DedicatedEmptySpace.cs" t="Include" />
             <e p="EmptySpace.cs" t="Include" />
+            <e p="Rock.cs" t="Include" />
             <e p="Sand.cs" t="Include" />
+            <e p="SandTranclucent.cs" t="Include" />
             <e p="Wall.cs" t="Include" />
             <e p="Wood.cs" t="Include" />
           </e>
           <e p="Collectable" t="Include">
             <e p="Diamond.cs" t="Include" />
-            <e p="ItemCollectable.cs" t="Include" />
+            <e p="ItemCollectible.cs" t="Include" />
             <e p="LuckyBox.cs" t="Include" />
           </e>
           <e p="Enemies" t="Include">
             <e p="Enemy.cs" t="Include" />
             <e p="EnemyWalker.cs" t="Include" />
-            <e p="Rock.cs" t="Include" />
             <e p="RockProcessor.cs" t="Include" />
           </e>
           <e p="GameEntity.cs" t="Include" />
           <e p="Movable.cs" t="Include" />
           <e p="Player.cs" t="Include" />
-          <e p="SandTranclucent.cs" t="Include" />
         </e>
         <e p="GameEngine.cs" t="Include" />
         <e p="gameFiles" t="Include">
@@ -76,6 +76,7 @@
             </e>
           </e>
         </e>
+        <e p="Randomizer.cs" t="Include" />
         <e p="SoundPlayer.cs" t="Include" />
         <e p="Sounds" t="Include">
           <e p="menuTheme.mp3" t="Include" />

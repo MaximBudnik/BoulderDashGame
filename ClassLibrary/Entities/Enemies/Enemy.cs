@@ -1,22 +1,54 @@
-﻿namespace ClassLibrary.Entities.Enemies {
-    public class Enemy : Movable {
-        protected int _damage;
+﻿using System;
+using ClassLibrary.Matrix;
+
+namespace ClassLibrary.Entities.Enemies {
+    public abstract class Enemy : Movable {
+        protected int Damage;
+        protected readonly Func<int> GetPlayerPosX;
+        protected readonly Func<int> GetPlayerPosY;
+        protected readonly Action<int> ChangePlayerHp;
+
+        protected Enemy(
+            int i,
+            int j,
+            Func<Level> getLevel,
+            Action drawLevel,
+            Action updatePlayerInterface,
+            Func<int> getPlayerPosX,
+            Func<int> getPlayerPosY,
+            Action<int> changePlayerHp
+        ) : base(getLevel, drawLevel, updatePlayerInterface, i, j) {
+            GetPlayerPosX = getPlayerPosX;
+            GetPlayerPosY = getPlayerPosY;
+            ChangePlayerHp = changePlayerHp;
+        }
+        protected Enemy(
+            Func<Level> getLevel,
+            Action drawLevel,
+            Action updatePlayerInterface,
+            Func<int> getPlayerPosX,
+            Func<int> getPlayerPosY,
+            Action<int> changePlayerHp
+        ) : base(getLevel, drawLevel, updatePlayerInterface) {
+            GetPlayerPosX = getPlayerPosX;
+            GetPlayerPosY = getPlayerPosY;
+            ChangePlayerHp = changePlayerHp;
+        }
 
         protected void EnemyDefaultDamage() {
-            int playerPosX = GameEngine.GameLogic.Player.PositionX;
-            int playerPosY = GameEngine.GameLogic.Player.PositionY;
-            bool one = ((playerPosX + 1 == PositionX) && (playerPosY == PositionY));
-            bool two = ((playerPosX - 1 == PositionX) && (playerPosY == PositionY));
-            bool three = ((playerPosX == PositionX) && (playerPosY + 1 == PositionY));
-            bool four = ((playerPosX == PositionX) && (playerPosY - 1 == PositionY));
-            if (one || two || three || four) {
-                DealDamage(GameEngine.GameLogic.Player, _damage);
+            int playerPosX = GetPlayerPosX();
+            int playerPosY = GetPlayerPosY();
+            bool one = Math.Abs(PositionX - playerPosX) == 1 && playerPosY == PositionY;
+            bool two = Math.Abs(PositionY - playerPosY) == 1 && playerPosX == PositionX;
+            if (one || two) {
+                DealDamage();
             }
         }
 
-        protected void DealDamage(Player player, int value) {
-            player.Hp -= value;
-            GameEngine.GameLogic.UpdatePlayerInterface();
+        protected void DealDamage() {
+            ChangePlayerHp(Damage);
+            UpdatePlayerInterface();
         }
+        
     }
 }

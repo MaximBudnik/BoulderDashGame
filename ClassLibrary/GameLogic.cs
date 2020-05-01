@@ -12,51 +12,49 @@ namespace ClassLibrary {
         private RockProcessor _rockProcessor;
         private AfterLevelScreen _afterLevelScreen;
         private Level _currentLevel;
-        private Player _player;
+        public Player Player;
         private int _frameCounter;
         private int _endScreen;
         public List<EnemyWalker> LevelEnemyWalkers;
-        public save currentSave = null;
+        public save CurrentSave = null;
 
-        public int FrameCounter => _frameCounter;
-
-        public Player Player => _player;
-
-        public Level CurrentLevel => _currentLevel;
-
-        public RockProcessor RockProcessor => _rockProcessor;
-
-        public delegate Level GiGetCurrentLevel();
-
-        private Level GetCurrentLevel() {
-            return _currentLevel;
+        private void SubstractPlayerHp(int value) {
+            Player.Hp -= value;
         }
 
-        public void CreateLevel(int levelName) {
+        public void CreateLevel(int levelName, string playerName) {
             _endScreen = 0;
             _frameCounter = 0;
             _gameInterface = new GameInterface();
-            _rockProcessor = new RockProcessor();
+            _rockProcessor = new RockProcessor(() => _currentLevel, DrawLevel, () => Player.PositionX,
+                () => Player.PositionY, UpdatePlayerInterface, SubstractPlayerHp);
             _afterLevelScreen = new AfterLevelScreen();
             LevelEnemyWalkers = new List<EnemyWalker>();
-            _currentLevel = new Level(levelName);
-            _player = new Player(_currentLevel.PlayerPosition);
-            UpdateUpperInterface();
-            DrawLevel();
-            UpdatePlayerInterface();
+            _currentLevel = new Level(
+                levelName, playerName,
+                () => _currentLevel,
+                DrawLevel,
+                UpdateUpperInterface,
+                UpdatePlayerInterface,
+                (i, j, direction, value) => _rockProcessor.PushRock(i, j, direction, value),
+                Win,
+                Lose,
+                () => Player.PositionX,
+                () => Player.PositionY,
+                SubstractPlayerHp
+            );
         }
 
-        public void DrawLevel() {
-            GiGetCurrentLevel giGetCurrentLevel = GetCurrentLevel;
-            _gameInterface.NewDraw(giGetCurrentLevel);
+        private void DrawLevel() {
+            _gameInterface.NewDraw(() => _currentLevel);
         }
 
-        public void UpdatePlayerInterface() {
-            _gameInterface.DrawPlayerInterface(CurrentLevel.DiamondsQuantity, _player.CollectedDiamonds,
-                _player.MaxEnergy, _player.Energy, _player.MaxHp, _player.Hp, _player.Name);
+        private void UpdatePlayerInterface() {
+            _gameInterface.DrawPlayerInterface(_currentLevel.DiamondsQuantity, Player.CollectedDiamonds,
+                Player.MaxEnergy, Player.Energy, Player.MaxHp, Player.Hp, Player.Name);
         }
-        public void UpdateUpperInterface() {
-            _gameInterface.DrawUpperInterface(_currentLevel.LevelName, _player.Score, _currentLevel.Aim);
+        private void UpdateUpperInterface() {
+            _gameInterface.DrawUpperInterface(_currentLevel.LevelName, Player.Score, _currentLevel.Aim);
         }
 
         public void GameLoop() {
@@ -67,49 +65,45 @@ namespace ClassLibrary {
                     DrawLevel();
                 }
 
-                _player.GameLoopAction();
-                if (_frameCounter % 10 == 0) {
-                    //processing enemies
-                    for (int i = 0; i < LevelEnemyWalkers.Count; i++) {
+                Player.GameLoopAction();
+                if (_frameCounter % 10 == 0) //processing enemies
+                    for (var i = 0; i < LevelEnemyWalkers.Count; i++)
                         LevelEnemyWalkers[i].GameLoopAction();
-                    }
-                }
 
                 _rockProcessor.ProcessRock();
-                if (_frameCounter == 100) {
-                    _frameCounter = 0;
-                }
+                if (_frameCounter == 100) _frameCounter = 0;
                 _frameCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
             }
             else if (_endScreen == 1) {
                 _afterLevelScreen.DrawGameLose();
             }
             else if (_endScreen == 2) {
-                _afterLevelScreen.DrawGameWin(Player.Score, Player.allScores);
+                _afterLevelScreen.DrawGameWin(Player.Score, Player.AllScores);
             }
         }
 
-        public void Win() {
+        private void Win() {
             _endScreen = 2;
-            _afterLevelScreen.DrawGameWin(Player.Score, Player.allScores);
-            GameEngine.dataInterlayer.ChangeGameSave(currentSave, _currentLevel.LevelName, Player.Score);
+            _afterLevelScreen.DrawGameWin(Player.Score, Player.AllScores);
+            GameEngine.DataInterlayer.ChangeGameSave(CurrentSave, _currentLevel.LevelName, Player.Score);
             Thread.Sleep(3000);
-            ConsoleKeyInfo key = Console.ReadKey();
+            var key = Console.ReadKey();
 
-            if (key.Key == ConsoleKey.Enter) {
-                GameEngine.ResumeGame(currentSave);
-            }
-            else {
+            if (key.Key == ConsoleKey.Enter)
+                GameEngine.ResumeGame(CurrentSave);
+            else
                 GameEngine.ChangeIsGame();
-            }
         }
 
-        public void Lose() {
+        private void Lose() {
             _endScreen = 1;
-            GameEngine.dataInterlayer.addBestScore(_player.Name, _player.Score);
-            GameEngine.dataInterlayer.DeleteGameSave(currentSave.id);
-            GameEngine.dataInterlayer.GetGameSaves();
+            GameEngine.DataInterlayer.addBestScore(Player.Name, Player.Score);
+            GameEngine.DataInterlayer.DeleteGameSave(CurrentSave.id);
+            GameEngine.DataInterlayer.GetGameSaves();
             _afterLevelScreen.DrawGameLose();
+            GameEngine.ChangeIsGame();
+            Thread.Sleep(3000);
+            Console.ReadKey();
         }
     }
 }

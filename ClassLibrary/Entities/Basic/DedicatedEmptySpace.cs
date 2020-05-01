@@ -1,9 +1,7 @@
 ﻿namespace ClassLibrary.Entities.Basic {
     public class DedicatedEmptySpace : GameEntity {
-        public DedicatedEmptySpace(int i, int j) {
-            entityType = 101;
-            PositionX = i;
-            PositionY = j;
+        public DedicatedEmptySpace(int i, int j):base(i, j) {
+            EntityType = 101;
         }
     }
 }

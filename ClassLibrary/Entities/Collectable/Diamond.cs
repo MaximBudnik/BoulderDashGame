@@ -1,10 +1,8 @@
 ﻿namespace ClassLibrary.Entities.Collectable {
-    public class Diamond : ItemCollectable{
+    public class Diamond : ItemCollectible{
         
-        public Diamond(int i, int j) {
-            entityType = 4;
-            PositionX = i;
-            PositionY = j;
+        public Diamond(int i, int j) :base(i, j){
+            EntityType = 4;
         }
     }
 }

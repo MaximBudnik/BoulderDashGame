@@ -7,58 +7,59 @@ using System.Text;
 //dont know if i can delete it later
 
 namespace ClassLibrary.ConsoleInterface {
-    public class UserInterface {
+    public abstract class UserInterface {
         //Constructor
-        public UserInterface() {
+        protected UserInterface() {
             SetBackground(ConsoleBackgroundColor);
             Console.Title = "Miner Adventure";
             Console.ForegroundColor = primaryTextColor;
             Console.OutputEncoding = Encoding.UTF8;
             Console.SetWindowSize(consoleWidth, consoleHeight);
-            Console.SetBufferSize(consoleWidth, consoleHeight); //interesting effect: without it, console is constantly twitches
+            Console.SetBufferSize(consoleWidth,
+                consoleHeight); //interesting effect: without it, console is constantly twitches
         }
 
         //Fields
-        private protected int consoleWidth = 131;
-        private protected int consoleHeight = 45;
+        private int consoleWidth = 131;
+        private int consoleHeight = 45;
 
-        private protected ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
+        private ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
         private protected ConsoleColor primaryTextColor = ConsoleColor.White;
-        private protected ConsoleColor secondTextColor = ConsoleColor.DarkGray;
+        private protected ConsoleColor SecondTextColor = ConsoleColor.DarkGray;
 
         //Private methods
-        private protected void SetBackground(System.ConsoleColor color) {
+        private void SetBackground(ConsoleColor color) {
             Console.BackgroundColor = color;
             Console.Clear();
         }
 
-        private protected void LogCentered(string data) {
+        private protected static void LogCentered(string data) {
             Console.SetCursorPosition((Console.WindowWidth - data.Length) / 2, Console.CursorTop);
             Console.WriteLine(data);
         }
 
         private protected void LogCentered(int data) {
-            string stringoFiedData = data.ToString();
-            Console.SetCursorPosition((Console.WindowWidth - stringoFiedData.Length) / 2, Console.CursorTop);
-            Console.WriteLine(stringoFiedData);
+            var stringFieldData = data.ToString();
+            Console.SetCursorPosition((Console.WindowWidth - stringFieldData.Length) / 2, Console.CursorTop);
+            Console.WriteLine(stringFieldData);
         }
-        
+
         protected void WriteColorBack(string str) {
             Console.Write(str);
         }
-        
+
         protected void WriteColorBack(string str, ConsoleColor foreground) {
             Console.ForegroundColor = foreground;
             Console.Write(str);
             Console.ForegroundColor = primaryTextColor;
         }
-        
+
         protected void WriteForeground(string str, ConsoleColor foreground, ConsoleColor previous) {
             Console.ForegroundColor = foreground;
             Console.Write(str);
             Console.ForegroundColor = previous;
         }
-        
+
         protected void WriteColorBack(string str, ConsoleColor foreground, ConsoleColor background) {
             Console.BackgroundColor = background;
             Console.ForegroundColor = foreground;
@@ -66,13 +67,31 @@ namespace ClassLibrary.ConsoleInterface {
             Console.ForegroundColor = primaryTextColor;
             Console.BackgroundColor = ConsoleBackgroundColor;
         }
-        
+
         protected void DrawLine() {
             for (int i = 0; i < consoleWidth; i++) {
                 Console.Write("─");
             }
         }
 
+        protected void SkipLine() {
+            Console.WriteLine("\n");
+        }
+
+        protected void SkipLine(int i) {
+            for (int j = 0; j < i; j++) {
+                Console.WriteLine("\n");
+            }
+        }
+
+        protected void ChangeForegroundColor(ConsoleColor color) {
+            Console.ForegroundColor = color;
+        }
+
+        protected void ChangeBackgroundColor(ConsoleColor color) {
+            Console.BackgroundColor = color;
+        }
+        
         public void Draw() { }
     }
 }

@@ -2,17 +2,17 @@
 
 namespace ClassLibrary.InputProcessors {
     public class MenuInputProcessor : InputProcessor {
-        public void processInput(
+        public void ProcessInput(
             ConsoleKey key,
-            GameEngine.MipExit exit,
-            GameEngine.MipChangeIsGame changeIsGame,
-            GameEngine.MipChangeCurrentMenuAction changeMenuAction,
-            GameEngine.MipGetOperation getOperation,
-            GameEngine.MipCreateNewGame createNewGame,
-            GameEngine.MipDrawHelp drawHelp,
-            GameEngine.MipDrawSettings drawSettings,
-            GameEngine.MipShowBestScores showBestScores,
-            GameEngine.MipDrawContinue drawContinue
+            Action exit,
+            Action changeIsGame,
+            Action<int> changeMenuAction,
+            Func<int> getOperation,
+            Action createNewGame,
+            Action drawHelp,
+            Action drawSettings,
+            Action showBestScores,
+            Action drawContinue
         ) {
             switch (key) {
                 case ConsoleKey.W:
@@ -22,7 +22,7 @@ namespace ClassLibrary.InputProcessors {
                     changeMenuAction(1);
                     break;
                 case ConsoleKey.Enter:
-                    int operation = getOperation();
+                    var operation = getOperation();
                     switch (operation) {
                         case 0:
                             drawContinue();
@@ -47,8 +47,6 @@ namespace ClassLibrary.InputProcessors {
                     break;
                 case ConsoleKey.Escape:
                     changeIsGame();
-                    break;
-                default:
                     break;
             }
         }

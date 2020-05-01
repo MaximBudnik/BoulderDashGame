@@ -4,7 +4,7 @@ using ClassLibrary.Entities;
 namespace ClassLibrary.InputProcessors {//dont know ifgi can do such operations. maybe i need to refactor it using delegates
     public class GameInputProcessor : InputProcessor {
 
-        public void processInput(
+        public void ProcessInput(
             ConsoleKey key
         ) {
 

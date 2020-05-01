@@ -1,9 +1,9 @@
 ﻿using System;
 
 namespace ClassLibrary.InputProcessors {
-    public class InputProcessor {
+    public abstract class InputProcessor {
 
-        public void processInput() { }
+        public void ProcessInput() { }
 
     }
 }

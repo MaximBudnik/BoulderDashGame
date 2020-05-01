@@ -10,59 +10,54 @@ namespace ClassLibrary.Entities.Enemies {
             EnemyDefaultDamage();
         }
 
-        public EnemyWalker(int posX, int posY) {
-            PositionX = posX;
-            PositionY = posY;
-            entityType = 6;
-            _damage = 5;
+        public EnemyWalker(int i, int j,
+            Func<Level> getLevel, Action drawLevel,
+            Func<int> getPlayerPosX, Func<int> getPlayerPosY,
+            Action updatePlayerInterface,
+            Action<int> changePlayerHp
+        )
+            : base(i, j, getLevel, drawLevel, updatePlayerInterface, getPlayerPosX, getPlayerPosY, changePlayerHp) {
+            EntityType = 6;
+            Damage = 5;
         }
 
         private void EnemyMovement() {
-            Level level = GameEngine.GameLogic.CurrentLevel;
-            int playerPosX = GameEngine.GameLogic.Player.PositionX;
-            int playerPosY = GameEngine.GameLogic.Player.PositionY;
-            List<string> moves = new List<string>();
+            var level = GetLevel();
+            var playerPosX = GetPlayerPosX();
+            var playerPosY = GetPlayerPosY();
+            var moves = new List<string>();
 
             if (playerPosX < PositionX && PositionX - 1 < level.Width &&
-                (level[PositionX - 1, PositionY].EntityType == 1 || level[PositionX - 1, PositionY].EntityType == 2 || level[PositionX - 1, PositionY].EntityType == 4)) {
+                level[PositionX - 1, PositionY].EntityType != 3 && level[PositionX - 1, PositionY].EntityType != 5)
                 moves.Add("up");
-            }
-            if (playerPosX > PositionX && PositionX + 1 >= 0 &&
-                (level[PositionX + 1, PositionY].EntityType == 1 || level[PositionX + 1, PositionY].EntityType == 2 || level[PositionX + 1, PositionY].EntityType == 4)) {
+            if (playerPosX > PositionX && PositionX + 1 >= 0 && level[PositionX + 1, PositionY].EntityType != 3 &&
+                level[PositionX + 1, PositionY].EntityType != 5)
                 moves.Add("down");
-            }
             if (playerPosY > PositionY && PositionY + 1 < level.Height &&
-                (level[PositionX, PositionY + 1].EntityType == 1 || level[PositionX, PositionY + 1].EntityType == 2|| level[PositionX, PositionY + 1].EntityType == 4)) {
+                level[PositionX, PositionY + 1].EntityType != 3 && level[PositionX, PositionY + 1].EntityType != 5)
                 moves.Add("right");
-            }
-            if (playerPosY < PositionY && PositionY - 1 >= 0 &&
-                (level[PositionX, PositionY - 1].EntityType == 1 || level[PositionX, PositionY - 1].EntityType == 2|| level[PositionX, PositionY - 1].EntityType == 4)) {
+            if (playerPosY < PositionY && PositionY - 1 >= 0 && level[PositionX, PositionY - 1].EntityType != 3 &&
+                level[PositionX, PositionY - 1].EntityType != 5)
                 moves.Add("left");
-            }
             moves.Add("hold");
-            Random rnd = new Random();
-            int number = rnd.Next(rnd.Next(moves.Count));
-            string action = moves[number];
+            string action = Randomizer.GetRandomFromList(moves);
             switch (action) {
+                case "hold":
+                    return;
                 case "up":
                     Move("vertical", -1, PositionX, PositionY);
-                    GameEngine.GameLogic.DrawLevel();
                     break;
                 case "down":
                     Move("vertical", 1, PositionX, PositionY);
-                    GameEngine.GameLogic.DrawLevel();
                     break;
                 case "right":
                     Move("horizontal", 1, PositionX, PositionY);
-                    GameEngine.GameLogic.DrawLevel();
                     break;
                 case "left":
                     Move("horizontal", -1, PositionX, PositionY);
-                    GameEngine.GameLogic.DrawLevel();
-                    break;
-                case "hold":
                     break;
             }
+            DrawLevel();
         }
     }
 }

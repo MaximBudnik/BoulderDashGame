@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace ClassLibrary.ConsoleInterface {
     public class AfterLevelScreen : UserInterface {
-        private ConsoleColor lose = ConsoleColor.Red;
-        private ConsoleColor win = ConsoleColor.Green;
+        private readonly ConsoleColor _lose = ConsoleColor.Red;
+        private readonly ConsoleColor _win = ConsoleColor.Green;
 
         public void DrawGameLose() {
             Console.Clear();
-            Console.ForegroundColor = lose;
-            Console.WriteLine("\n");
-            Console.WriteLine("\n");
+            ChangeForegroundColor(_lose);
+            SkipLine(2);
             LogCentered("░██████╗░░█████╗░███╗░░░███╗███████╗  ░█████╗░██╗░░░██╗███████╗██████╗░");
             LogCentered("██╔════╝░██╔══██╗████╗░████║██╔════╝  ██╔══██╗██║░░░██║██╔════╝██╔══██╗");
             LogCentered("██║░░██╗░███████║██╔████╔██║█████╗░░  ██║░░██║╚██╗░██╔╝█████╗░░██████╔╝");
@@ -19,37 +17,30 @@ namespace ClassLibrary.ConsoleInterface {
             LogCentered("██║░░╚██╗██╔══██║██║╚██╔╝██║██╔══╝░░  ██║░░██║░╚████╔╝░██╔══╝░░██╔══██╗");
             LogCentered("╚██████╔╝██║░░██║██║░╚═╝░██║███████╗  ╚█████╔╝░░╚██╔╝░░███████╗██║░░██║");
             LogCentered("░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝  ░╚════╝░░░░╚═╝░░░╚══════╝╚═╝░░╚═╝");
-            Console.WriteLine("\n");
-            Console.WriteLine("\n");
+            SkipLine(2);
             LogCentered("Press any key to return in menu...");
-            Thread.Sleep(3000);
-            Console.ReadKey();
-            GameEngine.ChangeIsGame();
-            Console.ForegroundColor = primaryTextColor;
+            ChangeForegroundColor(primaryTextColor);
         }
         public void DrawGameWin(int score, Dictionary<string, int[]> allScores) {
             Console.Clear();
-            Console.ForegroundColor = win;
-            Console.WriteLine("\n");
-            Console.WriteLine("\n");
+            ChangeForegroundColor(_win);
+            SkipLine(2);
             LogCentered("██╗░░░░░███████╗██╗░░░██╗███████╗██╗░░░░░  ░█████╗░░█████╗░███╗░░░███╗██████╗░██╗░░░░░███████╗████████╗███████╗██████╗░");
             LogCentered("██║░░░░░██╔════╝██║░░░██║██╔════╝██║░░░░░  ██╔══██╗██╔══██╗████╗░████║██╔══██╗██║░░░░░██╔════╝╚══██╔══╝██╔════╝██╔══██╗");
             LogCentered("██║░░░░░█████╗░░╚██╗░██╔╝█████╗░░██║░░░░░  ██║░░╚═╝██║░░██║██╔████╔██║██████╔╝██║░░░░░█████╗░░░░░██║░░░█████╗░░██║░░██║");
             LogCentered("██║░░░░░██╔══╝░░░╚████╔╝░██╔══╝░░██║░░░░░  ██║░░██╗██║░░██║██║╚██╔╝██║██╔═══╝░██║░░░░░██╔══╝░░░░░██║░░░██╔══╝░░██║░░██║");
             LogCentered("███████╗███████╗░░╚██╔╝░░███████╗███████╗  ╚█████╔╝╚█████╔╝██║░╚═╝░██║██║░░░░░███████╗███████╗░░░██║░░░███████╗██████╔╝");
             LogCentered("╚══════╝╚══════╝░░░╚═╝░░░╚══════╝╚══════╝  ░╚════╝░░╚════╝░╚═╝░░░░░╚═╝╚═╝░░░░░╚══════╝╚══════╝░░░╚═╝░░░╚══════╝╚═════╝░");
-            Console.WriteLine("\n");
-            Console.WriteLine("\n");
-            Console.ForegroundColor = primaryTextColor;
+            SkipLine(2);
+            ChangeForegroundColor(primaryTextColor);
             LogCentered($"Your score: {score}");
             LogCentered($"Level score\n");
             foreach (var key in allScores) {
                 LogCentered($"{key.Key}...x{key.Value[0]}...{key.Value[1]}\n");
             }
-            Console.WriteLine("\n\n\n");
-            
+            SkipLine(2);
             LogCentered("Press Enter to play next level or press any key to return in menu...");
-            Console.ForegroundColor = primaryTextColor;
+            ChangeForegroundColor(primaryTextColor);
         }
     }
 }
