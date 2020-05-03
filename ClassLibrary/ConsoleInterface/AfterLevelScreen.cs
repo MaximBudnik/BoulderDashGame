@@ -39,7 +39,7 @@ namespace ClassLibrary.ConsoleInterface {
                 LogCentered($"{key.Key}...x{key.Value[0]}...{key.Value[1]}\n");
             }
             SkipLine(2);
-            LogCentered("Press Enter to play next level or press any key to return in menu...");
+            LogCentered("Press any key to return in menu...");
             ChangeForegroundColor(primaryTextColor);
         }
     }

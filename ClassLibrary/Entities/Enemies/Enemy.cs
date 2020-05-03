@@ -12,24 +12,20 @@ namespace ClassLibrary.Entities.Enemies {
             int i,
             int j,
             Func<Level> getLevel,
-            Action drawLevel,
-            Action updatePlayerInterface,
             Func<int> getPlayerPosX,
             Func<int> getPlayerPosY,
             Action<int> changePlayerHp
-        ) : base(getLevel, drawLevel, updatePlayerInterface, i, j) {
+        ) : base(getLevel, i, j) {
             GetPlayerPosX = getPlayerPosX;
             GetPlayerPosY = getPlayerPosY;
             ChangePlayerHp = changePlayerHp;
         }
         protected Enemy(
             Func<Level> getLevel,
-            Action drawLevel,
-            Action updatePlayerInterface,
             Func<int> getPlayerPosX,
             Func<int> getPlayerPosY,
             Action<int> changePlayerHp
-        ) : base(getLevel, drawLevel, updatePlayerInterface) {
+        ) : base(getLevel) {
             GetPlayerPosX = getPlayerPosX;
             GetPlayerPosY = getPlayerPosY;
             ChangePlayerHp = changePlayerHp;
@@ -47,8 +43,6 @@ namespace ClassLibrary.Entities.Enemies {
 
         protected void DealDamage() {
             ChangePlayerHp(Damage);
-            UpdatePlayerInterface();
         }
-        
     }
 }

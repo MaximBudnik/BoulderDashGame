@@ -22,7 +22,6 @@ namespace ClassLibrary.Entities {
 
         private readonly int _diamondsTowWin;
 
-        private readonly Action _updateUpperInterface;
         private readonly Action<int, int, string, int> _pushRock;
         private readonly Action _win;
         private readonly Action _lose;
@@ -32,16 +31,12 @@ namespace ClassLibrary.Entities {
             int j,
             string name,
             Func<Level> getLevel,
-            Action drawLevel,
-            Action updateUpperInterface,
-            Action updatePlayerInterface,
             Action<int, int, string, int> pushRock,
             Action win,
             Action lose,
             int diamondsTowWin)
-            : base(getLevel, drawLevel,updatePlayerInterface, i, j ) {
+            : base(getLevel, i, j) {
             Name = name;
-            _updateUpperInterface = updateUpperInterface;
             _pushRock = pushRock;
             _win = win;
             _lose = lose;
@@ -125,18 +120,16 @@ namespace ClassLibrary.Entities {
                     }
                 }
                 level[PositionX, PositionY] = this;
-                DrawLevel();
             }
         }
 
         public void HpInEnergy() {
             Hp--;
             Energy = MaxEnergy;
-            UpdatePlayerInterface();
         }
 
         public void Teleport() {
-            if (Energy == MaxEnergy) {
+            if (Energy >= MaxEnergy) {
                 var level = GetLevel();
                 Energy = 0;
                 var posX = Randomizer.Random(level.Width);
@@ -145,7 +138,6 @@ namespace ClassLibrary.Entities {
                 PositionX = posX;
                 PositionY = posY;
                 level[PositionX, PositionY] = this;
-                DrawLevel();
             }
         }
 
@@ -155,7 +147,6 @@ namespace ClassLibrary.Entities {
             AllScores["Collected diamonds"][0] += 1;
             AllScores["Collected diamonds"][1] += value * ScoreMultiplier;
             Score += value * ScoreMultiplier;
-            _updateUpperInterface();
         }
 
         private void CollectLuckyBox() {
@@ -164,7 +155,6 @@ namespace ClassLibrary.Entities {
             AllScores["Collected lucky boxes"][0] += 1;
             AllScores["Collected lucky boxes"][1] += tmp;
             Score += tmp;
-            _updateUpperInterface();
         }
 
         private void CheckLose() {
@@ -180,9 +170,8 @@ namespace ClassLibrary.Entities {
         private int _frameCounter;
         private void RestoreEnergy() {
             _frameCounter++;
-            if (Energy < MaxEnergy && _frameCounter >= 5) {
+            if (Energy < MaxEnergy && _frameCounter >= 2) {
                 Energy += EnergyRestoreTick;
-                UpdatePlayerInterface();
                 _frameCounter = 0;
             }
         }

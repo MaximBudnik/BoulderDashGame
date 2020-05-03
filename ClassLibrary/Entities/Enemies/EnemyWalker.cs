@@ -11,12 +11,11 @@ namespace ClassLibrary.Entities.Enemies {
         }
 
         public EnemyWalker(int i, int j,
-            Func<Level> getLevel, Action drawLevel,
+            Func<Level> getLevel,
             Func<int> getPlayerPosX, Func<int> getPlayerPosY,
-            Action updatePlayerInterface,
             Action<int> changePlayerHp
         )
-            : base(i, j, getLevel, drawLevel, updatePlayerInterface, getPlayerPosX, getPlayerPosY, changePlayerHp) {
+            : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
             EntityType = 6;
             Damage = 5;
         }
@@ -57,7 +56,6 @@ namespace ClassLibrary.Entities.Enemies {
                     Move("horizontal", -1, PositionX, PositionY);
                     break;
             }
-            DrawLevel();
         }
     }
 }

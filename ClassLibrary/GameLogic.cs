@@ -1,109 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using ClassLibrary.ConsoleInterface;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary {
     public class GameLogic {
-        private GameInterface _gameInterface;
         private RockProcessor _rockProcessor;
-        private AfterLevelScreen _afterLevelScreen;
-        private Level _currentLevel;
-        public Player Player;
-        private int _frameCounter;
-        private int _endScreen;
-        public List<EnemyWalker> LevelEnemyWalkers;
-        public save CurrentSave = null;
+        public Level CurrentLevel { get; private set; }
+        public Player Player { get; private set; }
+        private int _gameTickCounter;
+        private List<EnemyWalker> _levelEnemyWalkers;
+        public Save CurrentSave = null;
 
+        private Action<int> _changeGameStatus;
+        private Func<DataInterlayer> _getDataLayer;
+        
         private void SubstractPlayerHp(int value) {
             Player.Hp -= value;
         }
 
-        public void CreateLevel(int levelName, string playerName) {
-            _endScreen = 0;
-            _frameCounter = 0;
-            _gameInterface = new GameInterface();
-            _rockProcessor = new RockProcessor(() => _currentLevel, DrawLevel, () => Player.PositionX,
-                () => Player.PositionY, UpdatePlayerInterface, SubstractPlayerHp);
-            _afterLevelScreen = new AfterLevelScreen();
-            LevelEnemyWalkers = new List<EnemyWalker>();
-            _currentLevel = new Level(
+        private void setPlayer(Player pl) {
+            Player = pl;
+        }
+
+        public void CreateLevel(int levelName, string playerName, Action<int> changeGameStatus, Func<DataInterlayer> getDataLayer) {
+            _changeGameStatus = changeGameStatus;
+            _getDataLayer = getDataLayer;
+            _gameTickCounter = 0;
+            _rockProcessor = new RockProcessor(() => CurrentLevel, () => Player.PositionX,
+                () => Player.PositionY, SubstractPlayerHp);
+            _levelEnemyWalkers = new List<EnemyWalker>();
+            CurrentLevel = new Level(
                 levelName, playerName,
-                () => _currentLevel,
-                DrawLevel,
-                UpdateUpperInterface,
-                UpdatePlayerInterface,
+                () => CurrentLevel,
                 (i, j, direction, value) => _rockProcessor.PushRock(i, j, direction, value),
                 Win,
                 Lose,
                 () => Player.PositionX,
                 () => Player.PositionY,
-                SubstractPlayerHp
+                SubstractPlayerHp, 
+                _levelEnemyWalkers,
+                setPlayer
             );
         }
 
-        private void DrawLevel() {
-            _gameInterface.NewDraw(() => _currentLevel);
-        }
-
-        private void UpdatePlayerInterface() {
-            _gameInterface.DrawPlayerInterface(_currentLevel.DiamondsQuantity, Player.CollectedDiamonds,
-                Player.MaxEnergy, Player.Energy, Player.MaxHp, Player.Hp, Player.Name);
-        }
-        private void UpdateUpperInterface() {
-            _gameInterface.DrawUpperInterface(_currentLevel.LevelName, Player.Score, _currentLevel.Aim);
-        }
-
         public void GameLoop() {
-            if (_endScreen == 0) {
-                if (_frameCounter == 0) {
-                    UpdateUpperInterface();
-                    UpdatePlayerInterface();
-                    DrawLevel();
-                }
-
-                Player.GameLoopAction();
-                if (_frameCounter % 10 == 0) //processing enemies
-                    for (var i = 0; i < LevelEnemyWalkers.Count; i++)
-                        LevelEnemyWalkers[i].GameLoopAction();
-
-                _rockProcessor.ProcessRock();
-                if (_frameCounter == 100) _frameCounter = 0;
-                _frameCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
-            }
-            else if (_endScreen == 1) {
-                _afterLevelScreen.DrawGameLose();
-            }
-            else if (_endScreen == 2) {
-                _afterLevelScreen.DrawGameWin(Player.Score, Player.AllScores);
-            }
+            Player.GameLoopAction();
+            foreach (var enemy in _levelEnemyWalkers)
+                enemy.GameLoopAction();
+            _rockProcessor.ProcessRock();
+            if (_gameTickCounter == 100) _gameTickCounter = 0;
+            _gameTickCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
         }
 
         private void Win() {
-            _endScreen = 2;
-            _afterLevelScreen.DrawGameWin(Player.Score, Player.AllScores);
-            GameEngine.DataInterlayer.ChangeGameSave(CurrentSave, _currentLevel.LevelName, Player.Score);
-            Thread.Sleep(3000);
-            var key = Console.ReadKey();
-
-            if (key.Key == ConsoleKey.Enter)
-                GameEngine.ResumeGame(CurrentSave);
-            else
-                GameEngine.ChangeIsGame();
+            _changeGameStatus(2);
+            Thread.Sleep(1000);
+            DataInterlayer dataInterlayer = _getDataLayer();
+            dataInterlayer.ChangeGameSave(CurrentSave, CurrentLevel.LevelName, Player.Score);
+            _changeGameStatus(0);
+            Console.ReadLine();
         }
 
         private void Lose() {
-            _endScreen = 1;
-            GameEngine.DataInterlayer.addBestScore(Player.Name, Player.Score);
-            GameEngine.DataInterlayer.DeleteGameSave(CurrentSave.id);
-            GameEngine.DataInterlayer.GetGameSaves();
-            _afterLevelScreen.DrawGameLose();
-            GameEngine.ChangeIsGame();
-            Thread.Sleep(3000);
-            Console.ReadKey();
+            _changeGameStatus(3);
+            Thread.Sleep(1000);
+            DataInterlayer dataInterlayer = _getDataLayer();
+            dataInterlayer.AddBestScore(Player.Name, Player.Score);
+            dataInterlayer.DeleteGameSave(CurrentSave.Id);
+            _changeGameStatus(0);
+            Console.ReadLine();
         }
     }
 }

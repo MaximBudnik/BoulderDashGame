@@ -75,7 +75,7 @@ namespace ClassLibrary.ConsoleInterface {
             Console.WriteLine(" Press any key to continue...");
         }
 
-        public void DrawSaves(List<save> saves) {
+        public void DrawSaves(List<Save> saves) {
             Console.Clear();
             ChangeForegroundColor(ConsoleColor.DarkBlue);
             SkipLine();
@@ -86,7 +86,7 @@ namespace ClassLibrary.ConsoleInterface {
             DrawLine();
             foreach (var save in saves) {
                 Console.WriteLine();
-                Console.Write($" {save.id}. Player name: {save.name} Level: {save.levelName} Score: {save.score} \n");
+                Console.Write($" {save.Id}. Player name: {save.Name} Level: {save.LevelName} Score: {save.Score} \n");
                 Console.WriteLine();
                 DrawLine();
             }

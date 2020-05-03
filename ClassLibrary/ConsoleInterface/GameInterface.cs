@@ -47,7 +47,7 @@ namespace ClassLibrary.ConsoleInterface {
             }
         }
         private void DrawSprite(int item) {
-            switch (_currLevel.levelType) {
+            switch (_currLevel.LevelType) {
                 case "default":
                     DrawSpriteDefault(item);
                     break;

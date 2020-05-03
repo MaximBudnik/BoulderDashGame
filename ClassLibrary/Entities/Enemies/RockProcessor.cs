@@ -4,21 +4,20 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
     public class RockProcessor : Enemy {
-        public RockProcessor(Func<Level> getLevel, Action drawLevel,
+        public RockProcessor(Func<Level> getLevel,
             Func<int> getPlayerPosX, Func<int> getPlayerPosY,
-            Action updatePlayerInterface,
             Action<int> changePlayerHp
-        ) : base(getLevel, drawLevel, updatePlayerInterface, getPlayerPosX, getPlayerPosY, changePlayerHp) {
+        ) : base(getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
             EntityType = 3;
             Damage = 3;
         }
 
-        private readonly List<int[]> _fallling = new List<int[]>();
+        private readonly List<int[]> _falling = new List<int[]>();
 
         public void ProcessRock() {
             var currentLevel = GetLevel();
             var fallenRocks = new List<int[]>();
-            _fallling.Clear();
+            _falling.Clear();
             for (var i = currentLevel.Width - 1; i >= 0; i--)
             for (var j = 0; j < currentLevel.Height; j++) {
                 int[] currentArray = {i, j};
@@ -32,10 +31,9 @@ namespace ClassLibrary.Entities.Enemies {
                     int[] current = {i - 1, j};
                     fallenRocks.Add(current);
                     currentArray[0] += 1;
-                    _fallling.Add(currentArray);
+                    _falling.Add(currentArray);
                 }
             }
-            DrawLevel();
             RockDamage();
         }
         public void PushRock(int posX, int posY, string direction, int value) {
@@ -46,7 +44,7 @@ namespace ClassLibrary.Entities.Enemies {
         }
 
         private void RockDamage() {
-            foreach (var stone in _fallling) {
+            foreach (var stone in _falling) {
                 var i = stone[0];
                 var j = stone[1];
                 if (i + 1 == GetLevel().Width) //not to overflow matrix
