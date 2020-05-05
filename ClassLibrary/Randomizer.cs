@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace ClassLibrary {
-    public class Randomizer {
+    public static class Randomizer {
         private static readonly Random Rand = new Random();
 
         public static int GetRandomFromList(List<int> list) {

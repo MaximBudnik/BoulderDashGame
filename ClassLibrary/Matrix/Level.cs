@@ -4,10 +4,11 @@ using ClassLibrary.Entities;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Enemies;
+using ClassLibrary.Entities.Expanding;
 
 namespace ClassLibrary.Matrix {
     public class Level : Matrix {
-        public int DiamondsQuantity { get; } = 3; //TODO: change
+        public int DiamondsQuantity { get; } = 10; //TODO: change
         public int LevelName { get; }
         public string Aim { get; } = "Collect diamonds";
 
@@ -31,6 +32,7 @@ namespace ClassLibrary.Matrix {
             Func<int> getPlayerPositionY,
             Action<int> substractPlayerHp,
             List<EnemyWalker> enemyWalkersList,
+            List<StoneInDiamondConverter> stoneInDiamondsConverter,
             Action<Player> setPlayer
         ) {
             //TODO: now choose the size of the level from starting game/random
@@ -47,6 +49,7 @@ namespace ClassLibrary.Matrix {
                 getPlayerPositionX, getPlayerPositionY,
                 substractPlayerHp,
                 enemyWalkersList,
+                stoneInDiamondsConverter,
                 setPlayer
             );
         }
@@ -57,6 +60,7 @@ namespace ClassLibrary.Matrix {
             Func<int> getPlayerPositionX, Func<int> getPlayerPositionY,
             Action<int> substractPlayerHp,
             List<EnemyWalker> enemyWalkersList,
+            List<StoneInDiamondConverter> stoneInDiamondsConverter,
             Action<Player> setPlayer
         ) {
             //in general generation depends on:
@@ -224,7 +228,7 @@ namespace ClassLibrary.Matrix {
                 }
 
             var player = new Player(startPosX, startPosY, playerName,
-                getLevel, pushRock, win, lose, DiamondsQuantity);
+                getLevel, pushRock, win, lose, DiamondsQuantity, ()=>stoneInDiamondsConverter);
             matrix[startPosX, startPosY] = player;
             setPlayer(player);
         }

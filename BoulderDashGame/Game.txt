@@ -8,11 +8,12 @@
 7 - lucky box; - can move
 8 - sandTranslucent; - can move
 9 - wood;  - cant move
+10 -stoneInDiamondConverter - cant move;
 
 
 
 
-101 - dedicated_emty_space - only for generating;
+101 - dedicated_empty_space - only for generating;
 
 
                

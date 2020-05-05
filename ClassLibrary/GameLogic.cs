@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using ClassLibrary.DataLayer;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Enemies;
+using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary {
@@ -13,6 +15,7 @@ namespace ClassLibrary {
         public Player Player { get; private set; }
         private int _gameTickCounter;
         private List<EnemyWalker> _levelEnemyWalkers;
+        private List<StoneInDiamondConverter> _stonesInDiamondsConverters;
         public Save CurrentSave = null;
 
         private Action<int> _changeGameStatus;
@@ -22,7 +25,7 @@ namespace ClassLibrary {
             Player.Hp -= value;
         }
 
-        private void setPlayer(Player pl) {
+        private void SetPlayer(Player pl) {
             Player = pl;
         }
 
@@ -33,6 +36,7 @@ namespace ClassLibrary {
             _rockProcessor = new RockProcessor(() => CurrentLevel, () => Player.PositionX,
                 () => Player.PositionY, SubstractPlayerHp);
             _levelEnemyWalkers = new List<EnemyWalker>();
+            _stonesInDiamondsConverters = new List<StoneInDiamondConverter>();
             CurrentLevel = new Level(
                 levelName, playerName,
                 () => CurrentLevel,
@@ -43,7 +47,8 @@ namespace ClassLibrary {
                 () => Player.PositionY,
                 SubstractPlayerHp, 
                 _levelEnemyWalkers,
-                setPlayer
+                _stonesInDiamondsConverters,
+                SetPlayer
             );
         }
 
@@ -51,6 +56,9 @@ namespace ClassLibrary {
             Player.GameLoopAction();
             foreach (var enemy in _levelEnemyWalkers)
                 enemy.GameLoopAction();
+            foreach (var converter in _stonesInDiamondsConverters.ToList()) {
+                converter.GameLoopAction();
+            }
             _rockProcessor.ProcessRock();
             if (_gameTickCounter == 100) _gameTickCounter = 0;
             _gameTickCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 

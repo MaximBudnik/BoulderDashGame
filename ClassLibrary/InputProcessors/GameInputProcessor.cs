@@ -29,6 +29,9 @@ namespace ClassLibrary.
                 case ConsoleKey.Spacebar:
                     player.HpInEnergy();
                     break;
+                case ConsoleKey.Q:
+                    player.ConvertNearStonesInDiamonds();
+                    break;
                 case ConsoleKey.Escape:
                     changeGameStatus(0);
                     break;

@@ -15,6 +15,7 @@ namespace ClassLibrary.ConsoleInterface {
             {7, "?"},
             {8, "·"},
             {9, "/"},
+            {10, "0"},
             {203, "•"}
         };
 
@@ -91,6 +92,9 @@ namespace ClassLibrary.ConsoleInterface {
                 case 9:
                     WriteColorBack(_sprites[9], ConsoleColor.Gray, ConsoleColor.DarkGray);
                     break;
+                case 10:
+                    WriteColorBack(_sprites[10], ConsoleColor.Cyan, ConsoleColor.Magenta);
+                    break;
             }
         }
 
@@ -126,6 +130,9 @@ namespace ClassLibrary.ConsoleInterface {
                 case 9:
                     WriteColorBack(_sprites[9], ConsoleColor.DarkRed, ConsoleColor.Yellow);
                     break;
+                case 10:
+                    WriteColorBack(_sprites[10], ConsoleColor.White,ConsoleColor.Magenta);
+                    break;
             }
         }
 
@@ -160,6 +167,9 @@ namespace ClassLibrary.ConsoleInterface {
                     break;
                 case 9:
                     WriteColorBack(_sprites[9], ConsoleColor.DarkCyan, ConsoleColor.Cyan);
+                    break;
+                case 10:
+                    WriteColorBack(_sprites[10], ConsoleColor.Red, ConsoleColor.Magenta);
                     break;
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
+using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities {
@@ -25,6 +26,7 @@ namespace ClassLibrary.Entities {
         private readonly Action<int, int, string, int> _pushRock;
         private readonly Action _win;
         private readonly Action _lose;
+        private readonly  Func<List<StoneInDiamondConverter>> stoneInDiamondsConvertersList;
 
         public Player(
             int i,
@@ -34,7 +36,9 @@ namespace ClassLibrary.Entities {
             Action<int, int, string, int> pushRock,
             Action win,
             Action lose,
-            int diamondsTowWin)
+            int diamondsTowWin,
+            Func<List<StoneInDiamondConverter>> stoneInDiamondsConverter
+        )
             : base(getLevel, i, j) {
             Name = name;
             _pushRock = pushRock;
@@ -48,6 +52,7 @@ namespace ClassLibrary.Entities {
                 {"Diamonds from lucky box", new[] {0, 0}},
                 {"Score from lucky box", new[] {0, 0}}
             };
+            stoneInDiamondsConvertersList = stoneInDiamondsConverter;
         }
 
         public new void GameLoopAction() {
@@ -128,16 +133,45 @@ namespace ClassLibrary.Entities {
         }
 
         public void Teleport() {
-            if (Energy >= MaxEnergy) {
-                var level = GetLevel();
-                Energy = 0;
-                var posX = Randomizer.Random(level.Width);
-                var posY = Randomizer.Random(level.Height);
-                level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
-                PositionX = posX;
-                PositionY = posY;
-                level[PositionX, PositionY] = this;
+            if (Energy < MaxEnergy) return;
+            var level = GetLevel();
+            Energy = 0;
+            var posX = Randomizer.Random(level.Width);
+            var posY = Randomizer.Random(level.Height);
+            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+            PositionX = posX;
+            PositionY = posY;
+            level[PositionX, PositionY] = this;
+        }
+
+        public void ConvertNearStonesInDiamonds() {
+            // if (Energy < MaxEnergy) return;
+            var level = GetLevel();
+            if (PositionX + 1 < level.Width && level[PositionX + 1, PositionY].EntityType == 3) {
+                var tmp = new StoneInDiamondConverter(PositionX + 1, PositionY, GetLevel,
+                    stoneInDiamondsConvertersList);
+                level[PositionX + 1, PositionY] = tmp;
+                stoneInDiamondsConvertersList().Add(tmp);
             }
+            if (PositionX - 1 >= 0 && level[PositionX - 1, PositionY].EntityType == 3) {
+                var tmp = new StoneInDiamondConverter(PositionX - 1, PositionY, GetLevel,
+                    stoneInDiamondsConvertersList);
+                level[PositionX - 1, PositionY] = tmp;
+                stoneInDiamondsConvertersList().Add(tmp);
+            }
+            if (PositionY + 1 < level.Height && level[PositionX, PositionY + 1].EntityType == 3) {
+                var tmp = new StoneInDiamondConverter(PositionX, PositionY + 1, GetLevel,
+                    stoneInDiamondsConvertersList);
+                level[PositionX, PositionY + 1] = tmp;
+                stoneInDiamondsConvertersList().Add(tmp);
+            }
+            if (PositionY - 1 >= 0 && level[PositionX, PositionY - 1].EntityType == 3) {
+                var tmp = new StoneInDiamondConverter(PositionX, PositionY - 1, GetLevel,
+                    stoneInDiamondsConvertersList);
+                level[PositionX, PositionY - 1] = tmp;
+                stoneInDiamondsConvertersList().Add(tmp);
+            }
+            // Energy = 0;
         }
 
         private void CollectDiamond() {
