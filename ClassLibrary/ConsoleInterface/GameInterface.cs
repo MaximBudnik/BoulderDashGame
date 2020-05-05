@@ -24,7 +24,6 @@ namespace ClassLibrary.ConsoleInterface {
         private int _bottomHeight = 3;
         private Level _currLevel;
         public void NewDraw(Func<Level> getLevel) {
-            //TODO: optimization
             _currLevel = getLevel();
             int origRow = _topHeight;
             for (int i = 0; i < _currLevel.Width; i++) {

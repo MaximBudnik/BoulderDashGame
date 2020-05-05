@@ -10,7 +10,9 @@ namespace ClassLibrary.Matrix {
         public int DiamondsQuantity { get; } = 3; //TODO: change
         public int LevelName { get; }
         public string Aim { get; } = "Collect diamonds";
-        public int WalkersCount { get; }
+
+        private int WalkersCount { get; set; }
+
         //fields for creating level
         public string LevelType { get; private set; } = "red";
         private List<int> _quarterPool;
@@ -54,7 +56,7 @@ namespace ClassLibrary.Matrix {
             Action win, Action lose,
             Func<int> getPlayerPositionX, Func<int> getPlayerPositionY,
             Action<int> substractPlayerHp,
-            List<EnemyWalker> EnemyWalkersList,
+            List<EnemyWalker> enemyWalkersList,
             Action<Player> setPlayer
         ) {
             //in general generation depends on:
@@ -181,6 +183,19 @@ namespace ClassLibrary.Matrix {
                         matrix[i, j] = fillOneTitle(i, j, 5);
                 }
 
+            //create enemies in random points
+            while (WalkersCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityType == 7) {
+                    var enemy = new EnemyWalker(posX, posY, getLevel, getPlayerPositionX,
+                        getPlayerPositionY, substractPlayerHp);
+                    matrix[posX, posY] = enemy;
+                    enemyWalkersList.Add(enemy);
+                    WalkersCount--;
+                }
+            }
+
             // here i fill the rest of empty space that was created be rooms 
             for (var i = 0; i < width; i++)
             for (var j = 0; j < height; j++)
@@ -208,15 +223,6 @@ namespace ClassLibrary.Matrix {
                     matrix[i, j] = fillOneTitle(i, j, 1);
                 }
 
-            //create enemies in random points
-            for (var i = 0; i < WalkersCount; i++) {
-                var posX = rand.Next(width);
-                var posY = rand.Next(height);
-                var enemy = new EnemyWalker(posX, posY, getLevel, getPlayerPositionX,
-                    getPlayerPositionY, substractPlayerHp);
-                matrix[posX, posY] = enemy;
-                EnemyWalkersList.Add(enemy);
-            }
             var player = new Player(startPosX, startPosY, playerName,
                 getLevel, pushRock, win, lose, DiamondsQuantity);
             matrix[startPosX, startPosY] = player;

@@ -28,7 +28,11 @@
           <e p="Menu.cs" t="Include" />
           <e p="UserInterface.cs" t="Include" />
         </e>
-        <e p="DataInterlayer.cs" t="Include" />
+        <e p="DataLayer" t="Include">
+          <e p="DataInterlayer.cs" t="Include" />
+          <e p="Save.cs" t="Include" />
+          <e p="Score.cs" t="Include" />
+        </e>
         <e p="Entities" t="Include">
           <e p="basic" t="Include">
             <e p="DedicatedEmptySpace.cs" t="Include" />
@@ -55,8 +59,11 @@
         </e>
         <e p="GameEngine.cs" t="Include" />
         <e p="gameFiles" t="Include">
+          <e p="BestScores.db" t="Include" />
+          <e p="Saves.db" t="Include" />
           <e p="saves.txt" t="Include" />
           <e p="scores.txt" t="Include" />
+          <e p="Settings.db" t="Include" />
         </e>
         <e p="GameLogic.cs" t="Include" />
         <e p="InputProcessors" t="Include">
@@ -67,7 +74,6 @@
         <e p="Matrix" t="Include">
           <e p="Level.cs" t="Include" />
           <e p="Matrix.cs" t="Include" />
-          <e p="NewFile1.txt" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -83,27 +89,6 @@
         </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />
-    </e>
-    <e p="D:\Projects\c#\Text\NetCoreAudio\NetCoreAudio" t="IncludeRecursive">
-      <e p="bin" t="ExcludeRecursive" />
-      <e p="Interfaces" t="Include">
-        <e p="IPlayer.cs" t="Include" />
-      </e>
-      <e p="NetCoreAudio.csproj" t="IncludeRecursive" />
-      <e p="obj" t="ExcludeRecursive">
-        <e p="Debug" t="Include">
-          <e p="netstandard2.0" t="Include">
-            <e p="NetCoreAudio.AssemblyInfo.cs" t="Include" />
-          </e>
-        </e>
-      </e>
-      <e p="Player.cs" t="Include" />
-      <e p="Players" t="Include">
-        <e p="LinuxPlayer.cs" t="Include" />
-        <e p="MacPlayer.cs" t="Include" />
-        <e p="UnixPlayerBase.cs" t="Include" />
-        <e p="WindowsPlayer.cs" t="Include" />
-      </e>
     </e>
   </component>
 </project>

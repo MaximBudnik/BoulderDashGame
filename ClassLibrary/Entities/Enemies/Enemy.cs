@@ -6,7 +6,7 @@ namespace ClassLibrary.Entities.Enemies {
         protected int Damage;
         protected readonly Func<int> GetPlayerPosX;
         protected readonly Func<int> GetPlayerPosY;
-        protected readonly Action<int> ChangePlayerHp;
+        private readonly Action<int> _changePlayerHp;
 
         protected Enemy(
             int i,
@@ -18,7 +18,8 @@ namespace ClassLibrary.Entities.Enemies {
         ) : base(getLevel, i, j) {
             GetPlayerPosX = getPlayerPosX;
             GetPlayerPosY = getPlayerPosY;
-            ChangePlayerHp = changePlayerHp;
+            _changePlayerHp = changePlayerHp;
+            CanMove = false;
         }
         protected Enemy(
             Func<Level> getLevel,
@@ -28,7 +29,8 @@ namespace ClassLibrary.Entities.Enemies {
         ) : base(getLevel) {
             GetPlayerPosX = getPlayerPosX;
             GetPlayerPosY = getPlayerPosY;
-            ChangePlayerHp = changePlayerHp;
+            _changePlayerHp = changePlayerHp;
+            CanMove = false;
         }
 
         protected void EnemyDefaultDamage() {
@@ -42,7 +44,7 @@ namespace ClassLibrary.Entities.Enemies {
         }
 
         protected void DealDamage() {
-            ChangePlayerHp(Damage);
+            _changePlayerHp(Damage);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using ClassLibrary.DataLayer;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Matrix;
@@ -59,7 +60,10 @@ namespace ClassLibrary {
             _changeGameStatus(2);
             Thread.Sleep(1000);
             DataInterlayer dataInterlayer = _getDataLayer();
-            dataInterlayer.ChangeGameSave(CurrentSave, CurrentLevel.LevelName, Player.Score);
+            CurrentSave.LevelName = CurrentLevel.LevelName;
+            CurrentSave.Score = Player.Score;
+            CurrentSave.LevelName += 1;
+            dataInterlayer.ChangeGameSave(CurrentSave);
             _changeGameStatus(0);
             Console.ReadLine();
         }
@@ -69,7 +73,7 @@ namespace ClassLibrary {
             Thread.Sleep(1000);
             DataInterlayer dataInterlayer = _getDataLayer();
             dataInterlayer.AddBestScore(Player.Name, Player.Score);
-            dataInterlayer.DeleteGameSave(CurrentSave.Id);
+            dataInterlayer.DeleteGameSave(CurrentSave);
             _changeGameStatus(0);
             Console.ReadLine();
         }

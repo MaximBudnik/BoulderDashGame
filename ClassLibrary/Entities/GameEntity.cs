@@ -6,13 +6,14 @@ namespace ClassLibrary.Entities {
         public int EntityType { get; protected set; }
         public int PositionX;
         public int PositionY;
+        public bool CanMove = true;
 
-        public GameEntity(int i,int j) {
+        protected GameEntity(int i,int j) {
             PositionX = i;
             PositionY = j;
         }
-        
-        public GameEntity() {
+
+        protected GameEntity() {
         }
        
         public void GameLoopAction() {

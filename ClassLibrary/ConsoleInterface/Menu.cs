@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClassLibrary.DataLayer;
 
 namespace ClassLibrary.ConsoleInterface {
     public class Menu : UserInterface {
@@ -84,14 +85,16 @@ namespace ClassLibrary.ConsoleInterface {
             SkipLine();
             ChangeForegroundColor(ConsoleColor.Blue);
             DrawLine();
+            int i = 1;
             foreach (var save in saves) {
                 Console.WriteLine();
-                Console.Write($" {save.Id}. Player name: {save.Name} Level: {save.LevelName} Score: {save.Score} \n");
+                Console.Write($" {i}. Player name: {save.Name} Level: {save.LevelName} Score: {save.Score} \n");
                 Console.WriteLine();
                 DrawLine();
+                i++;
             }
             Console.WriteLine("\n");
-            Console.Write(" Enter id of save:");
+            Console.Write(" Enter name of player:");
             ChangeForegroundColor(ConsoleColor.Red);
         }
 

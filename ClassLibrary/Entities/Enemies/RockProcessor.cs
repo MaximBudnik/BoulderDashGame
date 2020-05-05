@@ -10,6 +10,7 @@ namespace ClassLibrary.Entities.Enemies {
         ) : base(getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
             EntityType = 3;
             Damage = 3;
+            CanMove = false;
         }
 
         private readonly List<int[]> _falling = new List<int[]>();

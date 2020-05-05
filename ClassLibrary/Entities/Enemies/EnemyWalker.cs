@@ -27,16 +27,14 @@ namespace ClassLibrary.Entities.Enemies {
             var moves = new List<string>();
 
             if (playerPosX < PositionX && PositionX - 1 < level.Width &&
-                level[PositionX - 1, PositionY].EntityType != 3 && level[PositionX - 1, PositionY].EntityType != 5)
+                level[PositionX - 1, PositionY].CanMove)
                 moves.Add("up");
-            if (playerPosX > PositionX && PositionX + 1 >= 0 && level[PositionX + 1, PositionY].EntityType != 3 &&
-                level[PositionX + 1, PositionY].EntityType != 5)
+            if (playerPosX > PositionX && PositionX + 1 >= 0 && level[PositionX + 1, PositionY].CanMove)
                 moves.Add("down");
             if (playerPosY > PositionY && PositionY + 1 < level.Height &&
-                level[PositionX, PositionY + 1].EntityType != 3 && level[PositionX, PositionY + 1].EntityType != 5)
+                level[PositionX, PositionY + 1].CanMove)
                 moves.Add("right");
-            if (playerPosY < PositionY && PositionY - 1 >= 0 && level[PositionX, PositionY - 1].EntityType != 3 &&
-                level[PositionX, PositionY - 1].EntityType != 5)
+            if (playerPosY < PositionY && PositionY - 1 >= 0 && level[PositionX, PositionY - 1].CanMove)
                 moves.Add("left");
             moves.Add("hold");
             string action = Randomizer.GetRandomFromList(moves);

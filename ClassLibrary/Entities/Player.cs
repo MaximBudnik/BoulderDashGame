@@ -75,8 +75,7 @@ namespace ClassLibrary.Entities {
                                              ||
                                              PositionY == level.Height || PositionY == -1
                                              ||
-                                             level[PositionX, PositionY].EntityType == 5 ||
-                                             level[PositionX, PositionY].EntityType == 3
+                                             level[PositionX, PositionY].CanMove == false
                 )
                     return true;
                 return false;

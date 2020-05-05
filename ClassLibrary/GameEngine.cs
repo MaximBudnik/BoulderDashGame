@@ -2,26 +2,27 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.ConsoleInterface;
+using ClassLibrary.DataLayer;
 using ClassLibrary.InputProcessors;
 
 namespace ClassLibrary {
-    public static class GameEngine {
+    public class GameEngine {
         private const int
-            GameLogicTickRate = 1; //TODO: carry it out in settings. Actually it must be much lover than 30!!!
+            GameLogicTickRate = 1; //TODO: carry it out in settings.
 
-        private static int _gameStatus; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
+        private int _gameStatus; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
 
-        private static int _currentMenuAction;
-        private static readonly int MenuItems = 6;
+        private int _currentMenuAction;
+        private readonly int MenuItems = 6;
 
-        public static void ChangeGameStatus(int i) {
+        private void ChangeGameStatus(int i) {
             if (i >= 0 && i < 4)
                 _gameStatus = i;
             else
                 throw new Exception("Unknown game status");
         }
 
-        private static void ChangeCurrentMenuAction(int i) {
+        private void ChangeCurrentMenuAction(int i) {
             if (_currentMenuAction < MenuItems && _currentMenuAction >= 0) {
                 _currentMenuAction += i;
                 if (_currentMenuAction == MenuItems)
@@ -30,109 +31,55 @@ namespace ClassLibrary {
             }
         }
 
-        private static readonly Menu Menu = new Menu();
-        private static readonly GameLogic GameLogic = new GameLogic();
-        private static readonly DataInterlayer DataInterlayer = new DataInterlayer();
-        private static readonly MenuInputProcessor MenuInputProcessor = new MenuInputProcessor();
-        private static readonly GameInterface GameInterface = new GameInterface();
-        private static readonly AfterLevelScreen AfterLevelScreen = new AfterLevelScreen();
-        private static readonly GameInputProcessor GameInputProcessor = new GameInputProcessor();
+        private readonly Menu _menu = new Menu();
+        private readonly GameLogic _gameLogic = new GameLogic();
+        private readonly DataInterlayer _dataInterlayer = new DataInterlayer();
+        private readonly MenuInputProcessor _menuInputProcessor = new MenuInputProcessor();
+        private readonly GameInterface _gameInterface = new GameInterface();
+        private readonly AfterLevelScreen _afterLevelScreen = new AfterLevelScreen();
+        private readonly GameInputProcessor _gameInputProcessor = new GameInputProcessor();
 
-        private static void GraphicsThread() {
-            var currentLevel = GameLogic.CurrentLevel;
-            var player = GameLogic.Player;
+        private void GraphicsThread() {
+            var currentLevel = _gameLogic.CurrentLevel;
+            var player = _gameLogic.Player;
             while (_gameStatus == 1) {
-                GameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
-                GameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantity, player.CollectedDiamonds,
+                _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
+                _gameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantity, player.CollectedDiamonds,
                     player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name);
-                GameInterface.NewDraw(() => currentLevel);
+                _gameInterface.NewDraw(() => currentLevel);
             }
-            if (_gameStatus == 2) AfterLevelScreen.DrawGameWin(player.Score, player.AllScores);
-            else if (_gameStatus == 3) AfterLevelScreen.DrawGameLose();
+            if (_gameStatus == 2) _afterLevelScreen.DrawGameWin(player.Score, player.AllScores);
+            else if (_gameStatus == 3) _afterLevelScreen.DrawGameLose();
         }
 
-        private static void GameLogicThread() {
+        private void GameLogicThread() {
             while (_gameStatus == 1) {
                 Console.CursorVisible = false;
                 Thread.Sleep(1000 / GameLogicTickRate);
-                GameLogic.GameLoop();
+                _gameLogic.GameLoop();
             }
         }
 
-        private static void InputThread() {
+        private void InputThread() {
             while (_gameStatus == 1) {
                 var c = Console.ReadKey(true);
-                GameInputProcessor.ProcessInput(c.Key, () => GameLogic.Player, ChangeGameStatus);
+                _gameInputProcessor.ProcessInput(c.Key, () => _gameLogic.Player, ChangeGameStatus);
             }
         }
 
-        public static void Start() {
-            // SoundPlayer soundPlayer = new SoundPlayer(); //TODO: dont forget to enable music on build!
-            // soundPlayer.playMusic();
-            Menu.DrawMenu(_currentMenuAction);
+        public void Start() {
+            Task musicPlayer = new Task(() => {
+                SoundPlayer soundPlayer = new SoundPlayer();
+                soundPlayer.playMusic();
+            });
+            // musicPlayer.Start(); //TODO: dont forget to enable music on build!
+
+            _menu.DrawMenu(_currentMenuAction);
             MenuGameCycle();
 
             void MenuGameCycle() {
-                Menu.DrawMenu(_currentMenuAction);
-                while (_gameStatus == 0) {
-                    var c = Console.ReadKey(true);
-                    MenuInputProcessor.ProcessInput(
-                        c.Key,
-                        () => { Environment.Exit(0); },
-                        ChangeGameStatus,
-                        i => {
-                            ChangeCurrentMenuAction(i);
-                            Menu.DrawMenu(_currentMenuAction);
-                        },
-                        () => _currentMenuAction,
-                        () => {
-                            Menu.DrawNewGame();
-                            var name = Console.ReadLine();
-                            DataInterlayer.AddGameSave(name);
-                            DataInterlayer.GetGameSaves();
-                            var currentSave = DataInterlayer.Saves[^1];
-                            GameLogic.CreateLevel(currentSave.LevelName, currentSave.Name, ChangeGameStatus,
-                                () => DataInterlayer);
-                            GameLogic.CurrentSave = currentSave;
-                        },
-                        () => {
-                            Menu.DrawHelp();
-                            Console.ReadKey();
-                            Menu.DrawMenu(
-                                4); //3 is "Help" index in _menuActions, so new  menu will be with this element current
-                        },
-                        () => {
-                            Menu.DrawSettings();
-                            Console.ReadKey();
-                            Menu.DrawMenu(
-                                2); //2 is "Settings" index in _menuActions, so new  menu will be with this element current
-                        },
-                        () => {
-                            var results = DataInterlayer.GetBestScores();
-                            Menu.DrawScores(results);
-                            try {
-                                Console.ReadKey();
-                                Menu.DrawMenu(
-                                    3); //2 is "Settings" index in _menuActions, so new  menu will be with this element current
-                            }
-                            catch (Exception e) {
-                                Console.WriteLine("Unable to read file with best scores");
-                                Console.WriteLine(e.Message);
-                            }
-                        },
-                        () => {
-                            DataInterlayer.GetGameSaves();
-                            var saves = DataInterlayer.Saves;
-                            Menu.DrawSaves(saves);
-                            var id = Console.ReadLine();
-                            foreach (var save in saves)
-                                if (save.Id == int.Parse(id ?? throw new Exception("Id not found"))) {
-                                    ResumeGame(save);
-                                    ChangeGameStatus(1);
-                                }
-                        }
-                    );
-                }
+                _menu.DrawMenu(_currentMenuAction);
+                while (_gameStatus == 0) CreateMenu();
                 if (_gameStatus == 1) {
                     Console.Clear();
                     Parallel.Invoke(GraphicsThread, GameLogicThread, InputThread);
@@ -140,10 +87,68 @@ namespace ClassLibrary {
                 MenuGameCycle();
             }
         }
-        private static void ResumeGame(Save save) {
-            GameLogic.CreateLevel(save.LevelName, save.Name, ChangeGameStatus, () => DataInterlayer);
-            GameLogic.Player.Score = save.Score;
-            GameLogic.CurrentSave = save;
+
+        private void CreateMenu() {
+            var c = Console.ReadKey(true);
+            _menuInputProcessor.ProcessInput(
+                c.Key,
+                () => { Environment.Exit(0); },
+                ChangeGameStatus,
+                i => {
+                    ChangeCurrentMenuAction(i);
+                    _menu.DrawMenu(_currentMenuAction);
+                },
+                () => _currentMenuAction,
+                () => {
+                    _menu.DrawNewGame();
+                    var name = Console.ReadLine();
+                    _dataInterlayer.AddGameSave(name);
+                    var currentSave = _dataInterlayer.GetGameSaveByName(name);
+                    _gameLogic.CreateLevel(currentSave.LevelName, currentSave.Name, ChangeGameStatus,
+                        () => _dataInterlayer);
+                    _gameLogic.CurrentSave = currentSave;
+                },
+                () => {
+                    _menu.DrawHelp();
+                    Console.ReadKey();
+                    _menu.DrawMenu(
+                        4); //3 is "Help" index in _menuActions, so new  menu will be with this element current
+                },
+                () => {
+                    _menu.DrawSettings();
+                    Console.ReadKey();
+                    _menu.DrawMenu(
+                        2); //2 is "Settings" index in _menuActions, so new  menu will be with this element current
+                },
+                () => {
+                    var results = _dataInterlayer.GetBestScores();
+                    _menu.DrawScores(results);
+                    try {
+                        Console.ReadKey();
+                        _menu.DrawMenu(
+                            3); //2 is "Settings" index in _menuActions, so new  menu will be with this element current
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine("Unable to read file with best scores");
+                        Console.WriteLine(e.Message);
+                    }
+                },
+                () => {
+                    var saves = _dataInterlayer.GetAllGameSaves();
+                    _menu.DrawSaves(saves);
+                    var name = Console.ReadLine();
+                    foreach (var save in saves)
+                        if (save.Name == name) {
+                            ResumeGame(save);
+                            ChangeGameStatus(1);
+                        }
+                }
+            );
+        }
+        private void ResumeGame(Save save) {
+            _gameLogic.CreateLevel(save.LevelName, save.Name, ChangeGameStatus, () => _dataInterlayer);
+            _gameLogic.Player.Score = save.Score;
+            _gameLogic.CurrentSave = save;
         }
     }
 }
