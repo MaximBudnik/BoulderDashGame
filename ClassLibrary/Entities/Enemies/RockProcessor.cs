@@ -15,7 +15,12 @@ namespace ClassLibrary.Entities.Enemies {
 
         private readonly List<int[]> _falling = new List<int[]>();
 
-        public void ProcessRock() {
+        public new void GameLoopAction() {
+            ProcessRock();
+            RockDamage();
+        }
+
+        private void ProcessRock() {
             var currentLevel = GetLevel();
             var fallenRocks = new List<int[]>();
             _falling.Clear();
@@ -28,14 +33,13 @@ namespace ClassLibrary.Entities.Enemies {
                     currentLevel[i + 1, j].EntityType == 1 &&
                     !fallenRocks.Contains(currentArray)
                 ) {
-                    Move("vertical", 1, i, j);
+                    Move("horizontal", 1, i, j);
                     int[] current = {i - 1, j};
                     fallenRocks.Add(current);
                     currentArray[0] += 1;
                     _falling.Add(currentArray);
                 }
             }
-            RockDamage();
         }
         public void PushRock(int posX, int posY, string direction, int value) {
             var currentLevel = GetLevel();

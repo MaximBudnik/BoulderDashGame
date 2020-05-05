@@ -54,12 +54,12 @@ namespace ClassLibrary {
 
         public void GameLoop() {
             Player.GameLoopAction();
-            foreach (var enemy in _levelEnemyWalkers)
+            foreach (var enemy in _levelEnemyWalkers.ToList())
                 enemy.GameLoopAction();
             foreach (var converter in _stonesInDiamondsConverters.ToList()) {
                 converter.GameLoopAction();
             }
-            _rockProcessor.ProcessRock();
+            _rockProcessor.GameLoopAction();
             if (_gameTickCounter == 100) _gameTickCounter = 0;
             _gameTickCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 
         }

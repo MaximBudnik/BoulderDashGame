@@ -26,7 +26,7 @@ namespace ClassLibrary.Entities {
         private readonly Action<int, int, string, int> _pushRock;
         private readonly Action _win;
         private readonly Action _lose;
-        private readonly  Func<List<StoneInDiamondConverter>> stoneInDiamondsConvertersList;
+        private readonly  Func<List<StoneInDiamondConverter>> _getStoneInDiamondsConvertersList;
 
         public Player(
             int i,
@@ -37,7 +37,7 @@ namespace ClassLibrary.Entities {
             Action win,
             Action lose,
             int diamondsTowWin,
-            Func<List<StoneInDiamondConverter>> stoneInDiamondsConverter
+            Func<List<StoneInDiamondConverter>> getStoneInDiamondsConverter
         )
             : base(getLevel, i, j) {
             Name = name;
@@ -52,7 +52,7 @@ namespace ClassLibrary.Entities {
                 {"Diamonds from lucky box", new[] {0, 0}},
                 {"Score from lucky box", new[] {0, 0}}
             };
-            stoneInDiamondsConvertersList = stoneInDiamondsConverter;
+            _getStoneInDiamondsConvertersList = getStoneInDiamondsConverter;
         }
 
         public new void GameLoopAction() {
@@ -61,7 +61,7 @@ namespace ClassLibrary.Entities {
             RestoreEnergy();
         }
 
-        public void Move(string direction, int value) {
+        public new void Move(string direction, int value) {
             bool EnoughEnergy() {
                 if (Energy >= _moveEnergyCost)
                     return true;
@@ -149,27 +149,27 @@ namespace ClassLibrary.Entities {
             var level = GetLevel();
             if (PositionX + 1 < level.Width && level[PositionX + 1, PositionY].EntityType == 3) {
                 var tmp = new StoneInDiamondConverter(PositionX + 1, PositionY, GetLevel,
-                    stoneInDiamondsConvertersList);
+                    _getStoneInDiamondsConvertersList);
                 level[PositionX + 1, PositionY] = tmp;
-                stoneInDiamondsConvertersList().Add(tmp);
+                _getStoneInDiamondsConvertersList().Add(tmp);
             }
             if (PositionX - 1 >= 0 && level[PositionX - 1, PositionY].EntityType == 3) {
                 var tmp = new StoneInDiamondConverter(PositionX - 1, PositionY, GetLevel,
-                    stoneInDiamondsConvertersList);
+                    _getStoneInDiamondsConvertersList);
                 level[PositionX - 1, PositionY] = tmp;
-                stoneInDiamondsConvertersList().Add(tmp);
+                _getStoneInDiamondsConvertersList().Add(tmp);
             }
             if (PositionY + 1 < level.Height && level[PositionX, PositionY + 1].EntityType == 3) {
                 var tmp = new StoneInDiamondConverter(PositionX, PositionY + 1, GetLevel,
-                    stoneInDiamondsConvertersList);
+                    _getStoneInDiamondsConvertersList);
                 level[PositionX, PositionY + 1] = tmp;
-                stoneInDiamondsConvertersList().Add(tmp);
+                _getStoneInDiamondsConvertersList().Add(tmp);
             }
             if (PositionY - 1 >= 0 && level[PositionX, PositionY - 1].EntityType == 3) {
                 var tmp = new StoneInDiamondConverter(PositionX, PositionY - 1, GetLevel,
-                    stoneInDiamondsConvertersList);
+                    _getStoneInDiamondsConvertersList);
                 level[PositionX, PositionY - 1] = tmp;
-                stoneInDiamondsConvertersList().Add(tmp);
+                _getStoneInDiamondsConvertersList().Add(tmp);
             }
             // Energy = 0;
         }

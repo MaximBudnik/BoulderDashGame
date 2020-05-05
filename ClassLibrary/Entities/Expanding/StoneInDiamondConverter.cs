@@ -5,21 +5,25 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Expanding {
     public class StoneInDiamondConverter : Expandable {
-        private readonly Func<Level> _getLevel;
-        private readonly Func<List<StoneInDiamondConverter>> _stoneInDiamondsConvertersList;
+        private readonly Func<List<StoneInDiamondConverter>> _getStoneInDiamondsConvertersList;
         private int _actionsCounter = 0;
 
         public StoneInDiamondConverter(int i, int j, Func<Level> getLevel,
-            Func<List<StoneInDiamondConverter>> stoneInDiamondsConvertersList) : base(i, j) {
+            Func<List<StoneInDiamondConverter>> getStoneInDiamondsConvertersList) : base(i, j, getLevel) {
             EntityType = 10;
-            _getLevel = getLevel;
-            _stoneInDiamondsConvertersList = stoneInDiamondsConvertersList;
+            _getStoneInDiamondsConvertersList = getStoneInDiamondsConvertersList;
             CanMove = false;
+            ConstructorForExpand = ( i,  j) => { 
+                var level = GetLevel();
+                var tmp = new StoneInDiamondConverter(i, j, GetLevel, _getStoneInDiamondsConvertersList);
+                level[i, j] = tmp;
+                _getStoneInDiamondsConvertersList().Add(tmp);};
         }
 
+        
         public new void GameLoopAction() {
             if (_actionsCounter == 5) {
-                SearchForStones();
+                Expand(( i, j)=>GetLevel()[i, j].EntityType == 3, ConstructorForExpand);
             }
             if (_actionsCounter >= 10) {
                 TurnIntoDiamond();
@@ -28,37 +32,39 @@ namespace ClassLibrary.Entities.Expanding {
             _actionsCounter++;
         }
         private void TurnIntoDiamond() {
-            var level = _getLevel();
+            var level = GetLevel();
             level[PositionX, PositionY] = new Diamond(PositionX, PositionY);
-            _stoneInDiamondsConvertersList().Remove(this);
+            _getStoneInDiamondsConvertersList().Remove(this);
         }
 
-        private void SearchForStones() {
-            var level = _getLevel();
-            if (PositionX + 1 < level.Width && level[PositionX + 1, PositionY].EntityType == 3) {
-                var tmp = new StoneInDiamondConverter(PositionX + 1, PositionY, _getLevel,
-                    _stoneInDiamondsConvertersList);
-                level[PositionX + 1, PositionY] = tmp;
-                _stoneInDiamondsConvertersList().Add(tmp);
-            }
-            if (PositionX - 1 >= 0 && level[PositionX - 1, PositionY].EntityType == 3) {
-                var tmp = new StoneInDiamondConverter(PositionX - 1, PositionY, _getLevel,
-                    _stoneInDiamondsConvertersList);
-                level[PositionX - 1, PositionY] = tmp;
-                _stoneInDiamondsConvertersList().Add(tmp);
-            }
-            if (PositionY + 1 < level.Height && level[PositionX, PositionY + 1].EntityType == 3) {
-                var tmp = new StoneInDiamondConverter(PositionX, PositionY + 1, _getLevel,
-                    _stoneInDiamondsConvertersList);
-                level[PositionX, PositionY + 1] = tmp;
-                _stoneInDiamondsConvertersList().Add(tmp);
-            }
-            if (PositionY - 1 >= 0 && level[PositionX, PositionY - 1].EntityType == 3) {
-                var tmp = new StoneInDiamondConverter(PositionX, PositionY - 1, _getLevel,
-                    _stoneInDiamondsConvertersList);
-                level[PositionX, PositionY - 1] = tmp;
-                _stoneInDiamondsConvertersList().Add(tmp);
-            }
-        }
+       
+        
+        // private new void Expand() {
+        //     var level = GetLevel();
+        //     if (Right< level.Width && level[Right, PositionY].EntityType == 3) {
+        //         var tmp = new StoneInDiamondConverter(Right, PositionY, GetLevel,
+        //             _getStoneInDiamondsConvertersList);
+        //         level[Right, PositionY] = tmp;
+        //         _getStoneInDiamondsConvertersList().Add(tmp);
+        //     }
+        //     if (Left >= 0 && level[Left, PositionY].EntityType == 3) {
+        //         var tmp = new StoneInDiamondConverter(Left, PositionY, GetLevel,
+        //             _getStoneInDiamondsConvertersList);
+        //         level[Left, PositionY] = tmp;
+        //         _getStoneInDiamondsConvertersList().Add(tmp);
+        //     }
+        //     if (Bot < level.Height && level[PositionX, Bot].EntityType == 3) {
+        //         var tmp = new StoneInDiamondConverter(PositionX, Bot, GetLevel,
+        //             _getStoneInDiamondsConvertersList);
+        //         level[PositionX, Bot] = tmp;
+        //         _getStoneInDiamondsConvertersList().Add(tmp);
+        //     }
+        //     if (Top >= 0 && level[PositionX, Top].EntityType == 3) {
+        //         var tmp = new StoneInDiamondConverter(PositionX, Top, GetLevel,
+        //             _getStoneInDiamondsConvertersList);
+        //         level[PositionX,Top] = tmp;
+        //         _getStoneInDiamondsConvertersList().Add(tmp);
+        //     }
+        // }
     }
 }

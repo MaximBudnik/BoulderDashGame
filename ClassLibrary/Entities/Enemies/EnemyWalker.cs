@@ -17,7 +17,7 @@ namespace ClassLibrary.Entities.Enemies {
         )
             : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
             EntityType = 6;
-            Damage = 5;
+            Damage = 3;
         }
 
         private void EnemyMovement() {
@@ -26,18 +26,18 @@ namespace ClassLibrary.Entities.Enemies {
             var playerPosY = GetPlayerPosY();
             var moves = new List<string>();
 
-            if (playerPosX < PositionX && PositionX - 1 < level.Width &&
-                level[PositionX - 1, PositionY].CanMove)
-                moves.Add("up");
-            if (playerPosX > PositionX && PositionX + 1 >= 0 && level[PositionX + 1, PositionY].CanMove)
-                moves.Add("down");
-            if (playerPosY > PositionY && PositionY + 1 < level.Height &&
-                level[PositionX, PositionY + 1].CanMove)
-                moves.Add("right");
-            if (playerPosY < PositionY && PositionY - 1 >= 0 && level[PositionX, PositionY - 1].CanMove)
+            if (playerPosX < PositionX && Left < level.Width &&
+                level[Left, PositionY].CanMove)
                 moves.Add("left");
+            if (playerPosX > PositionX && Right >= 0 && level[Right, PositionY].CanMove)
+                moves.Add("right");
+            if (playerPosY > PositionY && Bot < level.Height &&
+                level[PositionX, Bot].CanMove)
+                moves.Add("down");
+            if (playerPosY < PositionY && Top >= 0 && level[PositionX, Top].CanMove)
+                moves.Add("up");
             moves.Add("hold");
-            string action = Randomizer.GetRandomFromList(moves);
+            var action = Randomizer.GetRandomFromList(moves);
             switch (action) {
                 case "hold":
                     return;

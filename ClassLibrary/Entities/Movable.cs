@@ -14,7 +14,7 @@ namespace ClassLibrary.Entities {
 
         protected readonly Func<Level> GetLevel;
 
-        protected void Move(string direction, int value, int posX, int posY) {
+        protected virtual void Move(string direction, int value, int posX, int posY) {
             PositionX = posX;
             PositionY = posY;
 
@@ -22,11 +22,11 @@ namespace ClassLibrary.Entities {
             level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY); //making previous position empty
 
             switch (direction) {
-                case "vertical":
+                case "horizontal":
                     PositionX += value;
                     if (PositionX == level.Width || PositionX == -1) PositionX -= value;
                     break;
-                case "horizontal":
+                case "vertical":
                     PositionY += value;
                     if (PositionY == level.Height || PositionY == -1) PositionY -= value;
                     break;

@@ -44,6 +44,7 @@
             <e p="Wood.cs" t="Include" />
           </e>
           <e p="Collectable" t="Include">
+            <e p="BarrelWithSubstance.cs" t="Include" />
             <e p="Diamond.cs" t="Include" />
             <e p="ItemCollectible.cs" t="Include" />
             <e p="LuckyBox.cs" t="Include" />
@@ -54,6 +55,7 @@
             <e p="RockProcessor.cs" t="Include" />
           </e>
           <e p="Expanding" t="Include">
+            <e p="Acid.cs" t="Include" />
             <e p="Expandable.cs" t="Include" />
             <e p="StoneInDiamondConverter.cs" t="Include" />
           </e>
