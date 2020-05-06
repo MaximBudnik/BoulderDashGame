@@ -47,6 +47,12 @@
             <e p="BarrelWithSubstance.cs" t="Include" />
             <e p="Diamond.cs" t="Include" />
             <e p="ItemCollectible.cs" t="Include" />
+            <e p="ItemsTiles" t="Include">
+              <e p="ArmorTile.cs" t="Include" />
+              <e p="ConverterTile.cs" t="Include" />
+              <e p="SwordTile.cs" t="Include" />
+              <e p="TntTile.cs" t="Include" />
+            </e>
             <e p="LuckyBox.cs" t="Include" />
           </e>
           <e p="Enemies" t="Include">
@@ -61,7 +67,10 @@
           </e>
           <e p="GameEntity.cs" t="Include" />
           <e p="Movable.cs" t="Include" />
-          <e p="Player.cs" t="Include" />
+          <e p="Player" t="Include">
+            <e p="Inventory.cs" t="Include" />
+            <e p="Player.cs" t="Include" />
+          </e>
         </e>
         <e p="GameEngine.cs" t="Include" />
         <e p="gameFiles" t="Include">

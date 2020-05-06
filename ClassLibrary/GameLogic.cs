@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ClassLibrary.DataLayer;
-using ClassLibrary.Entities;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Expanding;
+using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary {
@@ -24,12 +24,12 @@ namespace ClassLibrary {
         private Action<int> _changeGameStatus;
         private Func<DataInterlayer> _getDataLayer;
 
-        private void SubstractPlayerHp(int value) {
-            Player.Hp -= value;
-        }
-
         private void SetPlayer(Player pl) {
             Player = pl;
+        }
+
+        private void SubstractPlayerHp(int i) {
+            Player.SubstractPlayerHp(i);
         }
 
         public void CreateLevel(int levelName, string playerName, Action<int> changeGameStatus,
@@ -73,7 +73,8 @@ namespace ClassLibrary {
                 _chanceToClearAcidBlocksList += _acidBlocksList.Count / 2;
                 if (_chanceToClearAcidBlocksList >= Randomizer.Random(100)) {
                     foreach (var acidBlock in _acidBlocksList)
-                        CurrentLevel[acidBlock.PositionX, acidBlock.PositionY] = new Rock(acidBlock.PositionX, acidBlock.PositionY);
+                        CurrentLevel[acidBlock.PositionX, acidBlock.PositionY] =
+                            new Rock(acidBlock.PositionX, acidBlock.PositionY);
                     _acidBlocksList.Clear();
                     _chanceToClearAcidBlocksList = 0;
                 }

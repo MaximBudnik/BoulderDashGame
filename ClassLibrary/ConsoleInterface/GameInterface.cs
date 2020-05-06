@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary.ConsoleInterface {
@@ -18,34 +19,37 @@ namespace ClassLibrary.ConsoleInterface {
             {10, "0"},
             {11, " "},
             {12, "!"},
+            {20, "S"},
+            {21, "C"},
+            {22, "T"},
+            {23, "A"},
             {203, "•"}
         };
 
         // private int interfaceMultiplier = 2; //should be retrieved from settings
         private readonly ConsoleColor _secondTextColor = ConsoleColor.DarkCyan;
         private readonly int _topHeight = 2;
-        private int _bottomHeight = 3;
+        private readonly int _bottomHeight = 3;
         private Level _currLevel;
         public void NewDraw(Func<Level> getLevel) {
             _currLevel = getLevel();
-            int origRow = _topHeight;
-            for (int i = 0; i < _currLevel.Width; i++) {
-                for (int j = 0; j < _currLevel.Height; j++) {
-                    int tmp = _currLevel[i, j].EntityType;
-                    Console.SetCursorPosition(2 * j, (2 * i + origRow));
-                    Console.Write(" ");
-                    Console.Write(" ");
-                    Console.SetCursorPosition(2 * j, (2 * i + origRow));
-                    DrawSprite(tmp);
-                    DrawSprite(tmp);
+            var origRow = _topHeight;
+            for (var i = 0; i < _currLevel.Width; i++)
+            for (var j = 0; j < _currLevel.Height; j++) {
+                var tmp = _currLevel[i, j].EntityType;
+                Console.SetCursorPosition(2 * j, 2 * i + origRow);
+                Console.Write(" ");
+                Console.Write(" ");
+                Console.SetCursorPosition(2 * j, 2 * i + origRow);
+                DrawSprite(tmp);
+                DrawSprite(tmp);
 
-                    Console.SetCursorPosition(2 * j, (2 * i + origRow + 1));
-                    Console.Write(" ");
-                    Console.Write(" ");
-                    Console.SetCursorPosition(2 * j, (2 * i + origRow + 1));
-                    DrawSprite(tmp);
-                    DrawSprite(tmp);
-                }
+                Console.SetCursorPosition(2 * j, 2 * i + origRow + 1);
+                Console.Write(" ");
+                Console.Write(" ");
+                Console.SetCursorPosition(2 * j, 2 * i + origRow + 1);
+                DrawSprite(tmp);
+                DrawSprite(tmp);
             }
         }
         private void DrawSprite(int item) {
@@ -103,6 +107,18 @@ namespace ClassLibrary.ConsoleInterface {
                 case 12:
                     WriteColorBack(_sprites[12], ConsoleColor.Green, ConsoleColor.DarkYellow);
                     break;
+                case 20:
+                    WriteColorBack(_sprites[20], ConsoleColor.Magenta);
+                    break;
+                case 21:
+                    WriteColorBack(_sprites[21], ConsoleColor.Magenta);
+                    break;
+                case 22:
+                    WriteColorBack(_sprites[22], ConsoleColor.Magenta);
+                    break;
+                case 23:
+                    WriteColorBack(_sprites[23], ConsoleColor.Magenta);
+                    break;
             }
         }
 
@@ -139,13 +155,25 @@ namespace ClassLibrary.ConsoleInterface {
                     WriteColorBack(_sprites[9], ConsoleColor.DarkRed, ConsoleColor.Yellow);
                     break;
                 case 10:
-                    WriteColorBack(_sprites[10], ConsoleColor.White,ConsoleColor.Magenta);
+                    WriteColorBack(_sprites[10], ConsoleColor.White, ConsoleColor.Magenta);
                     break;
                 case 11:
                     WriteColorBack(_sprites[11], ConsoleColor.Green, ConsoleColor.Green);
                     break;
                 case 12:
                     WriteColorBack(_sprites[12], ConsoleColor.Green, ConsoleColor.DarkYellow);
+                    break;
+                case 20:
+                    WriteColorBack(_sprites[20], ConsoleColor.Magenta);
+                    break;
+                case 21:
+                    WriteColorBack(_sprites[21], ConsoleColor.Magenta);
+                    break;
+                case 22:
+                    WriteColorBack(_sprites[22], ConsoleColor.Magenta);
+                    break;
+                case 23:
+                    WriteColorBack(_sprites[23], ConsoleColor.Magenta);
                     break;
             }
         }
@@ -191,20 +219,28 @@ namespace ClassLibrary.ConsoleInterface {
                 case 12:
                     WriteColorBack(_sprites[12], ConsoleColor.Green, ConsoleColor.DarkYellow);
                     break;
+                case 20:
+                    WriteColorBack(_sprites[20], ConsoleColor.Magenta);
+                    break;
+                case 21:
+                    WriteColorBack(_sprites[21], ConsoleColor.Magenta);
+                    break;
+                case 22:
+                    WriteColorBack(_sprites[22], ConsoleColor.Magenta);
+                    break;
+                case 23:
+                    WriteColorBack(_sprites[23], ConsoleColor.Magenta);
+                    break;
             }
         }
 
         public void DrawPlayerInterface(int diamondsAll, int diamondsCollected, int maxEnergy, int currentEnergy,
-            int hpMax, int currentHp, string name) {
+            int hpMax, int currentHp, string name, Inventory playerInventory) {
             void WritePart(string symbol, int fill, int all, ConsoleColor primary) {
                 ChangeForegroundColor(primary);
-                for (int i = 0; i < fill; i++) {
-                    Console.Write(symbol);
-                }
+                for (var i = 0; i < fill; i++) Console.Write(symbol);
                 ChangeForegroundColor(ConsoleColor.DarkGray);
-                for (int i = 0; i < all - fill; i++) {
-                    Console.Write(symbol);
-                }
+                for (var i = 0; i < all - fill; i++) Console.Write(symbol);
                 Console.Write("   ");
                 ChangeForegroundColor(_secondTextColor);
             }
@@ -221,8 +257,10 @@ namespace ClassLibrary.ConsoleInterface {
             WritePart("■", currentEnergy, maxEnergy, ConsoleColor.DarkYellow);
             Console.Write("Diamonds: ");
             WriteForeground($"{diamondsCollected}/{diamondsAll}   ", ConsoleColor.Cyan, _secondTextColor);
-            Console.Write("I/A: ");
-            WriteForeground("n/a", ConsoleColor.Green, _secondTextColor);
+            Console.Write("Items: ");
+            WriteForeground(
+                $"S: {playerInventory.SwordLevel} A: {playerInventory.ArmorLevel} C: {playerInventory.StoneInDiamondsConverterQuantity}" +
+                $" T: {playerInventory.TntQuantity}",ConsoleColor.Green, _secondTextColor);
             ChangeForegroundColor(primaryTextColor);
         }
 

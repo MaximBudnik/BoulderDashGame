@@ -1,5 +1,6 @@
 ﻿using System;
 using ClassLibrary.Entities;
+using ClassLibrary.Entities.Player;
 
 namespace ClassLibrary.
     InputProcessors { //dont know ifgi can do such operations. maybe i need to refactor it using delegates

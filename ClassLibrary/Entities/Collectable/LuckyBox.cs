@@ -9,8 +9,8 @@ namespace ClassLibrary.Entities.Collectable {
 
         public new static int PickUpValue = 3;
         
-        public static void PickUpBox( Func<Player> getPlayer) { //TODO: write text in xaml on pickup (impossible in console)
-            Player player = getPlayer();
+        public static void Collect( Func<Player.Player> getPlayer) { //TODO: write text in xaml on pickup (impossible in console)
+            Player.Player player = getPlayer();
             List<int> pool = new List<int>{
                 1,1,1,1,1,
                 2,2,2,2,2,
@@ -34,7 +34,7 @@ namespace ClassLibrary.Entities.Collectable {
                     player.Hp = player.MaxHp;
                     break;
                 case 3:
-                    player.Hp -= Randomizer.Random(3);
+                    player.SubstractPlayerHp(Randomizer.Random(3));
                     break;
                 case 4:
                     player.MaxHp = 15;

@@ -45,7 +45,7 @@ namespace ClassLibrary {
             while (_gameStatus == 1) {
                 _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
                 _gameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantity, player.CollectedDiamonds,
-                    player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name);
+                    player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name, player.Inventory);
                 _gameInterface.NewDraw(() => currentLevel);
             }
             if (_gameStatus == 2) _afterLevelScreen.DrawGameWin(player.Score, player.AllScores);

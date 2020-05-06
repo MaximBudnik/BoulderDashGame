@@ -16,7 +16,7 @@ namespace ClassLibrary.Entities.Expanding {
             EntityType = 11;
             _getAcidBlocksList = getAcidBlocksList;
             _changePlayerHp = changePlayerHp;
-            _damage = 1;
+            _damage = 2;
             ConstructorForExpand = ( i,  j) => { 
                 var level = GetLevel();
                 var tmp = new Acid(i, j, GetLevel, _getAcidBlocksList, _changePlayerHp);

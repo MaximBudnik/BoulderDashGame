@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
+using ClassLibrary.Entities.Collectable.ItemsTiles;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
 
-namespace ClassLibrary.Entities {
+namespace ClassLibrary.Entities.Player {
     public class Player : Movable {
         public int MaxHp { get; set; } = 10;
+
         public int Hp { get; set; } = 10;
         public readonly string Name;
         public readonly int MaxEnergy = 20;
@@ -16,6 +18,9 @@ namespace ClassLibrary.Entities {
         public int EnergyRestoreTick { get; set; } = 2;
         public int ScoreMultiplier { get; set; } = 10;
         public int Score { get; set; }
+
+        public Inventory Inventory = new Inventory();
+
         public readonly Dictionary<string, int[]> AllScores;
 
         private readonly int _moveEnergyCost = 1;
@@ -55,12 +60,27 @@ namespace ClassLibrary.Entities {
             _getStoneInDiamondsConvertersList = getStoneInDiamondsConverter;
             _getAcidBlocksList = getAcidBlocksList;
             CanMove = false;
+            Inventory.ArmorLevel = 10;
         }
 
         public new void GameLoopAction() {
             CheckWin();
             CheckLose();
             RestoreEnergy();
+        }
+
+        public void SubstractPlayerHp(int value) {
+            if (Inventory.ArmorLevel>0) {
+                Inventory.ArmorCellHp -= value;
+                value -= Inventory.ArmorLevel;
+            }
+            if (Inventory.ArmorCellHp <=0) {
+                Inventory.ArmorLevel--;
+                Inventory.ArmorCellHp = 10;
+            }
+            if (value>0) {
+                Hp -= value;
+            }
         }
 
         public void Move(string direction, int value) {
@@ -124,8 +144,20 @@ namespace ClassLibrary.Entities {
                             CollectLuckyBox();
                             break;
                         case 12:
-                            BarrelWithSubstance.DestroyBarrel(PositionX, PositionY, GetLevel,
-                                _getAcidBlocksList, i => { Hp -= i; });
+                            BarrelWithSubstance.Collect(PositionX, PositionY, GetLevel,
+                                _getAcidBlocksList, SubstractPlayerHp);
+                            break;
+                        case 20:
+                            SwordTile.Collect(() => Inventory);
+                            break;
+                        case 21:
+                            ConverterTile.Collect(() => Inventory);
+                            break;
+                        case 22:
+                            TntTile.Collect(() => Inventory);
+                            break;
+                        case 23:
+                            ArmorTile.Collect(() => Inventory);
                             break;
                     }
                 }
@@ -134,7 +166,7 @@ namespace ClassLibrary.Entities {
         }
 
         public void HpInEnergy() {
-            Hp--;
+            SubstractPlayerHp(1);
             Energy = MaxEnergy;
         }
 
@@ -189,7 +221,7 @@ namespace ClassLibrary.Entities {
         }
 
         private void CollectLuckyBox() {
-            LuckyBox.PickUpBox(() => this);
+            LuckyBox.Collect(() => this);
             var tmp = LuckyBox.PickUpValue * ScoreMultiplier;
             AllScores["Collected lucky boxes"][0] += 1;
             AllScores["Collected lucky boxes"][1] += tmp;

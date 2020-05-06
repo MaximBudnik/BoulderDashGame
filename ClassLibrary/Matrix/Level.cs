@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
+using ClassLibrary.Entities.Collectable.ItemsTiles;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Expanding;
+using ClassLibrary.Entities.Player;
 
 namespace ClassLibrary.Matrix {
     public class Level : Matrix {
@@ -191,17 +193,17 @@ namespace ClassLibrary.Matrix {
                 }
 
             //create enemies in random points
-            // while (WalkersCount > 0) {
-            //     var posX = rand.Next(width);
-            //     var posY = rand.Next(height);
-            //     if (matrix[posX, posY].EntityType == 7) {
-            //         var enemy = new EnemyWalker(posX, posY, getLevel, getPlayerPositionX,
-            //             getPlayerPositionY, substractPlayerHp);
-            //         matrix[posX, posY] = enemy;
-            //         enemyWalkersList.Add(enemy);
-            //         WalkersCount--;
-            //     }
-            // }
+            while (WalkersCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityType == 7) {
+                    var enemy = new EnemyWalker(posX, posY, getLevel, getPlayerPositionX,
+                        getPlayerPositionY, substractPlayerHp);
+                    matrix[posX, posY] = enemy;
+                    enemyWalkersList.Add(enemy);
+                    WalkersCount--;
+                }
+            }
 
             // here i fill the rest of empty space that was created be rooms 
             for (var i = 0; i < width; i++)
@@ -209,21 +211,26 @@ namespace ClassLibrary.Matrix {
                 if (matrix[i, j].EntityType == 7) {
                     var pool = new List<int> {
                         //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-                        3, 3, 3, 3, 3, 3, 3, 3, 3,
-                        4, 4, 4, 4, 4, 4, 4, 4,
+                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,8,8,8,8,8,8,
+                        3, 3, 3, 3, 3, 3, 3, 3, 3,3,3,3,3,3,3,
+                        4, 4, 4, 4, 4, 4, 4, 4,4,4,4,4,
                         7, 7,
-                        12
+                        12,
+                        20,
+                        21,
+                        22,
+                        23,
                     };
                     matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
                 }
                 else if (matrix[i, j].EntityType == 1) {
                     var pool = new List<int> {
                         //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8,
-                        1, 1, 1, 1,
-                        4, 4, 4,
-                        7
+                        8, 8, 8, 8, 8, 8, 8, 8, 8,8,8,8,
+                        1, 1, 1, 1,1,1,1,
+                        4, 4, 4,4,4,
+                        7,7,
+                        12
                     };
                     matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
                 }
@@ -337,6 +344,18 @@ namespace ClassLibrary.Matrix {
                 case 12:
                     var barrel = new BarrelWithSubstance(i, j);
                     return barrel;
+                case 20:
+                    var sword = new SwordTile(i, j);
+                    return sword;
+                case 21:
+                    var converter = new ConverterTile(i, j);
+                    return converter;
+                case 22:
+                    var tnt = new TntTile(i, j);
+                    return tnt;
+                case 23:
+                    var armor = new ArmorTile(i, j);
+                    return armor;
                 case 101:
                     var dedicatedEmptySpace = new DedicatedEmptySpace(i, j);
                     return dedicatedEmptySpace;

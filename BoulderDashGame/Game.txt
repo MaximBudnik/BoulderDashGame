@@ -13,6 +13,15 @@
 12 - barrel with substance;
 
 
+Items:
+
+20 - sword
+21 - stone in diamond converter
+22 - dynamite
+23 - armor
+
+
+
 
 101 - dedicated_empty_space - only for generating;
 

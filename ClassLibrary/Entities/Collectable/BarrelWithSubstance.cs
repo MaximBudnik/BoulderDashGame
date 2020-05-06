@@ -11,7 +11,7 @@ namespace ClassLibrary.Entities.Collectable {
             EntityType = 12;
         }
 
-        public static void DestroyBarrel(int i, int j, Func<Level> getLevel, Func<List<Acid>> getAcidBlocksList,
+        public static void Collect(int i, int j, Func<Level> getLevel, Func<List<Acid>> getAcidBlocksList,
             Action<int> changePlayerHp) {
             var tmp = new Acid(i, j, getLevel, getAcidBlocksList, changePlayerHp);
             getLevel()[i, j] = tmp;
