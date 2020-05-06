@@ -27,6 +27,9 @@ namespace ClassLibrary.Entities {
         public virtual void  GameLoopAction() {
             // it is what action is performed by each class instance of game matrix on every gameLoop()
         }
+        
+        public virtual void  DestroyAction() {
+        }
 
 
     }

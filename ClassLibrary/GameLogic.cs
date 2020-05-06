@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using ClassLibrary.DataLayer;
 using ClassLibrary.Entities;
+using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
@@ -16,11 +17,13 @@ namespace ClassLibrary {
         private int _gameTickCounter;
         private List<EnemyWalker> _levelEnemyWalkers;
         private List<StoneInDiamondConverter> _stonesInDiamondsConverters;
+        private List<Acid> _acidBlocksList;
+        private int _chanceToClearAcidBlocksList = 0;
         public Save CurrentSave = null;
 
         private Action<int> _changeGameStatus;
         private Func<DataInterlayer> _getDataLayer;
-        
+
         private void SubstractPlayerHp(int value) {
             Player.Hp -= value;
         }
@@ -29,7 +32,8 @@ namespace ClassLibrary {
             Player = pl;
         }
 
-        public void CreateLevel(int levelName, string playerName, Action<int> changeGameStatus, Func<DataInterlayer> getDataLayer) {
+        public void CreateLevel(int levelName, string playerName, Action<int> changeGameStatus,
+            Func<DataInterlayer> getDataLayer) {
             _changeGameStatus = changeGameStatus;
             _getDataLayer = getDataLayer;
             _gameTickCounter = 0;
@@ -37,6 +41,7 @@ namespace ClassLibrary {
                 () => Player.PositionY, SubstractPlayerHp);
             _levelEnemyWalkers = new List<EnemyWalker>();
             _stonesInDiamondsConverters = new List<StoneInDiamondConverter>();
+            _acidBlocksList = new List<Acid>();
             CurrentLevel = new Level(
                 levelName, playerName,
                 () => CurrentLevel,
@@ -45,9 +50,10 @@ namespace ClassLibrary {
                 Lose,
                 () => Player.PositionX,
                 () => Player.PositionY,
-                SubstractPlayerHp, 
+                SubstractPlayerHp,
                 _levelEnemyWalkers,
                 _stonesInDiamondsConverters,
+                _acidBlocksList,
                 SetPlayer
             );
         }
@@ -59,6 +65,20 @@ namespace ClassLibrary {
             foreach (var converter in _stonesInDiamondsConverters.ToList()) {
                 converter.GameLoopAction();
             }
+            foreach (var acidBlock in _acidBlocksList.ToList()) {
+                acidBlock.GameLoopAction();
+            }
+
+            if (_acidBlocksList.Count > 0) {
+                _chanceToClearAcidBlocksList += _acidBlocksList.Count / 2;
+                if (_chanceToClearAcidBlocksList >= Randomizer.Random(100)) {
+                    foreach (var acidBlock in _acidBlocksList)
+                        CurrentLevel[acidBlock.PositionX, acidBlock.PositionY] = new Rock(acidBlock.PositionX, acidBlock.PositionY);
+                    _acidBlocksList.Clear();
+                    _chanceToClearAcidBlocksList = 0;
+                }
+            }
+
             _rockProcessor.GameLoopAction();
             if (_gameTickCounter == 100) _gameTickCounter = 0;
             _gameTickCounter++; //it counts frames and allows to perform some functions not in every frame, but every constant frame 

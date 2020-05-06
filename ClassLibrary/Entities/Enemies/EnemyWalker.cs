@@ -7,7 +7,7 @@ namespace ClassLibrary.Entities.Enemies {
     public class EnemyWalker : Enemy {
         public new void GameLoopAction() {
             EnemyMovement();
-            EnemyDefaultDamage();
+            EnemyDamageNearTitles();
         }
 
         public EnemyWalker(int i, int j,

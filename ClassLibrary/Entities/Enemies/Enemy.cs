@@ -33,7 +33,7 @@ namespace ClassLibrary.Entities.Enemies {
             CanMove = false;
         }
 
-        protected void EnemyDefaultDamage() {
+        protected void EnemyDamageNearTitles() {
             int playerPosX = GetPlayerPosX();
             int playerPosY = GetPlayerPosY();
             bool one = Math.Abs(PositionX - playerPosX) == 1 && playerPosY == PositionY;
@@ -42,7 +42,7 @@ namespace ClassLibrary.Entities.Enemies {
                 DealDamage();
             }
         }
-
+        
         protected void DealDamage() {
             _changePlayerHp(Damage);
         }

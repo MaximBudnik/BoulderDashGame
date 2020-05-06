@@ -9,7 +9,8 @@
 8 - sandTranslucent; - can move
 9 - wood;  - cant move
 10 -stoneInDiamondConverter - cant move;
-
+11 - acid;
+12 - barrel with substance;
 
 
 

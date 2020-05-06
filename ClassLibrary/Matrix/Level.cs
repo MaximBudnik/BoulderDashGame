@@ -33,6 +33,7 @@ namespace ClassLibrary.Matrix {
             Action<int> substractPlayerHp,
             List<EnemyWalker> enemyWalkersList,
             List<StoneInDiamondConverter> stoneInDiamondsConverter,
+            List<Acid> acidBlocksList,
             Action<Player> setPlayer
         ) {
             //TODO: now choose the size of the level from starting game/random
@@ -50,6 +51,7 @@ namespace ClassLibrary.Matrix {
                 substractPlayerHp,
                 enemyWalkersList,
                 stoneInDiamondsConverter,
+                acidBlocksList,
                 setPlayer
             );
         }
@@ -61,6 +63,7 @@ namespace ClassLibrary.Matrix {
             Action<int> substractPlayerHp,
             List<EnemyWalker> enemyWalkersList,
             List<StoneInDiamondConverter> stoneInDiamondsConverter,
+            List<Acid> acidBlocksList,
             Action<Player> setPlayer
         ) {
             //in general generation depends on:
@@ -188,17 +191,17 @@ namespace ClassLibrary.Matrix {
                 }
 
             //create enemies in random points
-            while (WalkersCount > 0) {
-                var posX = rand.Next(width);
-                var posY = rand.Next(height);
-                if (matrix[posX, posY].EntityType == 7) {
-                    var enemy = new EnemyWalker(posX, posY, getLevel, getPlayerPositionX,
-                        getPlayerPositionY, substractPlayerHp);
-                    matrix[posX, posY] = enemy;
-                    enemyWalkersList.Add(enemy);
-                    WalkersCount--;
-                }
-            }
+            // while (WalkersCount > 0) {
+            //     var posX = rand.Next(width);
+            //     var posY = rand.Next(height);
+            //     if (matrix[posX, posY].EntityType == 7) {
+            //         var enemy = new EnemyWalker(posX, posY, getLevel, getPlayerPositionX,
+            //             getPlayerPositionY, substractPlayerHp);
+            //         matrix[posX, posY] = enemy;
+            //         enemyWalkersList.Add(enemy);
+            //         WalkersCount--;
+            //     }
+            // }
 
             // here i fill the rest of empty space that was created be rooms 
             for (var i = 0; i < width; i++)
@@ -206,10 +209,11 @@ namespace ClassLibrary.Matrix {
                 if (matrix[i, j].EntityType == 7) {
                     var pool = new List<int> {
                         //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8,
-                        3, 3, 3, 3,
-                        4, 4, 4,
-                        7
+                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                        3, 3, 3, 3, 3, 3, 3, 3, 3,
+                        4, 4, 4, 4, 4, 4, 4, 4,
+                        7, 7,
+                        12
                     };
                     matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
                 }
@@ -228,7 +232,8 @@ namespace ClassLibrary.Matrix {
                 }
 
             var player = new Player(startPosX, startPosY, playerName,
-                getLevel, pushRock, win, lose, DiamondsQuantity, ()=>stoneInDiamondsConverter);
+                getLevel, pushRock, win, lose, DiamondsQuantity, () => stoneInDiamondsConverter,
+                () => acidBlocksList);
             matrix[startPosX, startPosY] = player;
             setPlayer(player);
         }
@@ -329,6 +334,9 @@ namespace ClassLibrary.Matrix {
                 case 9:
                     var wood = new Wood(i, j);
                     return wood;
+                case 12:
+                    var barrel = new BarrelWithSubstance(i, j);
+                    return barrel;
                 case 101:
                     var dedicatedEmptySpace = new DedicatedEmptySpace(i, j);
                     return dedicatedEmptySpace;
@@ -370,7 +378,7 @@ namespace ClassLibrary.Matrix {
             for (var i = 0; i < width; i++)
             for (var j = 0; j < height; j++)
                 if (i == row)
-                    matrix[i, j] = fillOneTitle(i, j, 9);
+                    matrix[i, j] = fillOneTitle(i, j, 7);
         }
         private void CreateCorridorVertical() {
             var rnd = new Random();
@@ -378,7 +386,7 @@ namespace ClassLibrary.Matrix {
             for (var i = 0; i < width; i++)
             for (var j = 0; j < height; j++)
                 if (j == col)
-                    matrix[i, j] = fillOneTitle(i, j, 9);
+                    matrix[i, j] = fillOneTitle(i, j, 7);
         }
     }
 }

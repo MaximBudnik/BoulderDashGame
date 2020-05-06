@@ -26,7 +26,8 @@ namespace ClassLibrary.Entities {
         private readonly Action<int, int, string, int> _pushRock;
         private readonly Action _win;
         private readonly Action _lose;
-        private readonly  Func<List<StoneInDiamondConverter>> _getStoneInDiamondsConvertersList;
+        private readonly Func<List<StoneInDiamondConverter>> _getStoneInDiamondsConvertersList;
+        private readonly Func<List<Acid>> _getAcidBlocksList;
 
         public Player(
             int i,
@@ -37,8 +38,7 @@ namespace ClassLibrary.Entities {
             Action win,
             Action lose,
             int diamondsTowWin,
-            Func<List<StoneInDiamondConverter>> getStoneInDiamondsConverter
-        )
+            Func<List<StoneInDiamondConverter>> getStoneInDiamondsConverter, Func<List<Acid>> getAcidBlocksList)
             : base(getLevel, i, j) {
             Name = name;
             _pushRock = pushRock;
@@ -53,6 +53,8 @@ namespace ClassLibrary.Entities {
                 {"Score from lucky box", new[] {0, 0}}
             };
             _getStoneInDiamondsConvertersList = getStoneInDiamondsConverter;
+            _getAcidBlocksList = getAcidBlocksList;
+            CanMove = false;
         }
 
         public new void GameLoopAction() {
@@ -61,7 +63,7 @@ namespace ClassLibrary.Entities {
             RestoreEnergy();
         }
 
-        public new void Move(string direction, int value) {
+        public void Move(string direction, int value) {
             bool EnoughEnergy() {
                 if (Energy >= _moveEnergyCost)
                     return true;
@@ -121,6 +123,10 @@ namespace ClassLibrary.Entities {
                         case 7:
                             CollectLuckyBox();
                             break;
+                        case 12:
+                            BarrelWithSubstance.DestroyBarrel(PositionX, PositionY, GetLevel,
+                                _getAcidBlocksList, i => { Hp -= i; });
+                            break;
                     }
                 }
                 level[PositionX, PositionY] = this;
@@ -175,7 +181,7 @@ namespace ClassLibrary.Entities {
         }
 
         private void CollectDiamond() {
-            int value = ItemCollectible.PickUpValue;
+            var value = ItemCollectible.PickUpValue;
             CollectedDiamonds += value;
             AllScores["Collected diamonds"][0] += 1;
             AllScores["Collected diamonds"][1] += value * ScoreMultiplier;
