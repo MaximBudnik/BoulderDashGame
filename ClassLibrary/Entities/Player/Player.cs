@@ -19,7 +19,7 @@ namespace ClassLibrary.Entities.Player {
         public int ScoreMultiplier { get; set; } = 10;
         public int Score { get; set; }
 
-        public Inventory Inventory = new Inventory();
+        public readonly Inventory Inventory = new Inventory();
 
         public readonly Dictionary<string, int[]> AllScores;
 
@@ -60,7 +60,12 @@ namespace ClassLibrary.Entities.Player {
             _getStoneInDiamondsConvertersList = getStoneInDiamondsConverter;
             _getAcidBlocksList = getAcidBlocksList;
             CanMove = false;
-            Inventory.ArmorLevel = 10;
+
+            //TODO: delete thiS features (its only for testing)
+            Inventory.ArmorLevel = 5;
+            Inventory.SwordLevel = 5;
+            Inventory.TntQuantity = 5;
+            Inventory.StoneInDiamondsConverterQuantity = 5;
         }
 
         public new void GameLoopAction() {
@@ -70,17 +75,15 @@ namespace ClassLibrary.Entities.Player {
         }
 
         public void SubstractPlayerHp(int value) {
-            if (Inventory.ArmorLevel>0) {
+            if (Inventory.ArmorLevel > 0) {
                 Inventory.ArmorCellHp -= value;
                 value -= Inventory.ArmorLevel;
             }
-            if (Inventory.ArmorCellHp <=0) {
+            if (Inventory.ArmorCellHp <= 0) {
                 Inventory.ArmorLevel--;
                 Inventory.ArmorCellHp = 10;
             }
-            if (value>0) {
-                Hp -= value;
-            }
+            if (value > 0) Hp -= value;
         }
 
         public void Move(string direction, int value) {
@@ -183,7 +186,8 @@ namespace ClassLibrary.Entities.Player {
         }
 
         public void ConvertNearStonesInDiamonds() {
-            // if (Energy < MaxEnergy) return;
+            if (Inventory.StoneInDiamondsConverterQuantity == 0) return;
+            Inventory.StoneInDiamondsConverterQuantity--;
             var level = GetLevel();
             if (PositionX + 1 < level.Width && level[PositionX + 1, PositionY].EntityType == 3) {
                 var tmp = new StoneInDiamondConverter(PositionX + 1, PositionY, GetLevel,
@@ -209,7 +213,51 @@ namespace ClassLibrary.Entities.Player {
                 level[PositionX, PositionY - 1] = tmp;
                 _getStoneInDiamondsConvertersList().Add(tmp);
             }
-            // Energy = 0;
+            Energy = Energy / 2;
+        }
+
+        public void UseTnt() {
+            if (Inventory.TntQuantity == 0) return;
+            Inventory.TntQuantity--;
+            var level = GetLevel();
+            double dmg = 0;
+            
+            if (Right < level.Width) {
+                level[Right, PositionY] = new EmptySpace(Right, PositionY);
+                dmg+=0.5;
+            }
+            if (Left >= 0) {
+                level[Left, PositionY] = new EmptySpace(Left, PositionY);
+                dmg+=0.5;
+            }
+            if (Bot < level.Height) {
+                level[PositionX, Bot] = new EmptySpace(PositionX, Bot);
+                dmg+=0.5;
+            }
+            if (Top >= 0) {
+                level[PositionX, Top] = new EmptySpace(PositionX, Top);
+                dmg+=0.5;
+            }
+
+            if (Right < level.Width && Bot < level.Height) {
+                level[Right, Bot] = new EmptySpace(Right, Bot);
+                dmg+=0.5;
+            }
+            if (Right < level.Width && Top >= 0) {
+                level[Right, Top] = new EmptySpace(Right, Top);
+                dmg+=0.5;
+            }
+            if (Left >= 0  && Bot < level.Height) {
+                level[Left, Bot] = new EmptySpace(Left, Bot);
+                dmg+=0.5;
+            }
+            if (Left >= 0 && Top >= 0) {
+                level[Left, Top] = new EmptySpace(Left, Top);
+                dmg+=0.5;
+            }
+
+            Energy = Energy / 2;
+            SubstractPlayerHp(Convert.ToInt32(dmg));
         }
 
         private void CollectDiamond() {

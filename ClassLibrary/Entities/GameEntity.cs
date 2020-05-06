@@ -7,18 +7,15 @@ namespace ClassLibrary.Entities {
         public int PositionX;
         public int PositionY;
         public bool CanMove = true;
-        protected readonly int Right;
-        protected readonly int Left;
-        protected readonly int Bot;
-        protected readonly int Top;
+
+        protected int Right => PositionX + 1;
+        protected int Left => PositionX - 1;
+        protected int Bot => PositionY + 1;
+        protected int Top => PositionY - 1;
 
         protected GameEntity(int i,int j) {
             PositionX = i;
             PositionY = j;
-            Right = PositionX + 1;
-            Left = PositionX - 1;
-            Bot = PositionY + 1;
-            Top = PositionY - 1;
         }
 
         protected GameEntity() {

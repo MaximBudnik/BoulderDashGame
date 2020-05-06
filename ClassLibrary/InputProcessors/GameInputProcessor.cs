@@ -33,6 +33,9 @@ namespace ClassLibrary.
                 case ConsoleKey.Q:
                     player.ConvertNearStonesInDiamonds();
                     break;
+                case ConsoleKey.E:
+                    player.UseTnt();
+                    break;
                 case ConsoleKey.Escape:
                     changeGameStatus(0);
                     break;
