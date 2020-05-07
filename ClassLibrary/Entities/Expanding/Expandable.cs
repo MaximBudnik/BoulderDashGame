@@ -12,6 +12,9 @@ namespace ClassLibrary.Entities.Expanding {
             GetLevel = getLevel;
         }
         
+        public override void GameLoopAction() {
+        }
+        
         protected Action<int, int> ConstructorForExpand;
 
         protected void Expand(Func<int, int, bool> getCondition, Action<int, int> classConstructor) {

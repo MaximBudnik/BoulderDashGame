@@ -22,13 +22,11 @@ namespace ClassLibrary.Entities.Enemies {
             CanMove = false;
         }
         protected Enemy(
+            int i,
+            int j,
             Func<Level> getLevel,
-            Func<int> getPlayerPosX,
-            Func<int> getPlayerPosY,
             Action<int> changePlayerHp
-        ) : base(getLevel) {
-            GetPlayerPosX = getPlayerPosX;
-            GetPlayerPosY = getPlayerPosY;
+        ) : base(getLevel, i, j) {
             _changePlayerHp = changePlayerHp;
             CanMove = false;
         }
@@ -42,7 +40,7 @@ namespace ClassLibrary.Entities.Enemies {
                 DealDamage();
             }
         }
-        
+
         protected void DealDamage() {
             _changePlayerHp(Damage);
         }

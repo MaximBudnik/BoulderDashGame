@@ -26,48 +26,40 @@ namespace ClassLibrary.Matrix {
         private int _createRoomMaxSizeX = 10;
         private int _createRoomMaxSizeY = 10;
 
+        private string playerName;
+        private Func<Level> getLevel;
+        private Action win;
+        private Action lose;
+        private Func<int> getPlayerPositionX;
+        private Func<int> getPlayerPositionY;
+        private Action<int> substractPlayerHp;
+        private Action<Player> setPlayer;
+
         public Level(int levelName, string playerName,
             Func<Level> getLevel,
-            Action<int, int, string, int> pushRock,
             Action win, Action lose,
             Func<int> getPlayerPositionX,
             Func<int> getPlayerPositionY,
-            Action<int> substractPlayerHp,
-            List<EnemyWalker> enemyWalkersList,
-            List<StoneInDiamondConverter> stoneInDiamondsConverter,
-            List<Acid> acidBlocksList,
-            Action<Player> setPlayer
+            Action<int> substractPlayerHp, Action<Player> setPlayer
         ) {
             //TODO: now choose the size of the level from starting game/random
             width = 20;
             height = 65;
             LevelName = levelName;
+            this.playerName = playerName;
+            this.getLevel = getLevel;
+            this.win = win;
+            this.lose = lose;
+            this.getPlayerPositionX = getPlayerPositionX;
+            this.getPlayerPositionY = getPlayerPositionY;
+            this.substractPlayerHp = substractPlayerHp;
+            this.setPlayer = setPlayer;
             WalkersCount = 6;
             matrix = new GameEntity[width, height];
-            DiggerAlgorithm(
-                playerName,
-                getLevel,
-                pushRock,
-                win, lose,
-                getPlayerPositionX, getPlayerPositionY,
-                substractPlayerHp,
-                enemyWalkersList,
-                stoneInDiamondsConverter,
-                acidBlocksList,
-                setPlayer
-            );
+            DiggerAlgorithm();
         }
 
-        private void DiggerAlgorithm(string playerName, Func<Level> getLevel,
-            Action<int, int, string, int> pushRock,
-            Action win, Action lose,
-            Func<int> getPlayerPositionX, Func<int> getPlayerPositionY,
-            Action<int> substractPlayerHp,
-            List<EnemyWalker> enemyWalkersList,
-            List<StoneInDiamondConverter> stoneInDiamondsConverter,
-            List<Acid> acidBlocksList,
-            Action<Player> setPlayer
-        ) {
+        private void DiggerAlgorithm() {
             //in general generation depends on:
             //    _roomChanceGrow
             //    diggerMoves
@@ -200,7 +192,6 @@ namespace ClassLibrary.Matrix {
                     var enemy = new EnemyWalker(posX, posY, getLevel, getPlayerPositionX,
                         getPlayerPositionY, substractPlayerHp);
                     matrix[posX, posY] = enemy;
-                    enemyWalkersList.Add(enemy);
                     WalkersCount--;
                 }
             }
@@ -211,9 +202,9 @@ namespace ClassLibrary.Matrix {
                 if (matrix[i, j].EntityType == 7) {
                     var pool = new List<int> {
                         //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,8,8,8,8,8,8,
-                        3, 3, 3, 3, 3, 3, 3, 3, 3,3,3,3,3,3,3,
-                        4, 4, 4, 4, 4, 4, 4, 4,4,4,4,4,
+                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+                        4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
                         7, 7,
                         12,
                         20,
@@ -226,10 +217,10 @@ namespace ClassLibrary.Matrix {
                 else if (matrix[i, j].EntityType == 1) {
                     var pool = new List<int> {
                         //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8,8,8,8,
-                        1, 1, 1, 1,1,1,1,
-                        4, 4, 4,4,4,
-                        7,7,
+                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                        1, 1, 1, 1, 1, 1, 1,
+                        4, 4, 4, 4, 4,
+                        7, 7,
                         12
                     };
                     matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
@@ -239,8 +230,7 @@ namespace ClassLibrary.Matrix {
                 }
 
             var player = new Player(startPosX, startPosY, playerName,
-                getLevel, pushRock, win, lose, DiamondsQuantity, () => stoneInDiamondsConverter,
-                () => acidBlocksList);
+                getLevel, win, lose, DiamondsQuantity);
             matrix[startPosX, startPosY] = player;
             setPlayer(player);
         }
@@ -315,6 +305,19 @@ namespace ClassLibrary.Matrix {
             var randNumber = pool[rand.Next(pool.Count)];
             return randNumber;
         }
+
+        private GameEntity fillOneTitle(int i, int j, Func<Level> getLevel,
+            Action<int> changePlayerHp, int entityType) {
+            switch (entityType) {
+                case 3:
+                    var rock = new Rock(i, j, getLevel, changePlayerHp);
+                    return rock;
+                default:
+                    var es = new EmptySpace(i, j);
+                    return es;
+            }
+        }
+
         private GameEntity fillOneTitle(int i, int j, int entityType) {
             switch (entityType) {
                 case 1:
@@ -324,7 +327,7 @@ namespace ClassLibrary.Matrix {
                     var sand = new Sand(i, j);
                     return sand;
                 case 3:
-                    var rock = new Rock(i, j);
+                    var rock = fillOneTitle(i, j, getLevel,substractPlayerHp, entityType);
                     return rock;
                 case 4:
                     var diamond = new Diamond(i, j);

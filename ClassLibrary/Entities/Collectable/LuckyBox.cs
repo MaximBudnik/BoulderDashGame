@@ -9,8 +9,12 @@ namespace ClassLibrary.Entities.Collectable {
 
         public new static int PickUpValue = 3;
         
-        public static void Collect( Func<Player.Player> getPlayer) { //TODO: write text in xaml on pickup (impossible in console)
+        public void Collect( Func<Player.Player> getPlayer) { //TODO: write text in xaml on pickup (impossible in console)
             Player.Player player = getPlayer();
+            var temp = PickUpValue * player.ScoreMultiplier;
+            player.AllScores["Collected lucky boxes"][0] += 1;
+            player.AllScores["Collected lucky boxes"][1] += temp;
+            player.Score += temp;
             List<int> pool = new List<int>{
                 1,1,1,1,1,
                 2,2,2,2,2,

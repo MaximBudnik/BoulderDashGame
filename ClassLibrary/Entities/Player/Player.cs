@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Collectable.ItemsTiles;
+using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
 
@@ -10,7 +11,6 @@ namespace ClassLibrary.Entities.Player {
     public class Player : Movable {
         public int MaxHp { get; set; } = 10;
 
-        public int Hp { get; set; } = 10;
         public readonly string Name;
         public readonly int MaxEnergy = 20;
         public int Energy { get; private set; } = 20;
@@ -28,27 +28,22 @@ namespace ClassLibrary.Entities.Player {
 
         private readonly int _diamondsTowWin;
 
-        private readonly Action<int, int, string, int> _pushRock;
         private readonly Action _win;
         private readonly Action _lose;
-        private readonly Func<List<StoneInDiamondConverter>> _getStoneInDiamondsConvertersList;
-        private readonly Func<List<Acid>> _getAcidBlocksList;
 
         public Player(
             int i,
             int j,
             string name,
             Func<Level> getLevel,
-            Action<int, int, string, int> pushRock,
             Action win,
             Action lose,
-            int diamondsTowWin,
-            Func<List<StoneInDiamondConverter>> getStoneInDiamondsConverter, Func<List<Acid>> getAcidBlocksList)
+            int diamondsTowWin)
             : base(getLevel, i, j) {
             Name = name;
-            _pushRock = pushRock;
             _win = win;
             _lose = lose;
+            Hp = MaxHp;
             _diamondsTowWin = diamondsTowWin;
             EntityType = 0;
             AllScores = new Dictionary<string, int[]> {
@@ -57,8 +52,6 @@ namespace ClassLibrary.Entities.Player {
                 {"Diamonds from lucky box", new[] {0, 0}},
                 {"Score from lucky box", new[] {0, 0}}
             };
-            _getStoneInDiamondsConvertersList = getStoneInDiamondsConverter;
-            _getAcidBlocksList = getAcidBlocksList;
             CanMove = false;
 
             //TODO: delete thiS features (its only for testing)
@@ -126,7 +119,7 @@ namespace ClassLibrary.Entities.Player {
                     case "horizontal":
                         PositionY += value;
                         if (level[PositionX, PositionY].EntityType == 3 && EnoughEnergyForRock()) {
-                            _pushRock(PositionX, PositionY, "horizontal", value);
+                            ((Rock) level[PositionX, PositionY]).PushRock(PositionX, PositionY, "horizontal", value);
                             Energy -= _moveRockEnergyCost;
                         }
                         if (CheckNewPosition(level))
@@ -141,14 +134,13 @@ namespace ClassLibrary.Entities.Player {
                     Energy -= _moveEnergyCost;
                     switch (level[PositionX, PositionY].EntityType) {
                         case 4:
-                            CollectDiamond();
+                            ((Diamond) level[PositionX, PositionY]).Collect(() => this);
                             break;
                         case 7:
-                            CollectLuckyBox();
+                            ((LuckyBox) level[PositionX, PositionY]).Collect(() => this);
                             break;
                         case 12:
-                            BarrelWithSubstance.Collect(PositionX, PositionY, GetLevel,
-                                _getAcidBlocksList, SubstractPlayerHp);
+                            ((BarrelWithSubstance) level[PositionX, PositionY]).Collect(GetLevel, SubstractPlayerHp);
                             break;
                         case 20:
                             SwordTile.Collect(() => Inventory);
@@ -167,12 +159,10 @@ namespace ClassLibrary.Entities.Player {
                 level[PositionX, PositionY] = this;
             }
         }
-
         public void HpInEnergy() {
             SubstractPlayerHp(1);
             Energy = MaxEnergy;
         }
-
         public void Teleport() {
             if (Energy < MaxEnergy) return;
             var level = GetLevel();
@@ -184,108 +174,97 @@ namespace ClassLibrary.Entities.Player {
             PositionY = posY;
             level[PositionX, PositionY] = this;
         }
-
         public void ConvertNearStonesInDiamonds() {
             if (Inventory.StoneInDiamondsConverterQuantity == 0) return;
             Inventory.StoneInDiamondsConverterQuantity--;
             var level = GetLevel();
             if (PositionX + 1 < level.Width && level[PositionX + 1, PositionY].EntityType == 3) {
-                var tmp = new StoneInDiamondConverter(PositionX + 1, PositionY, GetLevel,
-                    _getStoneInDiamondsConvertersList);
+                var tmp = new StoneInDiamondConverter(PositionX + 1, PositionY, GetLevel);
                 level[PositionX + 1, PositionY] = tmp;
-                _getStoneInDiamondsConvertersList().Add(tmp);
             }
             if (PositionX - 1 >= 0 && level[PositionX - 1, PositionY].EntityType == 3) {
-                var tmp = new StoneInDiamondConverter(PositionX - 1, PositionY, GetLevel,
-                    _getStoneInDiamondsConvertersList);
+                var tmp = new StoneInDiamondConverter(PositionX - 1, PositionY, GetLevel);
                 level[PositionX - 1, PositionY] = tmp;
-                _getStoneInDiamondsConvertersList().Add(tmp);
             }
             if (PositionY + 1 < level.Height && level[PositionX, PositionY + 1].EntityType == 3) {
-                var tmp = new StoneInDiamondConverter(PositionX, PositionY + 1, GetLevel,
-                    _getStoneInDiamondsConvertersList);
+                var tmp = new StoneInDiamondConverter(PositionX, PositionY + 1, GetLevel);
                 level[PositionX, PositionY + 1] = tmp;
-                _getStoneInDiamondsConvertersList().Add(tmp);
             }
             if (PositionY - 1 >= 0 && level[PositionX, PositionY - 1].EntityType == 3) {
-                var tmp = new StoneInDiamondConverter(PositionX, PositionY - 1, GetLevel,
-                    _getStoneInDiamondsConvertersList);
+                var tmp = new StoneInDiamondConverter(PositionX, PositionY - 1, GetLevel);
                 level[PositionX, PositionY - 1] = tmp;
-                _getStoneInDiamondsConvertersList().Add(tmp);
             }
             Energy = Energy / 2;
         }
-
+        public void Attack() {
+            //перебрать врагов со списка
+            //сравнить позиции
+            //нанести урон/ убрать врагов
+            //добавить врагам хп
+            // вынести пикап в мувабле
+            //враги поднимают вещи/ломают бочки
+            // foreach (var VARIABLE in COLLECTION) {
+            //     
+            // }
+            // int playerPosX = GetPlayerPosX();
+            // int playerPosY = GetPlayerPosY();
+            // bool one = Math.Abs(PositionX - playerPosX) == 1 && playerPosY == PositionY;
+            // bool two = Math.Abs(PositionY - playerPosY) == 1 && playerPosX == PositionX;
+            // if (one || two) {
+            //     DealDamage();
+            // }
+        }
         public void UseTnt() {
             if (Inventory.TntQuantity == 0) return;
             Inventory.TntQuantity--;
             var level = GetLevel();
             double dmg = 0;
-            
+
             if (Right < level.Width) {
                 level[Right, PositionY] = new EmptySpace(Right, PositionY);
-                dmg+=0.5;
+                dmg += 0.5;
             }
             if (Left >= 0) {
                 level[Left, PositionY] = new EmptySpace(Left, PositionY);
-                dmg+=0.5;
+                dmg += 0.5;
             }
             if (Bot < level.Height) {
                 level[PositionX, Bot] = new EmptySpace(PositionX, Bot);
-                dmg+=0.5;
+                dmg += 0.5;
             }
             if (Top >= 0) {
                 level[PositionX, Top] = new EmptySpace(PositionX, Top);
-                dmg+=0.5;
+                dmg += 0.5;
             }
 
             if (Right < level.Width && Bot < level.Height) {
                 level[Right, Bot] = new EmptySpace(Right, Bot);
-                dmg+=0.5;
+                dmg += 0.5;
             }
             if (Right < level.Width && Top >= 0) {
                 level[Right, Top] = new EmptySpace(Right, Top);
-                dmg+=0.5;
+                dmg += 0.5;
             }
-            if (Left >= 0  && Bot < level.Height) {
+            if (Left >= 0 && Bot < level.Height) {
                 level[Left, Bot] = new EmptySpace(Left, Bot);
-                dmg+=0.5;
+                dmg += 0.5;
             }
             if (Left >= 0 && Top >= 0) {
                 level[Left, Top] = new EmptySpace(Left, Top);
-                dmg+=0.5;
+                dmg += 0.5;
             }
 
             Energy = Energy / 2;
             SubstractPlayerHp(Convert.ToInt32(dmg));
         }
-
-        private void CollectDiamond() {
-            var value = ItemCollectible.PickUpValue;
-            CollectedDiamonds += value;
-            AllScores["Collected diamonds"][0] += 1;
-            AllScores["Collected diamonds"][1] += value * ScoreMultiplier;
-            Score += value * ScoreMultiplier;
-        }
-
-        private void CollectLuckyBox() {
-            LuckyBox.Collect(() => this);
-            var tmp = LuckyBox.PickUpValue * ScoreMultiplier;
-            AllScores["Collected lucky boxes"][0] += 1;
-            AllScores["Collected lucky boxes"][1] += tmp;
-            Score += tmp;
-        }
-
         private void CheckLose() {
             if (Hp <= 0)
                 _lose();
         }
-
         private void CheckWin() {
             if (CollectedDiamonds >= _diamondsTowWin) //TODO: must change depending on level
                 _win();
         }
-
         private int _frameCounter;
         private void RestoreEnergy() {
             _frameCounter++;

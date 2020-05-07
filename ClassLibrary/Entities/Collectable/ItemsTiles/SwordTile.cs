@@ -9,5 +9,8 @@ namespace ClassLibrary.Entities.Collectable.ItemsTiles {
         public static void Collect(Func<Inventory> getPlayerInventory) {
             getPlayerInventory().SwordLevel++;
         }
+        
+        public override void GameLoopAction() {
+        }
     }
 }

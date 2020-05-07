@@ -36,6 +36,9 @@ namespace ClassLibrary.
                 case ConsoleKey.E:
                     player.UseTnt();
                     break;
+                case ConsoleKey.R:
+                    player.Attack();
+                    break;
                 case ConsoleKey.Escape:
                     changeGameStatus(0);
                     break;

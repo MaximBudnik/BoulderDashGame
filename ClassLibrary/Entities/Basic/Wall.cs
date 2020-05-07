@@ -4,5 +4,7 @@
             EntityType = 5;
             CanMove = false;
         }
+        public override void GameLoopAction() {
+        }
     }
 }

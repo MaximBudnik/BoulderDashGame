@@ -9,5 +9,8 @@ namespace ClassLibrary.Entities.Collectable.ItemsTiles {
         public static void Collect(Func<Inventory> getPlayerInventory) {
             getPlayerInventory().TntQuantity++;
         }
+        
+        public override void GameLoopAction() {
+        }
     }
 }

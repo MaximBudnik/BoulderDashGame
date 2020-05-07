@@ -3,5 +3,7 @@
         public SandTranclucent(int i, int j):base(i, j) {
             EntityType = 8;
         }
+        public override void GameLoopAction() {
+        }
     }
 }

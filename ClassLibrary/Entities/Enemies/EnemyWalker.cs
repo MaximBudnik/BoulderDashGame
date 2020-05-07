@@ -18,6 +18,7 @@ namespace ClassLibrary.Entities.Enemies {
             : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
             EntityType = 6;
             Damage = 5;
+            Hp = 10;
         }
 
         private void EnemyMovement() {

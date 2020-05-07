@@ -13,6 +13,10 @@ namespace ClassLibrary.Entities {
         }
 
         protected readonly Func<Level> GetLevel;
+        public int Hp { get; set; }
+
+        public override void GameLoopAction() {
+        }
 
         protected virtual void Move(string direction, int value, int posX, int posY) {
             PositionX = posX;

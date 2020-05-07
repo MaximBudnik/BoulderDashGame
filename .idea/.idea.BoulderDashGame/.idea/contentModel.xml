@@ -37,7 +37,6 @@
           <e p="basic" t="Include">
             <e p="DedicatedEmptySpace.cs" t="Include" />
             <e p="EmptySpace.cs" t="Include" />
-            <e p="Rock.cs" t="Include" />
             <e p="Sand.cs" t="Include" />
             <e p="SandTranclucent.cs" t="Include" />
             <e p="Wall.cs" t="Include" />
@@ -58,7 +57,7 @@
           <e p="Enemies" t="Include">
             <e p="Enemy.cs" t="Include" />
             <e p="EnemyWalker.cs" t="Include" />
-            <e p="RockProcessor.cs" t="Include" />
+            <e p="Rock.cs" t="Include" />
           </e>
           <e p="Expanding" t="Include">
             <e p="Acid.cs" t="Include" />
