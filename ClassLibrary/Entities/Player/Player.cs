@@ -9,6 +9,16 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Player {
     public class Player : Movable {
+        
+        //animation for forms
+        public int idleFrames = 4;
+        public int moveFrames = 4;
+        public int actionFrames = 1;
+        public bool IsMoving;
+        public int currentAnimation=0;
+        public int currentFrame=0;
+        public int framesLimit;
+        
         public int MaxHp { get; set; } = 10;
 
         public readonly string Name;
@@ -62,6 +72,7 @@ namespace ClassLibrary.Entities.Player {
                 {"Score from lucky box", new[] {0, 0}}
             };
             CanMove = false;
+            framesLimit = idleFrames;
 
             //TODO: delete thiS features (its only for testing)
             Inventory.ArmorLevel = 5;

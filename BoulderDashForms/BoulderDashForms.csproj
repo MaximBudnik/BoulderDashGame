@@ -27,6 +27,14 @@
       <Content Include="Sprites\icons.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Sprites\full spritesheet.png" />
+      <Content Include="Sprites\full spritesheet.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\full tilemap.png" />
+      <Content Include="Sprites\full tilemap.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

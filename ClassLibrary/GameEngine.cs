@@ -15,16 +15,16 @@ using System.Text;
 using System.Threading.Tasks;
 namespace ClassLibrary {
     public class GameEngine {
-        private Action reDraw;
+        private readonly Action _reDraw;
         
         public GameEngine(Action reDraw) {
-            this.reDraw = reDraw;
+            _reDraw = reDraw;
         }
         
         private const int
             GameLogicTickRate = 1; //TODO: carry it out in settings.
         private const int
-            Fps = 5; //TODO: carry it out in settings.
+            Fps = 10; //TODO: carry it out in settings.
 
         private int _gameStatus; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
 
@@ -75,7 +75,7 @@ namespace ClassLibrary {
             
             while (_gameStatus == 1) {
                 Thread.Sleep(1000/Fps);
-                reDraw();
+                _reDraw();
             }
         }
 

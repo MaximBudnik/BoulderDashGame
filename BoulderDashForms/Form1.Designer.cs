@@ -41,7 +41,7 @@
             this.ShowIcon = false;
             this.Tag = "timnti";
             this.Text = "Boulder Dash";
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.onPaint);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
             this.ResumeLayout(false);
         }
         #endregion
