@@ -25,11 +25,20 @@ namespace ClassLibrary.Entities.Player {
 
         private readonly int _moveEnergyCost = 1;
         private readonly int _moveRockEnergyCost = 5;
+        private readonly int _attackEnergyCost = 6;
 
         private readonly int _diamondsTowWin;
 
         private readonly Action _win;
         private readonly Action _lose;
+
+        public int GetScoreToAdd(int value) {
+            return value * ScoreMultiplier;
+        }
+
+        public void AddScore(int value) {
+            Score = value * ScoreMultiplier;
+        }
 
         public Player(
             int i,
@@ -197,61 +206,69 @@ namespace ClassLibrary.Entities.Player {
             Energy = Energy / 2;
         }
         public void Attack() {
-            //перебрать врагов со списка
-            //сравнить позиции
-            //нанести урон/ убрать врагов
-            //добавить врагам хп
-            // вынести пикап в мувабле
-            //враги поднимают вещи/ломают бочки
-            // foreach (var VARIABLE in COLLECTION) {
-            //     
-            // }
-            // int playerPosX = GetPlayerPosX();
-            // int playerPosY = GetPlayerPosY();
-            // bool one = Math.Abs(PositionX - playerPosX) == 1 && playerPosY == PositionY;
-            // bool two = Math.Abs(PositionY - playerPosY) == 1 && playerPosX == PositionX;
-            // if (one || two) {
-            //     DealDamage();
-            // }
+            if(Energy<_attackEnergyCost) return;
+            Energy -= _attackEnergyCost;
+            var level = GetLevel();
+            EnemyWalker tmp=null;
+            if (Right < level.Width && level[Right, PositionY] is EnemyWalker) {
+                tmp = (EnemyWalker) level[Right, PositionY];
+                tmp.Hp -= Inventory.SwordLevel;
+            }
+            else if (Left >= 0 && level[Left, PositionY] is EnemyWalker) {
+                tmp = (EnemyWalker) level[Left, PositionY];
+                tmp.Hp -= Inventory.SwordLevel;
+            }
+            else if (Bot < level.Height && level[PositionX, Bot] is EnemyWalker) {
+                tmp = (EnemyWalker) level[PositionX, Bot];
+                tmp.Hp -= Inventory.SwordLevel;
+            }
+            else if (Top >= 0 && level[PositionX, Top] is EnemyWalker) {
+                tmp = (EnemyWalker) level[PositionX, Top];
+                tmp.Hp -= Inventory.SwordLevel;
+            }
+            if (tmp!=null && tmp.Hp <= 0) {
+                level[tmp.PositionX,tmp.PositionY] = new Diamond(PositionX,PositionY);
+            }
         }
         public void UseTnt() {
             if (Inventory.TntQuantity == 0) return;
             Inventory.TntQuantity--;
             var level = GetLevel();
             double dmg = 0;
+            double tileDamage = 0.9;
 
             if (Right < level.Width) {
                 level[Right, PositionY] = new EmptySpace(Right, PositionY);
-                dmg += 0.5;
+                dmg += tileDamage;
             }
             if (Left >= 0) {
                 level[Left, PositionY] = new EmptySpace(Left, PositionY);
-                dmg += 0.5;
+                dmg += tileDamage;
             }
             if (Bot < level.Height) {
                 level[PositionX, Bot] = new EmptySpace(PositionX, Bot);
-                dmg += 0.5;
+                dmg += tileDamage;
             }
             if (Top >= 0) {
                 level[PositionX, Top] = new EmptySpace(PositionX, Top);
-                dmg += 0.5;
+                dmg += tileDamage;
             }
 
             if (Right < level.Width && Bot < level.Height) {
                 level[Right, Bot] = new EmptySpace(Right, Bot);
-                dmg += 0.5;
+                dmg += tileDamage;
             }
             if (Right < level.Width && Top >= 0) {
                 level[Right, Top] = new EmptySpace(Right, Top);
-                dmg += 0.5;
+                dmg += tileDamage;
             }
             if (Left >= 0 && Bot < level.Height) {
                 level[Left, Bot] = new EmptySpace(Left, Bot);
-                dmg += 0.5;
+                dmg += tileDamage;
             }
             if (Left >= 0 && Top >= 0) {
                 level[Left, Top] = new EmptySpace(Left, Top);
-                dmg += 0.5;
+                dmg += tileDamage;
             }
 
             Energy = Energy / 2;

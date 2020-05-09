@@ -2,7 +2,10 @@
 
 namespace ClassLibrary.Entities {
      public abstract class GameEntity {
-        
+
+         public static int formsSize = 14;
+         
+         
         public int EntityType { get; protected set; }
         public int PositionX;
         public int PositionY;

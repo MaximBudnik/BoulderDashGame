@@ -11,10 +11,9 @@ namespace ClassLibrary.Entities.Collectable {
         
         public void Collect( Func<Player.Player> getPlayer) { //TODO: write text in xaml on pickup (impossible in console)
             Player.Player player = getPlayer();
-            var temp = PickUpValue * player.ScoreMultiplier;
             player.AllScores["Collected lucky boxes"][0] += 1;
-            player.AllScores["Collected lucky boxes"][1] += temp;
-            player.Score += temp;
+            player.AllScores["Collected lucky boxes"][1] += player.GetScoreToAdd(PickUpValue);
+            player.AddScore(PickUpValue);
             List<int> pool = new List<int>{
                 1,1,1,1,1,
                 2,2,2,2,2,
@@ -30,9 +29,9 @@ namespace ClassLibrary.Entities.Collectable {
                 case 1:
                     tmp = Randomizer.Random(10);
                     player.CollectedDiamonds += tmp;
-                    player.Score += tmp*player.ScoreMultiplier;
+                    player.AddScore(tmp);
                     player.AllScores["Diamonds from lucky box"][0] += 1;
-                    player.AllScores["Diamonds from lucky box"][1] += tmp*player.ScoreMultiplier;
+                    player.AllScores["Diamonds from lucky box"][1] += player.GetScoreToAdd(tmp);
                     break;
                 case 2:
                     player.Hp = player.MaxHp;
@@ -48,12 +47,12 @@ namespace ClassLibrary.Entities.Collectable {
                     break;
                 case 6:
                     tmp = Randomizer.Random(10,30);
-                    player.Score += tmp*player.ScoreMultiplier;
+                    player.AddScore(tmp);
                     player.AllScores["Score from lucky box"][0] += 1;
-                    player.AllScores["Score from lucky box"][1] += tmp*player.ScoreMultiplier;
+                    player.AllScores["Score from lucky box"][1] += player.GetScoreToAdd(tmp);
                     break;
                 case 7:
-                    player.ScoreMultiplier *=Randomizer.Random(2,5);
+                    player.ScoreMultiplier +=Randomizer.Random(2,3);
                     break;
                 default:
                     throw new Exception("Out of range in LuckyBox");

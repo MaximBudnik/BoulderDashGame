@@ -4,18 +4,34 @@ using System.Threading.Tasks;
 using ClassLibrary.ConsoleInterface;
 using ClassLibrary.DataLayer;
 using ClassLibrary.InputProcessors;
-
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 namespace ClassLibrary {
     public class GameEngine {
+        private Action reDraw;
+        
+        public GameEngine(Action reDraw) {
+            this.reDraw = reDraw;
+        }
+        
         private const int
             GameLogicTickRate = 1; //TODO: carry it out in settings.
+        private const int
+            Fps = 5; //TODO: carry it out in settings.
 
         private int _gameStatus; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
 
         private int _currentMenuAction;
         private readonly int MenuItems = 6;
 
-        private void ChangeGameStatus(int i) {
+        public void ChangeGameStatus(int i) {
             if (i >= 0 && i < 4)
                 _gameStatus = i;
             else
@@ -32,38 +48,49 @@ namespace ClassLibrary {
         }
 
         private readonly Menu _menu = new Menu();
-        private readonly GameLogic _gameLogic = new GameLogic();
+        public readonly GameLogic GameLogic = new GameLogic();
         private readonly DataInterlayer _dataInterlayer = new DataInterlayer();
         private readonly MenuInputProcessor _menuInputProcessor = new MenuInputProcessor();
-        private readonly GameInterface _gameInterface = new GameInterface();
-        private readonly AfterLevelScreen _afterLevelScreen = new AfterLevelScreen();
+        // private readonly GameInterface _gameInterface = new GameInterface();
+        // private readonly AfterLevelScreen _afterLevelScreen = new AfterLevelScreen();
         private readonly GameInputProcessor _gameInputProcessor = new GameInputProcessor();
 
+        
+        
+        
+        
         private void GraphicsThread() {
-            var currentLevel = _gameLogic.CurrentLevel;
-            var player = _gameLogic.Player;
+
+            #region Console drawing
+            //Console
+            // while (_gameStatus == 1) {
+            //     _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
+            //     _gameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantity, player.CollectedDiamonds,
+            //         player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name, player.Inventory);
+            //     _gameInterface.NewDraw(() => currentLevel);
+            // }
+            // if (_gameStatus == 2) _afterLevelScreen.DrawGameWin(player.Score, player.AllScores);
+            // else if (_gameStatus == 3) _afterLevelScreen.DrawGameLose();
+            #endregion
+            
             while (_gameStatus == 1) {
-                _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
-                _gameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantity, player.CollectedDiamonds,
-                    player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name, player.Inventory);
-                _gameInterface.NewDraw(() => currentLevel);
+                Thread.Sleep(1000/Fps);
+                reDraw();
             }
-            if (_gameStatus == 2) _afterLevelScreen.DrawGameWin(player.Score, player.AllScores);
-            else if (_gameStatus == 3) _afterLevelScreen.DrawGameLose();
         }
 
         private void GameLogicThread() {
             while (_gameStatus == 1) {
-                Console.CursorVisible = false;
-                Thread.Sleep(1000 / GameLogicTickRate);
-                _gameLogic.GameLoop();
+                //Console.CursorVisible = false;
+               Thread.Sleep(1000 / GameLogicTickRate);
+                GameLogic.GameLoop();
             }
         }
 
         private void InputThread() {
             while (_gameStatus == 1) {
                 var c = Console.ReadKey(true);
-                _gameInputProcessor.ProcessInput(c.Key, () => _gameLogic.Player, ChangeGameStatus);
+                _gameInputProcessor.ProcessInput(c.Key, () => GameLogic.Player, ChangeGameStatus);
             }
         }
 
@@ -72,23 +99,33 @@ namespace ClassLibrary {
                 SoundPlayer soundPlayer = new SoundPlayer();
                 soundPlayer.playMusic();
             });
-            // musicPlayer.Start(); //TODO: dont forget to enable music on build!
+            //musicPlayer.Start(); //TODO: dont forget to enable music on build!
 
-            _menu.DrawMenu(_currentMenuAction);
-            MenuGameCycle();
+            //Console
+            //_menu.DrawMenu(_currentMenuAction);
 
-            void MenuGameCycle() {
-                _menu.DrawMenu(_currentMenuAction);
-                while (_gameStatus == 0) CreateMenu();
-                if (_gameStatus == 1) {
-                    Console.Clear();
-                    Parallel.Invoke(GraphicsThread, GameLogicThread, InputThread);
-                }
-                MenuGameCycle();
-            }
+            //for develop
+            _gameStatus = 1;
+            GameLogic.CreateLevel(-1, "testName", ChangeGameStatus, () => _dataInterlayer);
+            GameLogic.Player.Score = 100;
+            GameLogic.CurrentSave = new Save();
+            Parallel.Invoke(GraphicsThread,GameLogicThread); //and also GraphicsThread, , GameLogicThread , InputThread
+            // MenuGameCycle();
+            //
+            // void MenuGameCycle() {
+            //     //Console
+            //     //_menu.DrawMenu(_currentMenuAction);
+            //     //while (_gameStatus == 0) CreateConsoleMenu();
+            //     if (_gameStatus == 1) {
+            //         //Console
+            //         //Console.Clear();
+            //         Parallel.Invoke(GraphicsThread, GameLogicThread); //and also , InputThread
+            //     }
+            //     MenuGameCycle();
+            // }
         }
 
-        private void CreateMenu() {
+        private void CreateConsoleMenu() {
             var c = Console.ReadKey(true);
             _menuInputProcessor.ProcessInput(
                 c.Key,
@@ -104,9 +141,9 @@ namespace ClassLibrary {
                     var name = Console.ReadLine();
                     _dataInterlayer.AddGameSave(name);
                     var currentSave = _dataInterlayer.GetGameSaveByName(name);
-                    _gameLogic.CreateLevel(currentSave.LevelName, currentSave.Name, ChangeGameStatus,
+                    GameLogic.CreateLevel(currentSave.LevelName, currentSave.Name, ChangeGameStatus,
                         () => _dataInterlayer);
-                    _gameLogic.CurrentSave = currentSave;
+                    GameLogic.CurrentSave = currentSave;
                 },
                 () => {
                     _menu.DrawHelp();
@@ -146,9 +183,9 @@ namespace ClassLibrary {
             );
         }
         private void ResumeGame(Save save) {
-            _gameLogic.CreateLevel(save.LevelName, save.Name, ChangeGameStatus, () => _dataInterlayer);
-            _gameLogic.Player.Score = save.Score;
-            _gameLogic.CurrentSave = save;
+            GameLogic.CreateLevel(save.LevelName, save.Name, ChangeGameStatus, () => _dataInterlayer);
+            GameLogic.Player.Score = save.Score;
+            GameLogic.CurrentSave = save;
         }
     }
 }

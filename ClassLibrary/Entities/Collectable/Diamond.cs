@@ -11,8 +11,8 @@ namespace ClassLibrary.Entities.Collectable {
             var player = getPlayer();
             player.CollectedDiamonds += value;
             player.AllScores["Collected diamonds"][0] += 1;
-            player.AllScores["Collected diamonds"][1] += value * player.ScoreMultiplier;
-            player.Score += value * player.ScoreMultiplier;
+            player.AllScores["Collected diamonds"][1] += player.GetScoreToAdd(value);
+            player.AddScore(value);
         }
     }
 }

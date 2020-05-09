@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Sprites\mainSprites.png" />
+      <Content Include="Sprites\mainSprites.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\secondarySprites.png" />
+      <Content Include="Sprites\secondarySprites.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\Tileset.png" />
+      <Content Include="Sprites\Tileset.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\icons.png" />
+      <Content Include="Sprites\icons.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+</Project>

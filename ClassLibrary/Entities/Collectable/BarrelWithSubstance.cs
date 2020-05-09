@@ -16,16 +16,16 @@ namespace ClassLibrary.Entities.Collectable {
         
         public void Collect(Func<Level> getLevel, Action<int> changePlayerHp) {
             var level = getLevel();
-            if (Right < level.Width) {
+            if (Right < level.Width && 33 >= Randomizer.Random(100)) {
                 level[Right, PositionY]  = new Acid(Right, PositionY, getLevel, changePlayerHp);
             }
-            if (Left >= 0 ) {
+            if (Left >= 0 && 33 >= Randomizer.Random(100)) {
                 level[Left, PositionY] = new Acid(Left, PositionY, getLevel,  changePlayerHp);
             }
-            if (Bot < level.Height ) {
+            if (Bot < level.Height && 33 >= Randomizer.Random(100)) {
                 level[PositionX, Bot] = new Acid(PositionX, Bot, getLevel,  changePlayerHp);
             }
-            if (Top >= 0 ) {
+            if (Top >= 0 && 33 >= Randomizer.Random(100)) {
                 level[PositionX, Top]  = new Acid(PositionX, Top, getLevel,  changePlayerHp);
             }
         }

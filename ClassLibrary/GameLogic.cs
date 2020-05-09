@@ -93,24 +93,24 @@ namespace ClassLibrary {
 
         private void Win() {
             _changeGameStatus(2);
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
             DataInterlayer dataInterlayer = _getDataLayer();
             CurrentSave.LevelName = CurrentLevel.LevelName;
             CurrentSave.Score = Player.Score;
             CurrentSave.LevelName += 1;
             dataInterlayer.ChangeGameSave(CurrentSave);
             _changeGameStatus(0);
-            Console.ReadLine();
+         //   Console.ReadLine();
         }
 
         private void Lose() {
             _changeGameStatus(3);
-            Thread.Sleep(1000);
+          //  Thread.Sleep(1000);
             DataInterlayer dataInterlayer = _getDataLayer();
             dataInterlayer.AddBestScore(Player.Name, Player.Score);
             dataInterlayer.DeleteGameSave(CurrentSave);
             _changeGameStatus(0);
-            Console.ReadLine();
+          //  Console.ReadLine();
         }
     }
 }
