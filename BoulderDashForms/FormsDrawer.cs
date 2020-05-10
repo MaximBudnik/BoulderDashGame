@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
+using System.Runtime.InteropServices;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Enemies;
@@ -16,31 +18,49 @@ namespace BoulderDashForms {
         private readonly Image _icons;
         private readonly Image _attack;
         private readonly Image _effects;
-        private readonly Image _bars;
-        private readonly Image _barsEmpty;
+        private readonly Image _hpFull;
+        private readonly Image _hpEmpty;
+        private readonly Image _shield;
+        private readonly Image _energy;
         private List<Action> _defferedFx;
+
+        private readonly Font _menuFont;
+        private readonly Font _boldFont;
 
         public FormsDrawer() {
             string mainsSpritesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\mainSprites.png");
-            string secondarySpritesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\secondarySprites.png");
+            string secondarySpritesPath =
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\secondarySprites.png");
             string TilesetPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\Tileset.png");
             string iconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\icons.png");
             string attackPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\attack.png");
             string effectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\fx.png");
-            string barsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\bars.png");
-            string barsEmptyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\barsEmpty.png");
+            string hpFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart.png");
+            string hpEmptyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart_empty.png");
+            string shieldPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\shield.png");
+            string energyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\energy.png");
+
             _mainSprites = new Bitmap(mainsSpritesPath);
             _secondarySprites = new Bitmap(secondarySpritesPath);
             _tileset = new Bitmap(TilesetPath);
             _icons = new Bitmap(iconsPath);
             _effects = new Bitmap(effectPath);
             _attack = new Bitmap(attackPath);
-            _bars = new Bitmap(barsPath);
-            _barsEmpty = new Bitmap(barsEmptyPath);
+            _hpFull = new Bitmap(hpFullPath);
+            _hpEmpty = new Bitmap(hpEmptyPath);
+            _shield = new Bitmap(shieldPath);
+            _energy = new Bitmap(energyPath);
+
+            PrivateFontCollection fontCollection = new PrivateFontCollection();
+            fontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\monogram.ttf"));
+            fontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\ThaleahFat.ttf"));
+            FontFamily family1 = fontCollection.Families[0];
+            FontFamily family2 = fontCollection.Families[1];
+            _menuFont = new Font(family1, 22);
+            _boldFont = new Font(family2, 22);
         }
 
         private void PlayerAnimation(Player player, Graphics graphics, int i, int j) {
-            
             Rectangle destRect =
                 new Rectangle(new Point(j * GameEntity.formsSize * 2, i * GameEntity.formsSize * 2),
                     new Size(GameEntity.formsSize * 2, GameEntity.formsSize * 2));
@@ -110,7 +130,7 @@ namespace BoulderDashForms {
                     srcRect = new Rectangle(new Point(11 * 16 + player.currentFrame * 16, 2 * 16),
                         new Size(16, 16));
                     graphics.DrawImage(_effects, destRect, srcRect, GraphicsUnit.Pixel);
-                    
+
                     if (player.currentFrame == player.framesLimit - 1) player.SetAnimation(0);
                     break;
                 }
@@ -128,8 +148,8 @@ namespace BoulderDashForms {
                 player.currentFrame = 0;
         }
 
-        private Rectangle GetWalkerAnimation(EnemyWalker enemy){
-            Rectangle res = new Rectangle(new Point(23 * 16+ enemy.currentFrame*16, 5 * 16), new Size(16, 16));
+        private Rectangle GetWalkerAnimation(EnemyWalker enemy) {
+            Rectangle res = new Rectangle(new Point(23 * 16 + enemy.currentFrame * 16, 5 * 16), new Size(16, 16));
             if (enemy.currentFrame < enemy.idleFrames - 1)
                 enemy.currentFrame++;
             else
@@ -138,7 +158,7 @@ namespace BoulderDashForms {
         }
 
         private Rectangle GetDiggerAnimation(EnemyDigger enemy) {
-            Rectangle res  = new Rectangle(new Point(27 * 16+ enemy.currentFrame*16, 7 * 16), new Size(16, 16));
+            Rectangle res = new Rectangle(new Point(27 * 16 + enemy.currentFrame * 16, 7 * 16), new Size(16, 16));
             if (enemy.currentFrame < enemy.idleFrames - 1)
                 enemy.currentFrame++;
             else
@@ -148,11 +168,11 @@ namespace BoulderDashForms {
 
         private Rectangle GetDiamondAnimation(Diamond diamond) {
             Rectangle res;
-            if (diamond.currentFrame<=256) {
-                res =new Rectangle(new Point(1 * 16, 7 * 16), new Size(16, 16));
+            if (diamond.currentFrame <= 256) {
+                res = new Rectangle(new Point(1 * 16, 7 * 16), new Size(16, 16));
             }
             else {
-                res =new Rectangle(new Point(2 * 16, 7 * 16), new Size(16, 16));
+                res = new Rectangle(new Point(2 * 16, 7 * 16), new Size(16, 16));
             }
             if (diamond.currentFrame < diamond.idleFrames - 1)
                 diamond.currentFrame++;
@@ -160,7 +180,7 @@ namespace BoulderDashForms {
                 diamond.currentFrame = 0;
             return res;
         }
-        
+
         public void DrawGame(Graphics graphics, Level currentLevel, Player player) {
             _defferedFx = new List<Action>();
             for (int i = 0; i < currentLevel.Width; i++) {
@@ -204,7 +224,7 @@ namespace BoulderDashForms {
                             break;
                         case 6:
                             DrawFloorTile();
-                            srcRect = GetWalkerAnimation((EnemyWalker)currentLevel[i, j]);
+                            srcRect = GetWalkerAnimation((EnemyWalker) currentLevel[i, j]);
                             graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 7:
@@ -268,21 +288,103 @@ namespace BoulderDashForms {
 
             DrawInterface(graphics, currentLevel, player);
         }
-        //     _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
-        //     _gameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantity, player.CollectedDiamonds,
-        //         player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name, player.Inventory);
+        //TODO: v obuchalke skazat chto рядоми с камнями есть шанс промахнуться по противнику
+        //      currentLevel.Aim
+        //     currentLevel.DiamondsQuantity, player.CollectedDiamonds, dont forget to make text on actions (kill/lucky box)
+
         private void DrawInterface(Graphics graphics, Level currentLevel, Player player) {
+            //Draw hp bar
+            Rectangle destRect;
+            Rectangle srcRect;
             for (int i = 0; i < player.MaxHp; i++) {
-                Rectangle destRect =
-                    new Rectangle(new Point(10*i, 10),
-                         new Size(25, 25));
-                Rectangle srcRect = new Rectangle(new Point(20*16, 16*16), new Size(16, 16));
-                graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                destRect =
+                    new Rectangle(new Point(24 * i, 16),
+                        new Size(32, 32));
+                if (player.Hp >= i) {
+                    srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
+                    graphics.DrawImage(_hpFull, destRect, srcRect, GraphicsUnit.Pixel);
+                }
+                else {
+                    srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
+                    graphics.DrawImage(_hpEmpty, destRect, srcRect, GraphicsUnit.Pixel);
+                }
             }
-            // Rectangle destRect =
-            //     new Rectangle(new Point(0, 0),
-            //         new Size(500, 150));
-             
+            //Draw armor
+            for (int i = 0; i < player.Inventory.ArmorLevel; i++) {
+                destRect =
+                    new Rectangle(new Point(16 * i, 24),
+                        new Size(32, 32));
+                srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
+                graphics.DrawImage(_shield, destRect, srcRect, GraphicsUnit.Pixel);
+            }
+
+            //mana
+
+            for (int i = 0; i < player.Energy; i++) {
+                destRect =
+                    new Rectangle(new Point(16 * i, 64),
+                        new Size(32, 32));
+                srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
+                graphics.DrawImage(_energy, destRect, srcRect, GraphicsUnit.Pixel);
+            }
+
+            destRect =
+                new Rectangle(new Point(256, 16),
+                    new Size(32, 32));
+            switch (player.Inventory.SwordLevel) {
+                case 0:
+                    srcRect = new Rectangle(new Point(6 * 16, 18 * 16), new Size(0, 0));
+                    break;
+                case 1:
+                    srcRect = new Rectangle(new Point(2 * 16, 18 * 16), new Size(15, 15));
+                    break;
+                case 2:
+                    srcRect = new Rectangle(new Point(3 * 16, 18 * 16), new Size(15, 15));
+                    break;
+                case 3:
+                    srcRect = new Rectangle(new Point(4 * 16, 18 * 16), new Size(15, 15));
+                    break;
+                case 4:
+                    srcRect = new Rectangle(new Point(5 * 16, 18 * 16), new Size(15, 15));
+                    break;
+                default:
+                    srcRect = new Rectangle(new Point(6 * 16, 18 * 16), new Size(15, 15));
+                    break;
+            }
+            graphics.DrawImage(_icons, destRect, srcRect, GraphicsUnit.Pixel);
+
+            //bombs and converters
+            for (int i = 0; i < player.Inventory.TntQuantity; i++) {
+                destRect =
+                    new Rectangle(new Point(16 * i + 288, 16),
+                        new Size(32, 32));
+                srcRect = new Rectangle(new Point(15 * 16, 3 * 16), new Size(15, 15));
+                graphics.DrawImage(_secondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
+            }
+            for (int i = 0; i < player.Inventory.StoneInDiamondsConverterQuantity; i++) {
+                destRect =
+                    new Rectangle(new Point(16 * i + 288, 24),
+                        new Size(32, 32));
+                srcRect = new Rectangle(new Point(12 * 16, 12 * 16), new Size(16, 16));
+                graphics.DrawImage(_secondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
+            }
+
+            //diamonds left
+            for (int i = 0; i < ( currentLevel.DiamondsQuantity - player.CollectedDiamonds); i++) {
+                destRect =
+                    new Rectangle(new Point(8 * i + 600, 32),
+                        new Size(16, 16));
+                srcRect = new Rectangle(new Point(1 * 16, 7 * 16), new Size(16, 16));
+                graphics.DrawImage(_icons, destRect, srcRect, GraphicsUnit.Pixel);
+            }
+
+            //text elements
+            graphics.DrawString($"{currentLevel.Aim}", _menuFont, Brushes.Crimson, 600, 8);
+            graphics.DrawString($"Level {currentLevel.LevelName}", _boldFont, Brushes.Crimson, 800, 8);
+            graphics.DrawString($"{player.Name}", _boldFont, Brushes.Crimson, 800, 30);
+
+            graphics.DrawString($"Score x{player.ScoreMultiplier.ToString()}", _boldFont, Brushes.Crimson, 930, 8);
+            graphics.DrawString(player.Score.ToString(), _boldFont, Brushes.Crimson, 930, 30);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace ClassLibrary.Entities.Player {
         public readonly int MaxEnergy = 20;
         public int Energy { get; private set; } = 20;
         public int CollectedDiamonds { get; set; }
-        public int EnergyRestoreTick { get; set; } = 2;
+        public int EnergyRestoreTick { get; set; } = 1;
         public int ScoreMultiplier { get; set; } = 10;
         public int Score { get; set; }
 
@@ -49,9 +49,9 @@ namespace ClassLibrary.Entities.Player {
         public int GetScoreToAdd(int value) {
             return value * ScoreMultiplier;
         }
-
+        //TODO: add scores for picking inventory and killing enemies
         public void AddScore(int value) {
-            Score = value * ScoreMultiplier;
+            Score += value * ScoreMultiplier;
         }
 
         public Player(
@@ -315,12 +315,9 @@ namespace ClassLibrary.Entities.Player {
             if (CollectedDiamonds >= _diamondsTowWin) //TODO: must change depending on level
                 _win();
         }
-        private int _frameCounter;
         private void RestoreEnergy() {
-            _frameCounter++;
-            if (Energy < MaxEnergy && _frameCounter >= 2) {
+            if (Energy < MaxEnergy) {
                 Energy += EnergyRestoreTick;
-                _frameCounter = 0;
             }
         }
         

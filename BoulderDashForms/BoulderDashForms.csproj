@@ -43,6 +43,41 @@
       <None Remove="Sprites\Health Bar Asset Pack 2 by Adwit Rahman\Health Bar Asset Pack 2.2 by Adwit Rahman.psd" />
       <None Remove="Sprites\bars.png" />
       <None Remove="Sprites\barsEmpty.png" />
+      <None Remove="Sprites\heart.png" />
+      <Content Include="Sprites\heart.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\heart_empty.png" />
+      <Content Include="Sprites\heart_empty.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\shield.png" />
+      <Content Include="Sprites\shield.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\sword.png" />
+      <Content Include="Sprites\sword.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\orb_blue.png" />
+      <Content Include="Sprites\energy.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Fonts\monogram.ttf" />
+      <EmbeddedResource Include="Fonts\monogram.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Fonts\m5x7.ttf" />
+      <EmbeddedResource Include="Fonts\m5x7.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Fonts\ThaleahFat.ttf" />
+      <EmbeddedResource Include="Fonts\ThaleahFat.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
     </ItemGroup>
 
 </Project>

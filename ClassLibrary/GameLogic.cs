@@ -51,7 +51,7 @@ namespace ClassLibrary {
                         var tmp = (Player) CurrentLevel[i, j];
                         tmp.GameLoopAction();
                         used.Add(tmp);
-                        Player = (Player) CurrentLevel[i, j];
+                        Player = tmp;
                     }
                     if (CurrentLevel[i, j] is EnemyWalker ) {
                         var tmp = (EnemyWalker) CurrentLevel[i, j];

@@ -10,6 +10,7 @@
         <e p="Fonts" t="Include">
           <e p="m5x7.ttf" t="Include" />
           <e p="monogram.ttf" t="Include" />
+          <e p="ThaleahFat.ttf" t="Include" />
         </e>
         <e p="Form1.cs" t="Include" />
         <e p="Form1.Designer.cs" t="Include" />
@@ -27,33 +28,16 @@
         <e p="Sprites" t="Include">
           <e p="attack.png" t="Include" />
           <e p="button UI.png" t="Include" />
+          <e p="energy.png" t="Include" />
           <e p="fx.png" t="Include" />
-          <e p="Hearts" t="Include">
-            <e p="PNG" t="Include">
-              <e p="animated" t="Include">
-                <e p="border" t="Include">
-                  <e p="heart_animated_1.png" t="Include" />
-                  <e p="heart_animated_2.png" t="Include" />
-                </e>
-                <e p="no_border" t="Include">
-                  <e p="heart_animated_1.png" t="Include" />
-                  <e p="heart_animated_2.png" t="Include" />
-                </e>
-              </e>
-              <e p="basic" t="Include">
-                <e p="background.png" t="Include" />
-              </e>
-              <e p="health_bar" t="Include">
-                <e p="health_bar.png" t="Include" />
-                <e p="health_bar_decoration.png" t="Include" />
-                <e p="info.txt" t="Include" />
-              </e>
-            </e>
-          </e>
+          <e p="heart.png" t="Include" />
+          <e p="heart_empty.png" t="Include" />
           <e p="icons.png" t="Include" />
           <e p="keyboard.png" t="Include" />
           <e p="mainSprites.png" t="Include" />
           <e p="secondarySprites.png" t="Include" />
+          <e p="shield.png" t="Include" />
+          <e p="sword.png" t="Include" />
           <e p="Tileset.png" t="Include" />
         </e>
       </e>

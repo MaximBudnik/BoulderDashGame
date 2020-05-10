@@ -10,7 +10,7 @@ using ClassLibrary.Entities.Player;
 
 namespace ClassLibrary.Matrix {
     public class Level : Matrix {
-        public int DiamondsQuantity { get; } = 10; //TODO: change
+        public int DiamondsQuantity { get; } = 20; //TODO: change
         public int LevelName { get; }
         public string Aim { get; } = "Collect diamonds";
 
