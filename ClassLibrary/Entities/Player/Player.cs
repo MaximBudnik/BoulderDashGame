@@ -12,16 +12,14 @@ namespace ClassLibrary.Entities.Player {
     public class Player : Movable {
         
         //animation for forms
-        public int idleFrames = 4;
-        public int moveFrames = 4;
-        public int damageFrames = 2;
-        public int attackFrames = 3;
-        public int explosionFrames = 7;
-        public int teleportFrames = 4;
-        public int converterFrames = 3;
-        public bool IsMoving;
+        private int moveFrames = 4;
+        private int damageFrames = 2;
+        private int attackFrames = 3;
+        private int explosionFrames = 7;
+        private int teleportFrames = 4;
+        private int converterFrames = 3;
         public int currentAnimation=0;
-        public int currentFrame=0;
+        public bool IsMoving;
         public int framesLimit;
         public int reverse;
         
@@ -244,21 +242,21 @@ namespace ClassLibrary.Entities.Player {
             SetAnimation(3);
             Energy -= _attackEnergyCost;
             var level = GetLevel();
-            EnemyWalker tmp=null;
-            if (Right < level.Width && level[Right, PositionY] is EnemyWalker) {
-                tmp = (EnemyWalker) level[Right, PositionY];
+            Enemy tmp=null;
+            if (Right < level.Width && level[Right, PositionY] is Enemy) {
+                tmp = (Enemy) level[Right, PositionY];
                 tmp.Hp -= Inventory.SwordLevel;
             }
-            else if (Left >= 0 && level[Left, PositionY] is EnemyWalker) {
-                tmp = (EnemyWalker) level[Left, PositionY];
+            else if (Left >= 0 && level[Left, PositionY] is Enemy) {
+                tmp = (Enemy) level[Left, PositionY];
                 tmp.Hp -= Inventory.SwordLevel;
             }
-            else if (Bot < level.Height && level[PositionX, Bot] is EnemyWalker) {
-                tmp = (EnemyWalker) level[PositionX, Bot];
+            else if (Bot < level.Height && level[PositionX, Bot] is Enemy) {
+                tmp = (Enemy) level[PositionX, Bot];
                 tmp.Hp -= Inventory.SwordLevel;
             }
-            else if (Top >= 0 && level[PositionX, Top] is EnemyWalker) {
-                tmp = (EnemyWalker) level[PositionX, Top];
+            else if (Top >= 0 && level[PositionX, Top] is Enemy) {
+                tmp = (Enemy) level[PositionX, Top];
                 tmp.Hp -= Inventory.SwordLevel;
             }
             if (tmp!=null && tmp.Hp <= 0) {

@@ -7,6 +7,10 @@
       <e p="BoulderDashForms" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="BoulderDashForms.csproj" t="IncludeRecursive" />
+        <e p="Fonts" t="Include">
+          <e p="m5x7.ttf" t="Include" />
+          <e p="monogram.ttf" t="Include" />
+        </e>
         <e p="Form1.cs" t="Include" />
         <e p="Form1.Designer.cs" t="Include" />
         <e p="Form1.resx" t="Include" />
@@ -24,7 +28,30 @@
           <e p="attack.png" t="Include" />
           <e p="button UI.png" t="Include" />
           <e p="fx.png" t="Include" />
+          <e p="Hearts" t="Include">
+            <e p="PNG" t="Include">
+              <e p="animated" t="Include">
+                <e p="border" t="Include">
+                  <e p="heart_animated_1.png" t="Include" />
+                  <e p="heart_animated_2.png" t="Include" />
+                </e>
+                <e p="no_border" t="Include">
+                  <e p="heart_animated_1.png" t="Include" />
+                  <e p="heart_animated_2.png" t="Include" />
+                </e>
+              </e>
+              <e p="basic" t="Include">
+                <e p="background.png" t="Include" />
+              </e>
+              <e p="health_bar" t="Include">
+                <e p="health_bar.png" t="Include" />
+                <e p="health_bar_decoration.png" t="Include" />
+                <e p="info.txt" t="Include" />
+              </e>
+            </e>
+          </e>
           <e p="icons.png" t="Include" />
+          <e p="keyboard.png" t="Include" />
           <e p="mainSprites.png" t="Include" />
           <e p="secondarySprites.png" t="Include" />
           <e p="Tileset.png" t="Include" />
@@ -82,6 +109,7 @@
           </e>
           <e p="Enemies" t="Include">
             <e p="Enemy.cs" t="Include" />
+            <e p="EnemyDigger.cs" t="Include" />
             <e p="EnemyWalker.cs" t="Include" />
             <e p="Rock.cs" t="Include" />
           </e>

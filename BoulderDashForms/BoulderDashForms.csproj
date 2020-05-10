@@ -39,6 +39,10 @@
       </Content>
       <None Remove="Sprites\teleport.png" />
       <None Remove="Sprites\Crystal.png" />
+      <None Remove="Sprites\Health Bar Asset Pack 2 by Adwit Rahman\Darkupdate.png" />
+      <None Remove="Sprites\Health Bar Asset Pack 2 by Adwit Rahman\Health Bar Asset Pack 2.2 by Adwit Rahman.psd" />
+      <None Remove="Sprites\bars.png" />
+      <None Remove="Sprites\barsEmpty.png" />
     </ItemGroup>
 
 </Project>

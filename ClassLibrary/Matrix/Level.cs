@@ -15,6 +15,8 @@ namespace ClassLibrary.Matrix {
         public string Aim { get; } = "Collect diamonds";
 
         private int WalkersCount { get; set; }
+        private int DiggersCount { get; set; }
+
 
         //fields for creating level
         public string LevelType { get; private set; } = "red";
@@ -54,7 +56,8 @@ namespace ClassLibrary.Matrix {
             this.getPlayerPositionY = getPlayerPositionY;
             this.substractPlayerHp = substractPlayerHp;
             this.setPlayer = setPlayer;
-            WalkersCount = 6;
+            WalkersCount = 4;
+            DiggersCount = 3;
             matrix = new GameEntity[width, height];
             DiggerAlgorithm();
         }
@@ -184,6 +187,9 @@ namespace ClassLibrary.Matrix {
                         matrix[i, j] = fillOneTitle(i, j, 5);
                 }
 
+            
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
             //create enemies in random points
             while (WalkersCount > 0) {
                 var posX = rand.Next(width);
@@ -195,6 +201,19 @@ namespace ClassLibrary.Matrix {
                     WalkersCount--;
                 }
             }
+            
+            while (DiggersCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityType == 7) {
+                    var enemy = new EnemyDigger(posX, posY, getLevel, getPlayerPositionX,
+                        getPlayerPositionY, substractPlayerHp);
+                    matrix[posX, posY] = enemy;
+                    DiggersCount--;
+                }
+            }
+            
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
             // here i fill the rest of empty space that was created be rooms 
             for (var i = 0; i < width; i++)

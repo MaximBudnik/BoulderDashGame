@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
-    public class EnemyWalker : Enemy {
+    public class EnemyDigger : Enemy {
         public new void GameLoopAction() {
             EnemyMovement();
             EnemyDamageNearTitles();
         }
 
-        public EnemyWalker(int i, int j,
+        public EnemyDigger(int i, int j,
             Func<Level> getLevel,
             Func<int> getPlayerPosX, Func<int> getPlayerPosY,
             Action<int> changePlayerHp
         )
             : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
-            EntityType = 6;
-            Damage = 5;
-            Hp = 10;
-            
+            EntityType = 13;
+            Damage = 2;
+            Hp = 5;
+
             //forms
-            currentFrame=Randomizer.Random(0,3);
+            currentFrame = Randomizer.Random(0, 4);
         }
 
         private void EnemyMovement() {
@@ -31,14 +30,14 @@ namespace ClassLibrary.Entities.Enemies {
             var moves = new List<string>();
 
             if (playerPosX < PositionX && Left < level.Width &&
-                level[Left, PositionY].CanMove)
+                level[Left, PositionY].EntityType != 0)
                 moves.Add("left");
-            if (playerPosX > PositionX && Right >= 0 && level[Right, PositionY].CanMove)
+            if (playerPosX > PositionX && Right >= 0 && level[Right, PositionY].EntityType != 0)
                 moves.Add("right");
             if (playerPosY > PositionY && Bot < level.Height &&
-                level[PositionX, Bot].CanMove)
+                level[PositionX, Bot].EntityType != 0)
                 moves.Add("down");
-            if (playerPosY < PositionY && Top >= 0 && level[PositionX, Top].CanMove)
+            if (playerPosY < PositionY && Top >= 0 && level[PositionX, Top].EntityType != 0)
                 moves.Add("up");
             moves.Add("hold");
             var action = Randomizer.GetRandomFromList(moves);

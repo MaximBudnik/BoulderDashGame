@@ -9,6 +9,7 @@ namespace ClassLibrary.Entities.Enemies {
             EntityType = 3;
             Damage = 3;
             CanMove = false;
+            Hp = 1000;
         }
         private bool _isFalling = false;
         public new void GameLoopAction() {

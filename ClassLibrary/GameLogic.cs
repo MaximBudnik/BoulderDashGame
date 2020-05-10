@@ -75,6 +75,11 @@ namespace ClassLibrary {
                         _chanceToDeleteAcidBlock+=1;
                         CheckIfDeleteAllAcidBlocks();
                     }
+                    if (CurrentLevel[i, j] is EnemyDigger) {
+                        var tmp = (EnemyDigger) CurrentLevel[i, j];
+                        tmp.GameLoopAction();
+                        used.Add(tmp);
+                    }
                 }
             }
         }

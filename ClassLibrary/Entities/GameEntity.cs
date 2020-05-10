@@ -3,8 +3,10 @@
 namespace ClassLibrary.Entities {
      public abstract class GameEntity {
 
+         //win forms
+         public int idleFrames = 4;
          public static int formsSize = 14;
-         
+         public int currentFrame=0;
          
         public int EntityType { get; protected set; }
         public int PositionX;
