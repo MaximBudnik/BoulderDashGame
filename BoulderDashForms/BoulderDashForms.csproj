@@ -28,13 +28,17 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
       <None Remove="Sprites\full spritesheet.png" />
-      <Content Include="Sprites\full spritesheet.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="Sprites\full tilemap.png" />
-      <Content Include="Sprites\full tilemap.png">
+      <None Remove="Sprites\attack.png" />
+      <Content Include="Sprites\attack.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Sprites\fx.png" />
+      <Content Include="Sprites\fx.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\teleport.png" />
+      <None Remove="Sprites\Crystal.png" />
     </ItemGroup>
 
 </Project>

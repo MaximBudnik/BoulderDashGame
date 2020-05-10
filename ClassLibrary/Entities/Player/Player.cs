@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Collectable.ItemsTiles;
@@ -13,11 +14,16 @@ namespace ClassLibrary.Entities.Player {
         //animation for forms
         public int idleFrames = 4;
         public int moveFrames = 4;
-        public int actionFrames = 1;
+        public int damageFrames = 2;
+        public int attackFrames = 3;
+        public int explosionFrames = 7;
+        public int teleportFrames = 4;
+        public int converterFrames = 3;
         public bool IsMoving;
         public int currentAnimation=0;
         public int currentFrame=0;
         public int framesLimit;
+        public int reverse;
         
         public int MaxHp { get; set; } = 10;
 
@@ -73,6 +79,7 @@ namespace ClassLibrary.Entities.Player {
             };
             CanMove = false;
             framesLimit = idleFrames;
+            reverse = 1;
 
             //TODO: delete thiS features (its only for testing)
             Inventory.ArmorLevel = 5;
@@ -97,6 +104,20 @@ namespace ClassLibrary.Entities.Player {
                 Inventory.ArmorCellHp = 10;
             }
             if (value > 0) Hp -= value;
+            SetAnimation(2);
+        }
+        
+        public void SubstractPlayerHp(int value,int animation) {
+            if (Inventory.ArmorLevel > 0) {
+                Inventory.ArmorCellHp -= value;
+                value -= Inventory.ArmorLevel;
+            }
+            if (Inventory.ArmorCellHp <= 0) {
+                Inventory.ArmorLevel--;
+                Inventory.ArmorCellHp = 10;
+            }
+            if (value > 0) Hp -= value;
+            SetAnimation(animation);
         }
 
         public void Move(string direction, int value) {
@@ -185,6 +206,7 @@ namespace ClassLibrary.Entities.Player {
         }
         public void Teleport() {
             if (Energy < MaxEnergy) return;
+            SetAnimation(5);
             var level = GetLevel();
             Energy = 0;
             var posX = Randomizer.Random(level.Width);
@@ -196,6 +218,7 @@ namespace ClassLibrary.Entities.Player {
         }
         public void ConvertNearStonesInDiamonds() {
             if (Inventory.StoneInDiamondsConverterQuantity == 0) return;
+            SetAnimation(6);
             Inventory.StoneInDiamondsConverterQuantity--;
             var level = GetLevel();
             if (PositionX + 1 < level.Width && level[PositionX + 1, PositionY].EntityType == 3) {
@@ -218,6 +241,7 @@ namespace ClassLibrary.Entities.Player {
         }
         public void Attack() {
             if(Energy<_attackEnergyCost) return;
+            SetAnimation(3);
             Energy -= _attackEnergyCost;
             var level = GetLevel();
             EnemyWalker tmp=null;
@@ -283,7 +307,7 @@ namespace ClassLibrary.Entities.Player {
             }
 
             Energy = Energy / 2;
-            SubstractPlayerHp(Convert.ToInt32(dmg));
+            SubstractPlayerHp(Convert.ToInt32(dmg),4);
         }
         private void CheckLose() {
             if (Hp <= 0)
@@ -299,6 +323,33 @@ namespace ClassLibrary.Entities.Player {
             if (Energy < MaxEnergy && _frameCounter >= 2) {
                 Energy += EnergyRestoreTick;
                 _frameCounter = 0;
+            }
+        }
+        
+        public void SetAnimation(int currentAnimation) {
+            this.currentAnimation = currentAnimation;
+            switch (currentAnimation) {
+                case 0:
+                    framesLimit = idleFrames;
+                    break;
+                case 1:
+                    framesLimit = moveFrames;
+                    break;
+                case 2:
+                    framesLimit = damageFrames;
+                    break;
+                case 3:
+                    framesLimit = attackFrames;
+                    break;
+                case 4:
+                    framesLimit = explosionFrames;
+                    break;
+                case 5:
+                    framesLimit = teleportFrames;
+                    break;
+                case 6:
+                    framesLimit = converterFrames;
+                    break;
             }
         }
     }

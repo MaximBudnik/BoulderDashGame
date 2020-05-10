@@ -42,7 +42,7 @@ namespace BoulderDashForms {
                 _gameEngine.ChangeGameStatus);
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
-
+            _formsInputProcessor.ProcessKeyUp(e.KeyCode, () => _gameEngine.GameLogic.Player);
         }
         
 
