@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using ClassLibrary.InputProcessors;
 using ClassLibrary.Entities.Player;
+using ClassLibrary.InputProcessors;
 
-namespace BoulderDashForms {
+namespace BoulderDashForms.InputProcessors {
     public class FormsInputProcessor : InputProcessor  {
 
         public void ProcessKeyDown(Keys key,Func<Player> getPlayer, Action<int> changeGameStatus) {

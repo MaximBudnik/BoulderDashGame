@@ -10,47 +10,13 @@ using ClassLibrary.Matrix;
 
 namespace BoulderDashForms.FormsDrawers {
     public class GameDrawer : FormDrawer {
-        private readonly Image _mainSprites;
-        private readonly Image _secondarySprites;
-        private readonly Image _tileset;
-        private readonly Image _icons;
-        private readonly Image _attack;
-        private readonly Image _effects;
-        private readonly Image _hpFull;
-        private readonly Image _hpEmpty;
-        private readonly Image _shield;
-        private readonly Image _energy;
-        private readonly Image _keyboard;
+        
         private List<Action> _defferedFx;
 
         
-        private readonly Brush _guiBrush = Brushes.Crimson;
 
         public GameDrawer() {
-            string mainsSpritesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\mainSprites.png");
-            string secondarySpritesPath =
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\secondarySprites.png");
-            string TilesetPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\Tileset.png");
-            string iconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\icons.png");
-            string attackPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\attack.png");
-            string effectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\fx.png");
-            string hpFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart.png");
-            string hpEmptyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart_empty.png");
-            string shieldPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\shield.png");
-            string energyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\energy.png");
-            string keyboardPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\keyboard.png");
-
-            _mainSprites = new Bitmap(mainsSpritesPath);
-            _secondarySprites = new Bitmap(secondarySpritesPath);
-            _tileset = new Bitmap(TilesetPath);
-            _icons = new Bitmap(iconsPath);
-            _effects = new Bitmap(effectPath);
-            _attack = new Bitmap(attackPath);
-            _hpFull = new Bitmap(hpFullPath);
-            _hpEmpty = new Bitmap(hpEmptyPath);
-            _shield = new Bitmap(shieldPath);
-            _energy = new Bitmap(energyPath);
-            _keyboard = new Bitmap(keyboardPath);
+            
 
             
         }

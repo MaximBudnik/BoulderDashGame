@@ -20,7 +20,11 @@
           <e p="GameDrawer.cs" t="Include" />
           <e p="MenuDrawer.cs" t="Include" />
         </e>
-        <e p="FormsInputProcessor.cs" t="Include" />
+        <e p="InputProcessors" t="Include">
+          <e p="FormsInputProcessor.cs" t="Include" />
+          <e p="MenuInputProcessor.cs" t="Include" />
+          <e p="MenuMouseProcessor.cs" t="Include" />
+        </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
@@ -32,6 +36,7 @@
         <e p="Sprites" t="Include">
           <e p="attack.png" t="Include" />
           <e p="button UI.png" t="Include" />
+          <e p="cursor.ico" t="Include" />
           <e p="energy.png" t="Include" />
           <e p="fx.png" t="Include" />
           <e p="heart.png" t="Include" />
@@ -73,6 +78,8 @@
           <e p="DataInterlayer.cs" t="Include" />
           <e p="Save.cs" t="Include" />
           <e p="Score.cs" t="Include" />
+          <e p="Settings.cs" t="Include" />
+          <e p="SettingsController.cs" t="Include" />
         </e>
         <e p="Entities" t="Include">
           <e p="basic" t="Include">
@@ -122,6 +129,7 @@
           <e p="saves.txt" t="Include" />
           <e p="scores.txt" t="Include" />
           <e p="Settings.db" t="Include" />
+          <e p="settings.json" t="Include" />
         </e>
         <e p="GameLogic.cs" t="Include" />
         <e p="InputProcessors" t="Include">

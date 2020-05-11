@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using LiteDB;
 
 namespace ClassLibrary.DataLayer {
@@ -9,6 +10,15 @@ namespace ClassLibrary.DataLayer {
             Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "BestScores.db");
 
         private readonly string _savesDatabase = Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "Saves.db");
+        private readonly SettingsController settingsController = new SettingsController();
+        public Settings settings;
+
+        public DataInterlayer() {
+            GetSettings();
+        }
+        private async void GetSettings() {
+            settings = await settingsController.GetSettings();
+        }
 
         public List<Save> GetAllGameSaves() {
             var result = new List<Save>();

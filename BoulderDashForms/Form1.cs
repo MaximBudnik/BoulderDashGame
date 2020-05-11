@@ -11,26 +11,32 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BoulderDashForms.FormsDrawers;
+using BoulderDashForms.InputProcessors;
 using ClassLibrary;
 using ClassLibrary.Entities;
 
 namespace BoulderDashForms {
     public partial class Form1 : Form {
         private readonly FormsInputProcessor _formsInputProcessor = new FormsInputProcessor();
+        private readonly MenuInputProcessor _menuInputProcessor = new MenuInputProcessor();
+        private readonly MenuMouseProcessor _menuMouseProcessor = new MenuMouseProcessor();
         private GameEngine _gameEngine;
         private readonly GameDrawer _gameDrawer;
         private readonly MenuDrawer _menuDrawer;
         public Form1() {
             InitializeComponent();
-            //  Cursor = new Cursor(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\cursor.ico"));
+             Cursor = new Cursor(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\cursor.ico"));
+
             _menuDrawer = new MenuDrawer();
             _gameDrawer = new GameDrawer();
             KeyDown += KeyDownProcessor;
             KeyUp += KeyUpProcessor;
-            Init();
+            //MouseClick += MouseClickProcessor;
+            InitEngine();
         }
 
-        private void Init() {
+
+        private void InitEngine() {
             try {
                 _gameEngine = new GameEngine(ReDraw);
                 Task engineStart = new Task(() => { _gameEngine.Start(); });
@@ -41,18 +47,39 @@ namespace BoulderDashForms {
             }
         }
 
+        // private void MouseClickProcessor(object sender, MouseEventArgs e) {
+        //     if (_gameEngine.GameStatus == 0) {
+        //         _menuMouseProcessor.ProcessClick();
+        //     }
+        // }
+
         private void KeyDownProcessor(object sender, KeyEventArgs e) {
-            _formsInputProcessor.ProcessKeyDown(e.KeyCode, () => _gameEngine.GameLogic.Player,
-                _gameEngine.ChangeGameStatus);
+            if (_gameEngine.GameStatus == 1) {
+                _formsInputProcessor.ProcessKeyDown(e.KeyCode, () => _gameEngine.GameLogic.Player,
+                    _gameEngine.ChangeGameStatus);
+            }
+            else if (_gameEngine.GameStatus == 0) {
+                _menuInputProcessor.ProcessKeyDown(e.KeyCode,
+                    _gameEngine.ChangeCurrentMenuAction,
+                    _gameEngine.PerformCurrentMenuAction,
+                    _menuDrawer.nullRightBlockWidth,
+                    () => {
+                        _gameEngine.isActionActive=!_gameEngine.isActionActive;
+                    });
+            }
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
-            _formsInputProcessor.ProcessKeyUp(e.KeyCode, () => _gameEngine.GameLogic.Player);
+            if (_gameEngine.GameStatus == 1) {
+                _formsInputProcessor.ProcessKeyUp(e.KeyCode, () => _gameEngine.GameLogic.Player);
+            }
         }
 
         private void OnPaint(object sender, PaintEventArgs e) {
             Graphics graphics = e.Graphics;
-
             switch (_gameEngine.GameStatus) {
+                case 0:
+                    _menuDrawer.DrawMenu(graphics, _gameEngine);
+                    break;
                 case 1:
                     var currentLevel = _gameEngine.GameLogic.CurrentLevel;
                     var player = _gameEngine.GameLogic.Player;

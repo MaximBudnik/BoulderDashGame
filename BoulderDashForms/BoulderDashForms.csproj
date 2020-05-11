@@ -12,6 +12,9 @@
 
     <ItemGroup>
       <None Remove="Sprites\mainSprites.png" />
+      <EmbeddedResource Include="Sprites\cursor.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
       <Content Include="Sprites\mainSprites.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
@@ -82,6 +85,8 @@
       <EmbeddedResource Include="Fonts\ThaleahFat.ttf">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
+      <None Remove="Sprites\cursor.ico" />
+      <None Remove="Sprites\cursor.png" />
     </ItemGroup>
 
 </Project>
