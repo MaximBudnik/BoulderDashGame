@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
-using System.Runtime.InteropServices;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Enemies;
-using ClassLibrary.Matrix;
 using ClassLibrary.Entities.Player;
+using ClassLibrary.Matrix;
 
-namespace BoulderDashForms {
-    public class FormsDrawer {
+namespace BoulderDashForms.FormsDrawers {
+    public class GameDrawer : FormDrawer {
         private readonly Image _mainSprites;
         private readonly Image _secondarySprites;
         private readonly Image _tileset;
@@ -22,12 +20,13 @@ namespace BoulderDashForms {
         private readonly Image _hpEmpty;
         private readonly Image _shield;
         private readonly Image _energy;
+        private readonly Image _keyboard;
         private List<Action> _defferedFx;
 
-        private readonly Font _menuFont;
-        private readonly Font _boldFont;
+        
+        private readonly Brush _guiBrush = Brushes.Crimson;
 
-        public FormsDrawer() {
+        public GameDrawer() {
             string mainsSpritesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\mainSprites.png");
             string secondarySpritesPath =
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\secondarySprites.png");
@@ -39,6 +38,7 @@ namespace BoulderDashForms {
             string hpEmptyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart_empty.png");
             string shieldPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\shield.png");
             string energyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\energy.png");
+            string keyboardPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\keyboard.png");
 
             _mainSprites = new Bitmap(mainsSpritesPath);
             _secondarySprites = new Bitmap(secondarySpritesPath);
@@ -50,14 +50,9 @@ namespace BoulderDashForms {
             _hpEmpty = new Bitmap(hpEmptyPath);
             _shield = new Bitmap(shieldPath);
             _energy = new Bitmap(energyPath);
+            _keyboard = new Bitmap(keyboardPath);
 
-            PrivateFontCollection fontCollection = new PrivateFontCollection();
-            fontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\monogram.ttf"));
-            fontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\ThaleahFat.ttf"));
-            FontFamily family1 = fontCollection.Families[0];
-            FontFamily family2 = fontCollection.Families[1];
-            _menuFont = new Font(family1, 22);
-            _boldFont = new Font(family2, 22);
+            
         }
 
         private void PlayerAnimation(Player player, Graphics graphics, int i, int j) {
@@ -287,6 +282,7 @@ namespace BoulderDashForms {
             }
 
             DrawInterface(graphics, currentLevel, player);
+            DrawKeys(graphics,player);
         }
         //TODO: v obuchalke skazat chto рядоми с камнями есть шанс промахнуться по противнику
         //      currentLevel.Aim
@@ -372,19 +368,91 @@ namespace BoulderDashForms {
             //diamonds left
             for (int i = 0; i < ( currentLevel.DiamondsQuantity - player.CollectedDiamonds); i++) {
                 destRect =
-                    new Rectangle(new Point(8 * i + 600, 32),
+                    new Rectangle(new Point(8 * i + 1000, 32),
                         new Size(16, 16));
                 srcRect = new Rectangle(new Point(1 * 16, 7 * 16), new Size(16, 16));
                 graphics.DrawImage(_icons, destRect, srcRect, GraphicsUnit.Pixel);
             }
 
             //text elements
-            graphics.DrawString($"{currentLevel.Aim}", _menuFont, Brushes.Crimson, 600, 8);
-            graphics.DrawString($"Level {currentLevel.LevelName}", _boldFont, Brushes.Crimson, 800, 8);
-            graphics.DrawString($"{player.Name}", _boldFont, Brushes.Crimson, 800, 30);
+            graphics.DrawString($"{currentLevel.Aim}", _menuFont, _guiBrush, 1000, 8);
+            graphics.DrawString($"Level {currentLevel.LevelName}", _boldFont, _guiBrush, 1200, 8);
+            graphics.DrawString($"{player.Name}", _boldFont, _guiBrush, 1200, 30);
 
-            graphics.DrawString($"Score x{player.ScoreMultiplier.ToString()}", _boldFont, Brushes.Crimson, 930, 8);
-            graphics.DrawString(player.Score.ToString(), _boldFont, Brushes.Crimson, 930, 30);
+            graphics.DrawString($"Score x{player.ScoreMultiplier.ToString()}", _boldFont, _guiBrush, 1330, 8);
+            graphics.DrawString(player.Score.ToString(), _boldFont, _guiBrush, 1330, 30);
         }
+
+        private void DrawKeys(Graphics graphics, Player player) {
+            Keyboard key = player.Keyboard;
+            Rectangle destRect;
+            Rectangle srcRect;
+            
+            //w
+            destRect =
+                new Rectangle(new Point( 1300, 750),
+                    new Size(32, 32));
+            srcRect = new Rectangle(new Point(4 * 16, 2 * 16+key.W*16), new Size(16, 16));
+            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            //a
+            destRect =
+                new Rectangle(new Point( 1268, 782),
+                    new Size(32, 32));
+            srcRect = new Rectangle(new Point(3 * 16, 3 * 16+key.A*16), new Size(16, 16));
+            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            
+            //s
+            destRect =
+                new Rectangle(new Point( 1300, 782),
+                    new Size(32, 32));
+            srcRect = new Rectangle(new Point(4 * 16, 3 * 16+key.S*16), new Size(16, 16));
+            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            //d
+            destRect =
+                new Rectangle(new Point( 1332, 782),
+                    new Size(32, 32));
+            srcRect = new Rectangle(new Point(5 * 16, 3 * 16+key.D*16), new Size(16, 16));
+            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            //space
+            if (key.Space==0) {
+                destRect =
+                    new Rectangle(new Point( 1268, 814),
+                        new Size(160, 32));
+                srcRect = new Rectangle(new Point(5 * 16, 5 * 16+key.Space*16), new Size(80, 16));
+                graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            }
+            else {
+                destRect =
+                    new Rectangle(new Point( 1268, 814),
+                        new Size(144, 32));
+                srcRect = new Rectangle(new Point(6 * 16, 5 * 16+key.Space*16), new Size(64, 16));
+                graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            }
+            //t
+            destRect =
+                new Rectangle(new Point( 1396, 750),
+                    new Size(32, 32));
+            srcRect = new Rectangle(new Point(7 * 16, 2 * 16+key.T*16), new Size(16, 16));
+            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            //q
+            destRect =
+                new Rectangle(new Point( 1268, 750),
+                    new Size(32, 32));
+            srcRect = new Rectangle(new Point(3 * 16, 2 * 16+key.Q*16), new Size(16, 16));
+            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            //e
+            destRect =
+                new Rectangle(new Point( 1332, 750),
+                    new Size(32, 32));
+            srcRect = new Rectangle(new Point(5 * 16, 2 * 16+key.E*16), new Size(16, 16));
+            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            //r
+            destRect =
+                new Rectangle(new Point( 1364, 750),
+                    new Size(32, 32));
+            srcRect = new Rectangle(new Point(6 * 16, 2 * 16+key.R*16), new Size(16, 16));
+            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+        }
+        
     }
 }

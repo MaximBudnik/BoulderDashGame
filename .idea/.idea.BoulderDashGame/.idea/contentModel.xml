@@ -15,7 +15,11 @@
         <e p="Form1.cs" t="Include" />
         <e p="Form1.Designer.cs" t="Include" />
         <e p="Form1.resx" t="Include" />
-        <e p="FormsDrawer.cs" t="Include" />
+        <e p="FormsDrawers" t="Include">
+          <e p="FormDrawer.cs" t="Include" />
+          <e p="GameDrawer.cs" t="Include" />
+          <e p="MenuDrawer.cs" t="Include" />
+        </e>
         <e p="FormsInputProcessor.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -106,6 +110,7 @@
           <e p="Movable.cs" t="Include" />
           <e p="Player" t="Include">
             <e p="Inventory.cs" t="Include" />
+            <e p="Keyboard.cs" t="Include" />
             <e p="Player.cs" t="Include" />
           </e>
         </e>

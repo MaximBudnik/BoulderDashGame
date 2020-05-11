@@ -45,8 +45,8 @@ namespace ClassLibrary.Matrix {
             Action<int> substractPlayerHp, Action<Player> setPlayer
         ) {
             //TODO: now choose the size of the level from starting game/random
-            width = 24; //20 for console
-            height = 38; //65 for console
+            width = 31; //20 for console
+            height = 53; //65 for console
             LevelName = levelName;
             this.playerName = playerName;
             this.getLevel = getLevel;

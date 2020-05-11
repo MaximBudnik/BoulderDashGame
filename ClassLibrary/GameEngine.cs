@@ -26,14 +26,14 @@ namespace ClassLibrary {
         private const int
             Fps = 10; //TODO: carry it out in settings.
 
-        private int _gameStatus; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
+        public int GameStatus; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
 
         private int _currentMenuAction;
         private readonly int MenuItems = 6;
 
         public void ChangeGameStatus(int i) {
             if (i >= 0 && i < 4)
-                _gameStatus = i;
+                GameStatus = i;
             else
                 throw new Exception("Unknown game status");
         }
@@ -73,14 +73,14 @@ namespace ClassLibrary {
             // else if (_gameStatus == 3) _afterLevelScreen.DrawGameLose();
             #endregion
             
-            while (_gameStatus == 1) {
+            while (GameStatus == 1) {
                 Thread.Sleep(1000/Fps);
                 _reDraw();
             }
         }
 
         private void GameLogicThread() {
-            while (_gameStatus == 1) {
+            while (GameStatus == 1) {
                 //Console.CursorVisible = false;
                Thread.Sleep(1000 / GameLogicTickRate);
                 GameLogic.GameLoop();
@@ -88,7 +88,7 @@ namespace ClassLibrary {
         }
 
         private void InputThread() {
-            while (_gameStatus == 1) {
+            while (GameStatus == 1) {
                 var c = Console.ReadKey(true);
                 _gameInputProcessor.ProcessInput(c.Key, () => GameLogic.Player, ChangeGameStatus);
             }
@@ -105,7 +105,7 @@ namespace ClassLibrary {
             //_menu.DrawMenu(_currentMenuAction);
 
             //for develop
-            _gameStatus = 1;
+            GameStatus = 1;
             GameLogic.CreateLevel(-1, "testName", ChangeGameStatus, () => _dataInterlayer);
             GameLogic.Player.Score = 100;
             GameLogic.CurrentSave = new Save();

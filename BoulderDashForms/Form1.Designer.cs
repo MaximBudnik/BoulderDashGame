@@ -32,7 +32,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (43)))), ((int) (((byte) (43)))),
                 ((int) (((byte) (51)))));
-            this.ClientSize = new System.Drawing.Size(1074, 691);
+            this.ClientSize = new System.Drawing.Size(1484, 868);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Tahoma", 10F);
             this.ForeColor = System.Drawing.Color.White;

@@ -34,6 +34,7 @@ namespace ClassLibrary.Entities.Player {
         public int Score { get; set; }
 
         public readonly Inventory Inventory = new Inventory();
+        public readonly Keyboard Keyboard = new Keyboard();
 
         public readonly Dictionary<string, int[]> AllScores;
 
