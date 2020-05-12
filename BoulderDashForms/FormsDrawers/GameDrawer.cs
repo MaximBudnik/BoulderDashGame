@@ -12,15 +12,7 @@ namespace BoulderDashForms.FormsDrawers {
     public class GameDrawer : FormDrawer {
         
         private List<Action> _defferedFx;
-
         
-
-        public GameDrawer() {
-            
-
-            
-        }
-
         private void PlayerAnimation(Player player, Graphics graphics, int i, int j) {
             Rectangle destRect =
                 new Rectangle(new Point(j * GameEntity.formsSize * 2, i * GameEntity.formsSize * 2),
@@ -29,27 +21,27 @@ namespace BoulderDashForms.FormsDrawers {
                 case 1: {
                     var srcRect = new Rectangle(new Point(12 * 16 + player.currentFrame * 16, 73),
                         new Size(player.reverse * 16, 23));
-                    graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     break;
                 }
                 case 2: {
                     var srcRect = new Rectangle(new Point(16 * 16 + player.currentFrame * 16, 76),
                         new Size(player.reverse * 16, 20));
-                    graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     if (player.currentFrame == player.framesLimit - 1) player.SetAnimation(0);
                     break;
                 }
                 case 3: {
                     var srcRect = new Rectangle(new Point(12 * 16 + player.currentFrame * 16, 73),
                         new Size(player.reverse * 16, 23));
-                    graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     srcRect = new Rectangle(new Point(0 * 16 + player.currentFrame * 16, 0 * 16),
                         new Size(player.reverse * 16, 16));
                     destRect =
                         new Rectangle(new Point(j * GameEntity.formsSize * 2, i * GameEntity.formsSize * 2),
                             new Size(GameEntity.formsSize * 3, GameEntity.formsSize * 3));
                     _defferedFx.Add(
-                        () => graphics.DrawImage(_attack, destRect, srcRect, GraphicsUnit.Pixel)
+                        () => graphics.DrawImage(Attack, destRect, srcRect, GraphicsUnit.Pixel)
                     );
                     if (player.currentFrame == player.framesLimit - 1) player.SetAnimation(0);
                     break;
@@ -57,14 +49,14 @@ namespace BoulderDashForms.FormsDrawers {
                 case 4: {
                     var srcRect = new Rectangle(new Point(16 * 16 + player.currentFrame * 16, 76),
                         new Size(player.reverse * 16, 20));
-                    graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     srcRect = new Rectangle(new Point(5 * 32 + player.currentFrame * 32, 5 * 16),
                         new Size(32, 32));
                     destRect =
                         new Rectangle(new Point(j * GameEntity.formsSize * 2, i * GameEntity.formsSize * 2),
                             new Size(GameEntity.formsSize * 3, GameEntity.formsSize * 3));
                     _defferedFx.Add(
-                        () => graphics.DrawImage(_effects, destRect, srcRect, GraphicsUnit.Pixel)
+                        () => graphics.DrawImage(Effects, destRect, srcRect, GraphicsUnit.Pixel)
                     );
                     if (player.currentFrame == player.framesLimit - 1) player.SetAnimation(0);
                     break;
@@ -72,14 +64,14 @@ namespace BoulderDashForms.FormsDrawers {
                 case 5: {
                     var srcRect = new Rectangle(new Point(12 * 16 + player.currentFrame * 16, 73),
                         new Size(player.reverse * 16, 23));
-                    graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     srcRect = new Rectangle(new Point(6 * 16 + player.currentFrame * 16, 2 * 16),
                         new Size(16, 16));
                     destRect =
                         new Rectangle(new Point(j * GameEntity.formsSize * 2, i * GameEntity.formsSize * 2),
                             new Size(GameEntity.formsSize * 3, GameEntity.formsSize * 3));
                     _defferedFx.Add(
-                        () => graphics.DrawImage(_effects, destRect, srcRect, GraphicsUnit.Pixel)
+                        () => graphics.DrawImage(Effects, destRect, srcRect, GraphicsUnit.Pixel)
                     );
                     if (player.currentFrame == player.framesLimit - 1) player.SetAnimation(0);
                     break;
@@ -87,10 +79,10 @@ namespace BoulderDashForms.FormsDrawers {
                 case 6: {
                     var srcRect = new Rectangle(new Point(12 * 16 + player.currentFrame * 16, 73),
                         new Size(player.reverse * 16, 23));
-                    graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     srcRect = new Rectangle(new Point(11 * 16 + player.currentFrame * 16, 2 * 16),
                         new Size(16, 16));
-                    graphics.DrawImage(_effects, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(Effects, destRect, srcRect, GraphicsUnit.Pixel);
 
                     if (player.currentFrame == player.framesLimit - 1) player.SetAnimation(0);
                     break;
@@ -98,11 +90,10 @@ namespace BoulderDashForms.FormsDrawers {
                 default: {
                     var srcRect = new Rectangle(new Point(9 * 16 + player.currentFrame * 16, 76),
                         new Size(player.reverse * 16, 20));
-                    graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     break;
                 }
             }
-
             if (player.currentFrame < player.framesLimit - 1)
                 player.currentFrame++;
             else
@@ -143,6 +134,8 @@ namespace BoulderDashForms.FormsDrawers {
         }
 
         public void DrawGame(Graphics graphics, Level currentLevel, Player player) {
+            
+            
             _defferedFx = new List<Action>();
             for (int i = 0; i < currentLevel.Width; i++) {
                 for (int j = 0; j < currentLevel.Height; j++) {
@@ -154,7 +147,7 @@ namespace BoulderDashForms.FormsDrawers {
                     void DrawFloorTile() {
                         //TODO: make versatile tile floor with random
                         srcRect = new Rectangle(new Point(2 * 16, 5 * 16), new Size(16, 16));
-                        graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                        graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     }
                     switch (currentLevel[i, j].EntityType) {
                         case 0:
@@ -163,82 +156,82 @@ namespace BoulderDashForms.FormsDrawers {
                             break;
                         case 1:
                             srcRect = new Rectangle(new Point(2 * 16, 5 * 16), new Size(16, 16));
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 2:
                             srcRect = new Rectangle(new Point(9 * 16, 13 * 16), new Size(16, 16));
-                            graphics.DrawImage(_tileset, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(Tileset, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 3:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(7 * 16, 4 * 16), new Size(16, 16));
-                            graphics.DrawImage(_tileset, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(Tileset, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 4:
                             DrawFloorTile();
                             srcRect = GetDiamondAnimation((Diamond) currentLevel[i, j]);
-                            graphics.DrawImage(_icons, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 5:
                             srcRect = new Rectangle(new Point(1 * 16, 1 * 16), new Size(16, 16));
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 6:
                             DrawFloorTile();
                             srcRect = GetWalkerAnimation((EnemyWalker) currentLevel[i, j]);
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 7:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(15 * 16, 13 * 16), new Size(16, 16));
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 8:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(7 * 16, 10 * 16), new Size(16, 16));
-                            graphics.DrawImage(_secondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 10:
                             srcRect = new Rectangle(new Point(2 * 16, 3 * 16), new Size(16, 16));
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 11:
                             srcRect = new Rectangle(new Point(4 * 16, 5 * 16), new Size(16, 16));
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 12:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(14 * 16, 13 * 16), new Size(16, 16));
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 13:
                             DrawFloorTile();
                             srcRect = GetDiggerAnimation((EnemyDigger) currentLevel[i, j]);
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 20:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(20 * 16, 2 * 12), new Size(16, 22));
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 21:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(12 * 16, 12 * 16), new Size(16, 16));
-                            graphics.DrawImage(_secondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 22:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(15 * 16, 3 * 16), new Size(16, 16));
-                            graphics.DrawImage(_secondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case 23:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(6 * 16, 15 * 16), new Size(16, 16));
-                            graphics.DrawImage(_icons, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         default:
                             srcRect = new Rectangle(new Point(0 * 16, 0 * 16), new Size(16, 16));
-                            graphics.DrawImage(_mainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                     }
                 }
@@ -264,11 +257,11 @@ namespace BoulderDashForms.FormsDrawers {
                         new Size(32, 32));
                 if (player.Hp >= i) {
                     srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
-                    graphics.DrawImage(_hpFull, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(HpFull, destRect, srcRect, GraphicsUnit.Pixel);
                 }
                 else {
                     srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
-                    graphics.DrawImage(_hpEmpty, destRect, srcRect, GraphicsUnit.Pixel);
+                    graphics.DrawImage(HpEmpty, destRect, srcRect, GraphicsUnit.Pixel);
                 }
             }
             //Draw armor
@@ -277,7 +270,7 @@ namespace BoulderDashForms.FormsDrawers {
                     new Rectangle(new Point(16 * i, 24),
                         new Size(32, 32));
                 srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
-                graphics.DrawImage(_shield, destRect, srcRect, GraphicsUnit.Pixel);
+                graphics.DrawImage(Shield, destRect, srcRect, GraphicsUnit.Pixel);
             }
 
             //mana
@@ -287,7 +280,7 @@ namespace BoulderDashForms.FormsDrawers {
                     new Rectangle(new Point(16 * i, 64),
                         new Size(32, 32));
                 srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
-                graphics.DrawImage(_energy, destRect, srcRect, GraphicsUnit.Pixel);
+                graphics.DrawImage(Energy, destRect, srcRect, GraphicsUnit.Pixel);
             }
 
             destRect =
@@ -313,7 +306,7 @@ namespace BoulderDashForms.FormsDrawers {
                     srcRect = new Rectangle(new Point(6 * 16, 18 * 16), new Size(15, 15));
                     break;
             }
-            graphics.DrawImage(_icons, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
 
             //bombs and converters
             for (int i = 0; i < player.Inventory.TntQuantity; i++) {
@@ -321,14 +314,14 @@ namespace BoulderDashForms.FormsDrawers {
                     new Rectangle(new Point(16 * i + 288, 16),
                         new Size(32, 32));
                 srcRect = new Rectangle(new Point(15 * 16, 3 * 16), new Size(15, 15));
-                graphics.DrawImage(_secondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
+                graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
             }
             for (int i = 0; i < player.Inventory.StoneInDiamondsConverterQuantity; i++) {
                 destRect =
                     new Rectangle(new Point(16 * i + 288, 24),
                         new Size(32, 32));
                 srcRect = new Rectangle(new Point(12 * 16, 12 * 16), new Size(16, 16));
-                graphics.DrawImage(_secondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
+                graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
             }
 
             //diamonds left
@@ -337,7 +330,7 @@ namespace BoulderDashForms.FormsDrawers {
                     new Rectangle(new Point(8 * i + 1000, 32),
                         new Size(16, 16));
                 srcRect = new Rectangle(new Point(1 * 16, 7 * 16), new Size(16, 16));
-                graphics.DrawImage(_icons, destRect, srcRect, GraphicsUnit.Pixel);
+                graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
             }
 
             //text elements
@@ -347,9 +340,11 @@ namespace BoulderDashForms.FormsDrawers {
 
             graphics.DrawString($"Score x{player.ScoreMultiplier.ToString()}", _boldFont, _guiBrush, 1330, 8);
             graphics.DrawString(player.Score.ToString(), _boldFont, _guiBrush, 1330, 30);
+            
         }
 
         private void DrawKeys(Graphics graphics, Player player) {
+
             Keyboard key = player.Keyboard;
             Rectangle destRect;
             Rectangle srcRect;
@@ -359,65 +354,65 @@ namespace BoulderDashForms.FormsDrawers {
                 new Rectangle(new Point( 1300, 750),
                     new Size(32, 32));
             srcRect = new Rectangle(new Point(4 * 16, 2 * 16+key.W*16), new Size(16, 16));
-            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             //a
             destRect =
                 new Rectangle(new Point( 1268, 782),
                     new Size(32, 32));
             srcRect = new Rectangle(new Point(3 * 16, 3 * 16+key.A*16), new Size(16, 16));
-            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             
             //s
             destRect =
                 new Rectangle(new Point( 1300, 782),
                     new Size(32, 32));
             srcRect = new Rectangle(new Point(4 * 16, 3 * 16+key.S*16), new Size(16, 16));
-            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             //d
             destRect =
                 new Rectangle(new Point( 1332, 782),
                     new Size(32, 32));
             srcRect = new Rectangle(new Point(5 * 16, 3 * 16+key.D*16), new Size(16, 16));
-            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             //space
             if (key.Space==0) {
                 destRect =
                     new Rectangle(new Point( 1268, 814),
                         new Size(160, 32));
                 srcRect = new Rectangle(new Point(5 * 16, 5 * 16+key.Space*16), new Size(80, 16));
-                graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+                graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             }
             else {
                 destRect =
                     new Rectangle(new Point( 1268, 814),
                         new Size(144, 32));
                 srcRect = new Rectangle(new Point(6 * 16, 5 * 16+key.Space*16), new Size(64, 16));
-                graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+                graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             }
             //t
             destRect =
                 new Rectangle(new Point( 1396, 750),
                     new Size(32, 32));
             srcRect = new Rectangle(new Point(7 * 16, 2 * 16+key.T*16), new Size(16, 16));
-            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             //q
             destRect =
                 new Rectangle(new Point( 1268, 750),
                     new Size(32, 32));
             srcRect = new Rectangle(new Point(3 * 16, 2 * 16+key.Q*16), new Size(16, 16));
-            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             //e
             destRect =
                 new Rectangle(new Point( 1332, 750),
                     new Size(32, 32));
             srcRect = new Rectangle(new Point(5 * 16, 2 * 16+key.E*16), new Size(16, 16));
-            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
             //r
             destRect =
                 new Rectangle(new Point( 1364, 750),
                     new Size(32, 32));
             srcRect = new Rectangle(new Point(6 * 16, 2 * 16+key.R*16), new Size(16, 16));
-            graphics.DrawImage(_keyboard, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
         
     }

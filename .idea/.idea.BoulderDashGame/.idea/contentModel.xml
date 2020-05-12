@@ -26,13 +26,18 @@
           <e p="MenuMouseProcessor.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="BoulderDashForms.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
         <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="PublishProfiles" t="Include">
+            <e p="FolderProfile.pubxml" t="Include" />
+          </e>
+        </e>
         <e p="Sprites" t="Include">
           <e p="attack.png" t="Include" />
           <e p="button UI.png" t="Include" />
@@ -55,7 +60,7 @@
         <e p="BoulderDashGame.csproj" t="IncludeRecursive" />
         <e p="Game.txt" t="Include" />
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="BoulderDashGame.AssemblyInfo.cs" t="Include" />
             </e>
@@ -142,7 +147,7 @@
           <e p="Matrix.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="ClassLibrary.AssemblyInfo.cs" t="Include" />
             </e>

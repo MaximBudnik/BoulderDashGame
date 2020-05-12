@@ -10,14 +10,18 @@ namespace ClassLibrary.DataLayer {
             Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "BestScores.db");
 
         private readonly string _savesDatabase = Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "Saves.db");
-        private readonly SettingsController settingsController = new SettingsController();
-        public Settings settings;
+        private readonly SettingsController _settingsController = new SettingsController();
+        public Settings Settings;
 
         public DataInterlayer() {
             GetSettings();
         }
         private async void GetSettings() {
-            settings = await settingsController.GetSettings();
+            Settings = await _settingsController.GetSettings();
+        }
+
+        public async void SaveSettings() {
+            await _settingsController.WriteSettings(Settings);
         }
 
         public List<Save> GetAllGameSaves() {
@@ -44,6 +48,14 @@ namespace ClassLibrary.DataLayer {
             col.EnsureIndex(x => x.Name);
             if (col.Exists(x => x.Name == name)) col.Update(currentSave);
             else col.Insert(currentSave);
+        }
+        
+        public void AddGameSave(Save save) {
+            using var db = new LiteDatabase(_savesDatabase);
+            var col = db.GetCollection<Save>("saves");
+            col.EnsureIndex(x => x.Name);
+            if (col.Exists(x => x.Name == save.Name)) col.Update(save);
+            else col.Insert(save);
         }
 
         public void DeleteGameSave(Save save) {

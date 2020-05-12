@@ -7,19 +7,51 @@ namespace BoulderDashForms.InputProcessors {
         public void ProcessKeyDown(Keys key, Action<int> changeCurrentMenuAction,
             Action performCurrentMenuAction,
             Action nullRightBlockWidth,
-            Action changeActiveAction
-            ) {
+            Action changeActiveAction,
+            bool isBlockActive,
+            Action<int> changeSubAction,
+            Action<int> performSubAction
+        ) {
             switch (key) {
                 case Keys.W:
-                    changeCurrentMenuAction(-1);
-                    nullRightBlockWidth();
+                    if (isBlockActive == false) {
+                        changeCurrentMenuAction(-1);
+                        nullRightBlockWidth();
+                    }
+                    else {
+                        changeSubAction(-1);
+                    }
                     break;
                 case Keys.S:
-                    changeCurrentMenuAction(1);
-                    nullRightBlockWidth();
+                    if (isBlockActive == false) {
+                        changeCurrentMenuAction(1);
+                        nullRightBlockWidth();
+                    }
+                    else {
+                        changeSubAction(1);
+                    }
+                    break;
+                case Keys.A:
+                    if (isBlockActive == false) {
+                        
+                    }
+                    else {
+                        performSubAction(-1);
+                    }
+                    break;
+                case Keys.D:
+                    if (isBlockActive == false) { }
+                    else {
+                        performSubAction(1);
+                    }
                     break;
                 case Keys.Enter:
-                    performCurrentMenuAction();
+                    if (isBlockActive == false) {
+                        performCurrentMenuAction();
+                    }
+                    else {
+                        performSubAction(0);
+                    }
                     break;
                 case Keys.Escape:
                     changeActiveAction();

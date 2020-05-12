@@ -25,16 +25,27 @@ namespace BoulderDashForms {
         private readonly MenuDrawer _menuDrawer;
         public Form1() {
             InitializeComponent();
-             Cursor = new Cursor(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\cursor.ico"));
+            try {
+                Cursor = new Cursor(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\cursor.ico"));
+                _menuDrawer = new MenuDrawer();
+                _gameDrawer = new GameDrawer();
+                KeyDown += KeyDownProcessor;
+                KeyUp += KeyUpProcessor;
+                //MouseClick += MouseClickProcessor;
+                
+                GC.KeepAlive(_menuDrawer);
+                GC.KeepAlive(_gameDrawer);
 
-            _menuDrawer = new MenuDrawer();
-            _gameDrawer = new GameDrawer();
-            KeyDown += KeyDownProcessor;
-            KeyUp += KeyUpProcessor;
-            //MouseClick += MouseClickProcessor;
-            InitEngine();
+                InitEngine();
+                
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Data);
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.StackTrace);
+            }
         }
-
 
         private void InitEngine() {
             try {
@@ -46,7 +57,7 @@ namespace BoulderDashForms {
                 Console.WriteLine(e.Message);
             }
         }
-
+        
         // private void MouseClickProcessor(object sender, MouseEventArgs e) {
         //     if (_gameEngine.GameStatus == 0) {
         //         _menuMouseProcessor.ProcessClick();
@@ -62,10 +73,12 @@ namespace BoulderDashForms {
                 _menuInputProcessor.ProcessKeyDown(e.KeyCode,
                     _gameEngine.ChangeCurrentMenuAction,
                     _gameEngine.PerformCurrentMenuAction,
-                    _menuDrawer.nullRightBlockWidth,
-                    () => {
-                        _gameEngine.isActionActive=!_gameEngine.isActionActive;
-                    });
+                    _menuDrawer.NullRightBlockWidth,
+                    () => { _gameEngine.IsActionActive = !_gameEngine.IsActionActive; },
+                    _gameEngine.IsActionActive,
+                    _gameEngine.ChangeCurrentSubAction,
+                    _gameEngine.PerformSubAction
+                    );
             }
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
@@ -76,9 +89,10 @@ namespace BoulderDashForms {
 
         private void OnPaint(object sender, PaintEventArgs e) {
             Graphics graphics = e.Graphics;
+            if(_gameEngine==null) return;
             switch (_gameEngine.GameStatus) {
                 case 0:
-                    _menuDrawer.DrawMenu(graphics, _gameEngine);
+                    _menuDrawer.DrawMenu( graphics, _gameEngine);
                     break;
                 case 1:
                     var currentLevel = _gameEngine.GameLogic.CurrentLevel;
@@ -91,5 +105,6 @@ namespace BoulderDashForms {
         }
 
         private void ReDraw() => Invalidate();
+
     }
 }
