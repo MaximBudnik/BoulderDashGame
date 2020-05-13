@@ -5,6 +5,11 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.ConsoleInterface {
     public class GameInterface : UserInterface {
+        private readonly int _bottomHeight = 3;
+
+        // private int interfaceMultiplier = 2; //should be retrieved from settings
+        private readonly ConsoleColor _secondTextColor = ConsoleColor.DarkCyan;
+
         private readonly Dictionary<int, string> _sprites = new Dictionary<int, string> {
             {0, "☺"},
             {1, " "},
@@ -26,10 +31,7 @@ namespace ClassLibrary.ConsoleInterface {
             {203, "•"}
         };
 
-        // private int interfaceMultiplier = 2; //should be retrieved from settings
-        private readonly ConsoleColor _secondTextColor = ConsoleColor.DarkCyan;
         private readonly int _topHeight = 2;
-        private readonly int _bottomHeight = 3;
         private Level _currLevel;
         public void NewDraw(Func<Level> getLevel) {
             _currLevel = getLevel();
@@ -260,7 +262,7 @@ namespace ClassLibrary.ConsoleInterface {
             Console.Write("Items: ");
             WriteForeground(
                 $"S: {playerInventory.SwordLevel} A: {playerInventory.ArmorLevel} C: {playerInventory.StoneInDiamondsConverterQuantity}" +
-                $" T: {playerInventory.TntQuantity}",ConsoleColor.Green, _secondTextColor);
+                $" T: {playerInventory.TntQuantity}", ConsoleColor.Green, _secondTextColor);
             ChangeForegroundColor(primaryTextColor);
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using ClassLibrary;
-
-
-// namespace BoulderDashGame {
+﻿// namespace BoulderDashGame {
 //     class Program {
 //         static void Main(string[] args) {
 //             try {
@@ -22,3 +18,5 @@ using ClassLibrary;
 //         }
 //     }
 // }
+
+

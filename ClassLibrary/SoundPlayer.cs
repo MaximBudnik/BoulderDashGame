@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace ClassLibrary {
+﻿namespace ClassLibrary {
     public class SoundPlayer {
         public void playMusic() {
             // string fileName = Path.Combine(Environment.CurrentDirectory, @"Sounds\", "menuTheme.mp3");

@@ -4,11 +4,6 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
     public class EnemyDigger : Enemy {
-        public new void GameLoopAction() {
-            EnemyMovement();
-            EnemyDamageNearTitles();
-        }
-
         public EnemyDigger(int i, int j,
             Func<Level> getLevel,
             Func<int> getPlayerPosX, Func<int> getPlayerPosY,
@@ -20,7 +15,11 @@ namespace ClassLibrary.Entities.Enemies {
             Hp = 5;
 
             //forms
-            currentFrame = Randomizer.Random(0, 4);
+            CurrentFrame = Randomizer.Random(0, 4);
+        }
+        public new void GameLoopAction() {
+            EnemyMovement();
+            EnemyDamageNearTitles();
         }
 
         private void EnemyMovement() {

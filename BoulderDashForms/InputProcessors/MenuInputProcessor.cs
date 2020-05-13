@@ -16,12 +16,12 @@ namespace BoulderDashForms.InputProcessors {
             Action<string> addCharToName
         ) {
             if (isNameEntered) {
-                if (key==Keys.Enter) {
+                if (key == Keys.Enter) {
                     changeIsNameEntered();
                     return;
                 }
-                KeysConverter kc = new KeysConverter();
-                string keyChar = kc.ConvertToString(key);
+                var kc = new KeysConverter();
+                var keyChar = kc.ConvertToString(key);
                 addCharToName(keyChar);
             }
             switch (key) {
@@ -44,9 +44,7 @@ namespace BoulderDashForms.InputProcessors {
                     }
                     break;
                 case Keys.A:
-                    if (isBlockActive == false) {
-                        
-                    }
+                    if (isBlockActive == false) { }
                     else {
                         performSubAction(-1);
                     }
@@ -58,12 +56,10 @@ namespace BoulderDashForms.InputProcessors {
                     }
                     break;
                 case Keys.Enter:
-                    if (isBlockActive == false) {
+                    if (isBlockActive == false)
                         performCurrentMenuAction();
-                    }
-                    else {
+                    else
                         performSubAction(0);
-                    }
                     break;
                 case Keys.Escape:
                     changeActiveAction();

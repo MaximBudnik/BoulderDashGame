@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary.DataLayer {
     public class SettingsController {
-        private Settings _retrieved;
-
         private readonly string _settingsFile =
             Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "settings.json");
+
+        private Settings _retrieved;
 
         public async Task WriteSettings(Settings set) {
             await using var fs = new FileStream(_settingsFile, FileMode.OpenOrCreate);

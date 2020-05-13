@@ -1,84 +1,75 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 
 namespace BoulderDashForms.FormsDrawers {
     public class FormDrawer {
-        protected PrivateFontCollection fontCollection;
-        protected FontFamily family1;
-        protected FontFamily family2;
-        protected Font _menuFont;
-        protected Font _boldFont;
-        protected readonly Brush _guiBrush = Brushes.Crimson;
+        private readonly string _attackPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\attack.png");
 
-        protected Image MainSprites;
-        protected Image SecondarySprites;
-        protected Image Tileset;
-        protected Image Icons;
-        protected Image Attack;
-        protected Image Effects;
-        protected Image HpFull;
-        protected Image HpEmpty;
-        protected Image Shield;
-        protected Image Energy;
-        protected Image Keyboard;
+        private readonly string _effectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\fx.png");
 
-        protected string mainsSpritesPath =
+        private readonly string _energyPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\energy.png");
+
+        private readonly string _hpEmptyPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart_empty.png");
+
+        private readonly string _hpFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart.png");
+        private readonly string _iconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\icons.png");
+
+        private readonly string _keyboardPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\keyboard.png");
+
+        private readonly string _mainsSpritesPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\mainSprites.png");
 
-        protected string secondarySpritesPath =
+        private readonly string _secondarySpritesPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\secondarySprites.png");
 
-        protected string TilesetPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\Tileset.png");
-        protected string iconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\icons.png");
-        protected string attackPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\attack.png");
-        protected string effectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\fx.png");
-        protected string hpFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart.png");
-        protected string hpEmptyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart_empty.png");
-        protected string shieldPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\shield.png");
-        protected string energyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\energy.png");
-        protected string keyboardPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\keyboard.png");
+        private readonly string _shieldPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\shield.png");
 
+        private readonly string _tilesetPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\Tileset.png");
+
+        protected readonly Image Attack;
+        protected readonly Image Effects;
+        protected readonly Image Energy;
+        protected readonly Brush GuiBrush = Brushes.Crimson;
+        protected readonly Image HpEmpty;
+        protected readonly Image HpFull;
+        protected readonly Image Icons;
+        protected readonly Image Keyboard;
+        protected readonly Image MainSprites;
+        protected readonly Image SecondarySprites;
+        protected readonly Image Shield;
+        protected readonly Image TileSet;
+        protected Font BoldFont;
+        protected FontFamily Family1;
+        protected FontFamily Family2;
+        protected PrivateFontCollection FontCollection;
+        protected Font MenuFont;
         protected FormDrawer() {
-            MainSprites = new Bitmap(mainsSpritesPath);
-            GC.KeepAlive(MainSprites);
-            SecondarySprites = new Bitmap(secondarySpritesPath);
-            GC.KeepAlive(SecondarySprites);
-            Icons = new Bitmap(iconsPath);
-            GC.KeepAlive(Icons);
-            Tileset = new Bitmap(TilesetPath);
-            GC.KeepAlive(Tileset);
-            Effects = new Bitmap(effectPath);
-            GC.KeepAlive(Effects);
-            Attack = new Bitmap(attackPath);
-            GC.KeepAlive(Attack);
-            HpFull = new Bitmap(hpFullPath);
-            GC.KeepAlive(HpFull);
-            HpEmpty = new Bitmap(hpEmptyPath);
-            GC.KeepAlive(HpEmpty);
-            Shield = new Bitmap(shieldPath);
-            GC.KeepAlive(Shield);
-            Energy = new Bitmap(energyPath);
-            GC.KeepAlive(Energy);
-            Keyboard = new Bitmap(keyboardPath);
-            GC.KeepAlive(Keyboard);
-
-
-
-             fontCollection = new PrivateFontCollection();
-            GC.KeepAlive(fontCollection);
-            fontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\monogram.ttf"));
-            fontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\ThaleahFat.ttf"));
-            family1 = fontCollection.Families[0];
-            family2 = fontCollection.Families[1];
-            GC.KeepAlive(family1);
-            GC.KeepAlive(family2);
-            _menuFont = new Font(family1, 22);
-            _boldFont = new Font(family2, 22);
-            GC.KeepAlive(_menuFont);
-            GC.KeepAlive(_boldFont);
+            MainSprites = new Bitmap(_mainsSpritesPath);
+            SecondarySprites = new Bitmap(_secondarySpritesPath);
+            Icons = new Bitmap(_iconsPath);
+            TileSet = new Bitmap(_tilesetPath);
+            Effects = new Bitmap(_effectPath);
+            Attack = new Bitmap(_attackPath);
+            HpFull = new Bitmap(_hpFullPath);
+            HpEmpty = new Bitmap(_hpEmptyPath);
+            Shield = new Bitmap(_shieldPath);
+            Energy = new Bitmap(_energyPath);
+            Keyboard = new Bitmap(_keyboardPath);
+            FontCollection = new PrivateFontCollection();
+            FontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\monogram.ttf"));
+            FontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\ThaleahFat.ttf"));
+            Family1 = FontCollection.Families[0];
+            Family2 = FontCollection.Families[1];
+            MenuFont = new Font(Family1, 22);
+            BoldFont = new Font(Family2, 22);
         }
     }
 }

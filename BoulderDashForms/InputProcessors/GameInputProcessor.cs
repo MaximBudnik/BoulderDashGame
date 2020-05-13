@@ -4,35 +4,30 @@ using ClassLibrary.Entities.Player;
 using ClassLibrary.InputProcessors;
 
 namespace BoulderDashForms.InputProcessors {
-    public class FormsInputProcessor : InputProcessor  {
-
-        public void ProcessKeyDown(Keys key,Func<Player> getPlayer, Action<int> changeGameStatus) {
-            Player player = getPlayer();
+    public class GameInputProcessor : InputProcessor {
+        public void ProcessKeyDown(Keys key, Func<Player> getPlayer, Action<int> changeGameStatus) {
+            var player = getPlayer();
             switch (key) {
                 case Keys.W:
                     player.Move("vertical", -1);
-                    player.IsMoving = true;
                     player.SetAnimation(1);
                     player.Keyboard.W = 6;
                     break;
                 case Keys.S:
                     player.Move("vertical", 1);
                     player.SetAnimation(1);
-                    player.IsMoving = true;
                     player.Keyboard.S = 6;
                     break;
                 case Keys.A:
                     player.Move("horizontal", -1);
                     player.SetAnimation(1);
-                    player.IsMoving = true;
-                    player.reverse = -1;
+                    player.PlayerAnimator.Reverse = -1;
                     player.Keyboard.A = 6;
                     break;
                 case Keys.D:
                     player.Move("horizontal", 1);
                     player.SetAnimation(1);
-                    player.IsMoving = true;
-                    player.reverse = 1;
+                    player.PlayerAnimator.Reverse = 1;
                     player.Keyboard.D = 6;
                     break;
                 case Keys.T:
@@ -60,27 +55,23 @@ namespace BoulderDashForms.InputProcessors {
                     break;
             }
         }
-        
-        public void ProcessKeyUp(Keys key,Func<Player> getPlayer) {
-            Player player = getPlayer();
+
+        public void ProcessKeyUp(Keys key, Func<Player> getPlayer) {
+            var player = getPlayer();
             switch (key) {
                 case Keys.W:
-                    player.IsMoving = false;
                     player.SetAnimation(0);
                     player.Keyboard.W = 0;
                     break;
                 case Keys.S:
-                    player.IsMoving = false;
                     player.SetAnimation(0);
                     player.Keyboard.S = 0;
                     break;
                 case Keys.A:
-                    player.IsMoving = false;
                     player.SetAnimation(0);
                     player.Keyboard.A = 0;
                     break;
                 case Keys.D:
-                    player.IsMoving = false;
                     player.SetAnimation(0);
                     player.Keyboard.D = 0;
                     break;
@@ -103,10 +94,5 @@ namespace BoulderDashForms.InputProcessors {
                     break;
             }
         }
-        
-       
-        
-        
-        
     }
 }

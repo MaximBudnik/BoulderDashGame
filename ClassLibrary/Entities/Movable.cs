@@ -4,25 +4,17 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities {
     public class Movable : GameEntity {
-        protected Movable(Func<Level> getLevel, int i, int j ) : base(i, j) {
-            GetLevel = getLevel;
-        }
-
-        protected Movable(Func<Level> getLevel) {
-            GetLevel = getLevel;
-        }
-
         protected readonly Func<Level> GetLevel;
-        public int Hp { get; set; }
-
-        public override void GameLoopAction() {
+        protected Movable(Func<Level> getLevel, int i, int j) : base(i, j) {
+            GetLevel = getLevel;
         }
-
+        public int Hp { get; set; }
+        public override void GameLoopAction() { }
         protected virtual void Move(string direction, int value, int posX, int posY) {
             PositionX = posX;
             PositionY = posY;
 
-            Level level = GetLevel();
+            var level = GetLevel();
             level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY); //making previous position empty
 
             switch (direction) {

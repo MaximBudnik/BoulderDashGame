@@ -5,8 +5,8 @@ using ClassLibrary.DataLayer;
 
 namespace ClassLibrary.ConsoleInterface {
     public class Menu : UserInterface {
+        private readonly string[] _menuActions = {"Continue", "New game", "Settings", "Scores", "Help", "Exit"};
         private readonly ConsoleColor _secondTextColor = ConsoleColor.Red;
-        private readonly string[] _menuActions = {"Continue", "New game", "Settings", "Scores", "Help", "Exit",};
         public void DrawMenu(int currentMenuAction) {
             Console.Clear();
             SkipLine();
@@ -30,7 +30,7 @@ namespace ClassLibrary.ConsoleInterface {
             LogCentered("█▄█ ██▄ █▄█ █ █░▀█   ░█░ █▄█ █▄█ █▀▄   █▄█ █▄█ █▄█ █▀▄ █░▀█ ██▄ ░█░");
             ChangeForegroundColor(primaryTextColor);
             SkipLine();
-            for (int i = 0; i < _menuActions.Length; i++) {
+            for (var i = 0; i < _menuActions.Length; i++)
                 if (i == currentMenuAction) {
                     ChangeForegroundColor(_secondTextColor);
                     LogCentered(_menuActions[i]);
@@ -39,7 +39,6 @@ namespace ClassLibrary.ConsoleInterface {
                 else {
                     LogCentered(_menuActions[i]);
                 }
-            }
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 3;
             Console.WriteLine("To choose actions press W, S and Enter");
             Console.WriteLine("Version: 0.6.2 Console edition");
@@ -85,7 +84,7 @@ namespace ClassLibrary.ConsoleInterface {
             SkipLine();
             ChangeForegroundColor(ConsoleColor.Blue);
             DrawLine();
-            int i = 1;
+            var i = 1;
             foreach (var save in saves) {
                 Console.WriteLine();
                 Console.Write($" {i}. Player name: {save.Name} Level: {save.LevelName} Score: {save.Score} \n");
@@ -138,8 +137,8 @@ namespace ClassLibrary.ConsoleInterface {
             ChangeForegroundColor(primaryTextColor);
             SkipLine();
 
-            int i = 1;
-            foreach (KeyValuePair<int, string> key in results.Reverse()) {
+            var i = 1;
+            foreach (var key in results.Reverse()) {
                 LogCentered($"{i}. {key.Key} {key.Value} \n");
                 i++;
             }

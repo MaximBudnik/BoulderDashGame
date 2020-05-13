@@ -3,10 +3,10 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
     public abstract class Enemy : Movable {
-        protected int Damage;
+        private readonly Action<int> _changePlayerHp;
         protected readonly Func<int> GetPlayerPosX;
         protected readonly Func<int> GetPlayerPosY;
-        private readonly Action<int> _changePlayerHp;
+        protected int Damage;
 
         protected Enemy(
             int i,
@@ -32,13 +32,11 @@ namespace ClassLibrary.Entities.Enemies {
         }
 
         protected void EnemyDamageNearTitles() {
-            int playerPosX = GetPlayerPosX();
-            int playerPosY = GetPlayerPosY();
-            bool one = Math.Abs(PositionX - playerPosX) == 1 && playerPosY == PositionY;
-            bool two = Math.Abs(PositionY - playerPosY) == 1 && playerPosX == PositionX;
-            if (one || two) {
-                DealDamage();
-            }
+            var playerPosX = GetPlayerPosX();
+            var playerPosY = GetPlayerPosY();
+            var one = Math.Abs(PositionX - playerPosX) == 1 && playerPosY == PositionY;
+            var two = Math.Abs(PositionY - playerPosY) == 1 && playerPosX == PositionX;
+            if (one || two) DealDamage();
         }
 
         protected void DealDamage() {

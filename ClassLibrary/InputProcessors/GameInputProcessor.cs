@@ -1,5 +1,4 @@
 ﻿using System;
-using ClassLibrary.Entities;
 using ClassLibrary.Entities.Player;
 
 namespace ClassLibrary.
@@ -10,7 +9,7 @@ namespace ClassLibrary.
             Func<Player> getPlayer,
             Action<int> changeGameStatus
         ) {
-            Player player = getPlayer();
+            var player = getPlayer();
             switch (key) {
                 case ConsoleKey.W:
                     player.Move("vertical", -1);

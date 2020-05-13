@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
     public class EnemyWalker : Enemy {
-        public new void GameLoopAction() {
-            EnemyMovement();
-            EnemyDamageNearTitles();
-        }
-
         public EnemyWalker(int i, int j,
             Func<Level> getLevel,
             Func<int> getPlayerPosX, Func<int> getPlayerPosY,
@@ -19,9 +13,13 @@ namespace ClassLibrary.Entities.Enemies {
             EntityType = 6;
             Damage = 5;
             Hp = 10;
-            
+
             //forms
-            currentFrame=Randomizer.Random(0,3);
+            CurrentFrame = Randomizer.Random(0, 3);
+        }
+        public new void GameLoopAction() {
+            EnemyMovement();
+            EnemyDamageNearTitles();
         }
 
         private void EnemyMovement() {

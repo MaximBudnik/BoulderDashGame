@@ -5,39 +5,26 @@ using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Collectable.ItemsTiles;
 using ClassLibrary.Entities.Enemies;
-using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Entities.Player;
 
 namespace ClassLibrary.Matrix {
     public class Level : Matrix {
-        public int DiamondsQuantity { get; } = 20; //TODO: change
-        public int LevelName { get; }
-        public string Aim { get; } = "Collect diamonds";
-
-        private int WalkersCount { get; set; }
-        private int DiggersCount { get; set; }
-
-
-        //fields for creating level
-        public string LevelType { get; private set; } = "red";
-        private List<int> _quarterPool;
-        private int _createRoomChance; // 0/5/10/100
-        private int _roomChanceGrow = 5; // the bigger the  chance, the bigger open spaces on level will be
-        private int _diggerMovesLower = 20;
-        private int _diggerMovesUpper = 40;
+        private readonly Func<Level> _getLevel;
+        private readonly Func<int> _getPlayerPositionX;
+        private readonly Func<int> _getPlayerPositionY;
+        private readonly Action _lose;
+        private readonly string _playerName;
+        private readonly Action<Player> _setPlayer;
+        private readonly Action<int> _substractPlayerHp;
+        private readonly Action _win;
+        private int _createRoomChance;
         private int _createRoomMaxSizeX = 10;
         private int _createRoomMaxSizeY = 10;
         private int _difficulty;
-
-        private string playerName;
-        private Func<Level> getLevel;
-        private Action win;
-        private Action lose;
-        private Func<int> getPlayerPositionX;
-        private Func<int> getPlayerPositionY;
-        private Action<int> substractPlayerHp;
-        private Action<Player> setPlayer;
-
+        private int _diggerMovesLower = 20;
+        private int _diggerMovesUpper = 40;
+        private List<int> _quarterPool;
+        private int _roomChanceGrow = 5; // the bigger the  chance, the bigger open spaces on level will be
         public Level(int levelName, string playerName,
             Func<Level> getLevel,
             Action win, Action lose,
@@ -46,23 +33,36 @@ namespace ClassLibrary.Matrix {
             Action<int> substractPlayerHp, Action<Player> setPlayer,
             int sizeX, int sizeY, int difficulty
         ) {
-            //TODO: now choose the size of the level from starting game/random
             width = sizeX; //20 for console
             height = sizeY; //65 for console
             LevelName = levelName;
-            this.playerName = playerName;
-            this.getLevel = getLevel;
-            this.win = win;
-            this.lose = lose;
-            this.getPlayerPositionX = getPlayerPositionX;
-            this.getPlayerPositionY = getPlayerPositionY;
-            this.substractPlayerHp = substractPlayerHp;
-            this.setPlayer = setPlayer;
-            _difficulty = difficulty;
-            WalkersCount = difficulty;
-            DiggersCount = difficulty/2;
+            _playerName = playerName;
+            _getLevel = getLevel;
+            _win = win;
+            _lose = lose;
+            _getPlayerPositionX = getPlayerPositionX;
+            _getPlayerPositionY = getPlayerPositionY;
+            _substractPlayerHp = substractPlayerHp;
+            _setPlayer = setPlayer;
+
+            SetDifficulty(difficulty);
+
             matrix = new GameEntity[width, height];
             DiggerAlgorithm();
+        }
+        public int DiamondsQuantity { get; set; }
+        public int LevelName { get; }
+        public string Aim { get; } = "Collect diamonds";
+        private int WalkersCount { get; set; }
+        private int DiggersCount { get; set; }
+
+        //fields for creating level
+        public string LevelType { get; private set; } = "red";
+        private void SetDifficulty(int difficulty) {
+            _difficulty = difficulty;
+            WalkersCount = difficulty;
+            DiggersCount = difficulty / 2;
+            DiamondsQuantity = difficulty * 2;
         }
 
         private void DiggerAlgorithm() {
@@ -71,7 +71,6 @@ namespace ClassLibrary.Matrix {
             //    diggerMoves
             //     9), where size of setted rooms are setted
             //    secondary generation
-
             //1) All field is filled with walls
             for (var i = 0; i < width; i++)
             for (var j = 0; j < height; j++)
@@ -82,7 +81,6 @@ namespace ClassLibrary.Matrix {
             var startPosY = rand.Next(0, Height);
             var diggerPoxX = startPosX;
             var diggerPoxY = startPosY;
-
             //2.1) randomize values for level generation to be sure every level is unique
             RandomizeSeedValues();
             //3) the quantity of digger moves is determined
@@ -90,7 +88,7 @@ namespace ClassLibrary.Matrix {
             var diggerMoves = rand.Next(_diggerMovesLower, _diggerMovesUpper);
             //4) flag makes sure that he changes axis of movement after he gets every position
             var flag = false;
-            //5) quarters are created to make sure that digger wiil be in all parts of field     
+            //5) quarters are created to make sure that digger will be in all parts of field     
             //12 - quarters pos
             //34
             var currentQuarter = CheckQuarter(diggerPoxX, diggerPoxY);
@@ -98,43 +96,105 @@ namespace ClassLibrary.Matrix {
             _quarterPool = new List<int> {
                 currentQuarter
             };
-
             //6) loop that performs all operations 
-            for (var i = 0; i < diggerMoves; i++) {
-                //7) determine next point to dig
-                // it depends on quarter chosen from the pool
-                var number = rand.Next(rand.Next(_quarterPool.Count));
-                var nextQuarter = _quarterPool[number];
-                FillQuarterPool(nextQuarter);
-
-                //8)Here random point is randomed
-                var randomX = rand.Next(0, Width);
-                var randomY = rand.Next(0, Height);
-                while (CheckQuarter(randomX, randomY) != nextQuarter) {
-                    randomX = rand.Next(0, Width);
-                    randomY = rand.Next(0, Height);
-                }
-
-                //9) digger starts moving
-                while (checkMoved(flag, diggerPoxX, diggerPoxY, randomX, randomY)) {
-                    //making previous tile empty space
-                    matrix[diggerPoxX, diggerPoxY] = fillOneTitle(diggerPoxX, diggerPoxY, 1);
-                    //moves next tile
-                    straightDig(flag, ref diggerPoxX, ref diggerPoxY, randomX, randomY);
-                    //has a chance to create new room
-                    CreateRoom(_createRoomChance, diggerPoxX, diggerPoxY, _createRoomMaxSizeX, _createRoomMaxSizeY);
-                    //chance of creating room always growing
-                    _createRoomChance += _roomChanceGrow;
-                }
-                //after digger reaches end point? he creates room
-                CreateRoom(100, diggerPoxX, diggerPoxY);
-                flag = !flag;
-            }
-
+            MainGeneration(diggerMoves, rand, flag, diggerPoxX, diggerPoxY);
             //secondary generation
-
             //TODO: optimize following processes
             // here i fill matrix with hand-made objects
+            SecondaryGeneration(rand);
+            //the we need to replace walls and empty spaces with different blocks, spawn keys, doors,+enemies
+            //here i work with out place(walls and their surroundings)
+            SetWalls();
+            //create enemies in random points
+            CreateEnemies(rand);
+            // here i fill the rest of empty space that was created be rooms 
+            FillEmptySpace();
+
+            var player = new Player(startPosX, startPosY, _playerName,
+                _getLevel, _win, _lose, DiamondsQuantity);
+            player.ScoreMultiplier = _difficulty;
+            matrix[startPosX, startPosY] = player;
+            _setPlayer(player);
+        }
+        private void FillEmptySpace() {
+            for (var i = 0; i < width; i++)
+            for (var j = 0; j < height; j++)
+                if (matrix[i, j].EntityType == 7) {
+                    var pool = new List<int> {
+                        //this values represent titles and probability of spawn
+                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+                        4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+                        7, 7,
+                        12,
+                        20,
+                        21,
+                        22,
+                        23
+                    };
+                    matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
+                }
+                else if (matrix[i, j].EntityType == 1) {
+                    var pool = new List<int> {
+                        //this values represent titles and probability of spawn
+                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                        1, 1, 1, 1, 1, 1, 1,
+                        4, 4, 4, 4, 4,
+                        7, 7,
+                        12
+                    };
+                    matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
+                }
+                else if (matrix[i, j].EntityType == 101) {
+                    matrix[i, j] = fillOneTitle(i, j, 1);
+                }
+        }
+        private void CreateEnemies(Random rand) {
+            while (WalkersCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityType == 7) {
+                    var enemy = new EnemyWalker(posX, posY, _getLevel, _getPlayerPositionX,
+                        _getPlayerPositionY, _substractPlayerHp);
+                    matrix[posX, posY] = enemy;
+                    WalkersCount--;
+                }
+            }
+
+            while (DiggersCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityType == 7) {
+                    var enemy = new EnemyDigger(posX, posY, _getLevel, _getPlayerPositionX,
+                        _getPlayerPositionY, _substractPlayerHp);
+                    matrix[posX, posY] = enemy;
+                    DiggersCount--;
+                }
+            }
+        }
+        private void SetWalls() {
+            for (var i = 0; i < width; i++)
+            for (var j = 0; j < height; j++)
+                if (matrix[i, j].EntityType == 5) {
+                    // i make wal sand but only if it doesnt border wit empty space
+                    //so player just cant get out the map so easily
+                    matrix[i, j] = fillOneTitle(i, j, 2);
+                    if (i + 1 < Width && (matrix[i + 1, j].EntityType == 1 || matrix[i + 1, j].EntityType == 7 ||
+                                          matrix[i + 1, j].EntityType == 9))
+                        matrix[i, j] = fillOneTitle(i, j, 5);
+                    else if (i - 1 >= 0 && (matrix[i - 1, j].EntityType == 1 || matrix[i - 1, j].EntityType == 7 ||
+                                            matrix[i - 1, j].EntityType == 9))
+                        matrix[i, j] = fillOneTitle(i, j, 5);
+                    else if (j + 1 < Height &&
+                             (matrix[i, j + 1].EntityType == 1 || matrix[i, j + 1].EntityType == 7 ||
+                              matrix[i, j + 1].EntityType == 9))
+                        matrix[i, j] = fillOneTitle(i, j, 5);
+                    else if (j - 1 >= 0 && (matrix[i, j - 1].EntityType == 1 || matrix[i, j - 1].EntityType == 7 ||
+                                            matrix[i, j - 1].EntityType == 9))
+                        matrix[i, j] = fillOneTitle(i, j, 5);
+                }
+        }
+        private void SecondaryGeneration(Random rand) {
             var numberOfFeatures = rand.Next(0, 4);
 
             while (numberOfFeatures > 0) {
@@ -166,96 +226,38 @@ namespace ClassLibrary.Matrix {
                     }
                 numberOfFeatures--;
             }
+        }
+        private void MainGeneration(int diggerMoves, Random rand, bool flag, int diggerPoxX, int diggerPoxY) {
+            for (var i = 0; i < diggerMoves; i++) {
+                //7) determine next point to dig
+                // it depends on quarter chosen from the pool
+                var number = rand.Next(rand.Next(_quarterPool.Count));
+                var nextQuarter = _quarterPool[number];
+                FillQuarterPool(nextQuarter);
 
-            //the we need to replace walls and empty spaces with different blocks, spawn keys, doors,+enemies
-            //here i work with out place(walls and their surroundings)
-            for (var i = 0; i < width; i++)
-            for (var j = 0; j < height; j++)
-                if (matrix[i, j].EntityType == 5) {
-                    // i make wal sand but only if it doesnt border wit empty space
-                    //so player just cant get out the map so easily
-                    matrix[i, j] = fillOneTitle(i, j, 2);
-                    if (i + 1 < Width && (matrix[i + 1, j].EntityType == 1 || matrix[i + 1, j].EntityType == 7 ||
-                                          matrix[i + 1, j].EntityType == 9))
-                        matrix[i, j] = fillOneTitle(i, j, 5);
-                    else if (i - 1 >= 0 && (matrix[i - 1, j].EntityType == 1 || matrix[i - 1, j].EntityType == 7 ||
-                                            matrix[i - 1, j].EntityType == 9))
-                        matrix[i, j] = fillOneTitle(i, j, 5);
-                    else if (j + 1 < Height &&
-                             (matrix[i, j + 1].EntityType == 1 || matrix[i, j + 1].EntityType == 7 ||
-                              matrix[i, j + 1].EntityType == 9))
-                        matrix[i, j] = fillOneTitle(i, j, 5);
-                    else if (j - 1 >= 0 && (matrix[i, j - 1].EntityType == 1 || matrix[i, j - 1].EntityType == 7 ||
-                                            matrix[i, j - 1].EntityType == 9))
-                        matrix[i, j] = fillOneTitle(i, j, 5);
+                //8)Here random point is randomed
+                var randomX = rand.Next(0, Width);
+                var randomY = rand.Next(0, Height);
+                while (CheckQuarter(randomX, randomY) != nextQuarter) {
+                    randomX = rand.Next(0, Width);
+                    randomY = rand.Next(0, Height);
                 }
 
-            
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            
-            //create enemies in random points
-            while (WalkersCount > 0) {
-                var posX = rand.Next(width);
-                var posY = rand.Next(height);
-                if (matrix[posX, posY].EntityType == 7) {
-                    var enemy = new EnemyWalker(posX, posY, getLevel, getPlayerPositionX,
-                        getPlayerPositionY, substractPlayerHp);
-                    matrix[posX, posY] = enemy;
-                    WalkersCount--;
+                //9) digger starts moving
+                while (checkMoved(flag, diggerPoxX, diggerPoxY, randomX, randomY)) {
+                    //making previous tile empty space
+                    matrix[diggerPoxX, diggerPoxY] = fillOneTitle(diggerPoxX, diggerPoxY, 1);
+                    //moves next tile
+                    straightDig(flag, ref diggerPoxX, ref diggerPoxY, randomX, randomY);
+                    //has a chance to create new room
+                    CreateRoom(_createRoomChance, diggerPoxX, diggerPoxY, _createRoomMaxSizeX, _createRoomMaxSizeY);
+                    //chance of creating room always growing
+                    _createRoomChance += _roomChanceGrow;
                 }
+                //after digger reaches end point? he creates room
+                CreateRoom(100, diggerPoxX, diggerPoxY);
+                flag = !flag;
             }
-            
-            while (DiggersCount > 0) {
-                var posX = rand.Next(width);
-                var posY = rand.Next(height);
-                if (matrix[posX, posY].EntityType == 7) {
-                    var enemy = new EnemyDigger(posX, posY, getLevel, getPlayerPositionX,
-                        getPlayerPositionY, substractPlayerHp);
-                    matrix[posX, posY] = enemy;
-                    DiggersCount--;
-                }
-            }
-            
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-
-            // here i fill the rest of empty space that was created be rooms 
-            for (var i = 0; i < width; i++)
-            for (var j = 0; j < height; j++)
-                if (matrix[i, j].EntityType == 7) {
-                    var pool = new List<int> {
-                        //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-                        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-                        4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-                        7, 7,
-                        12,
-                        20,
-                        21,
-                        22,
-                        23,
-                    };
-                    matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
-                }
-                else if (matrix[i, j].EntityType == 1) {
-                    var pool = new List<int> {
-                        //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-                        1, 1, 1, 1, 1, 1, 1,
-                        4, 4, 4, 4, 4,
-                        7, 7,
-                        12
-                    };
-                    matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
-                }
-                else if (matrix[i, j].EntityType == 101) {
-                    matrix[i, j] = fillOneTitle(i, j, 1);
-                }
-
-            var player = new Player(startPosX, startPosY, playerName,
-                getLevel, win, lose, DiamondsQuantity);
-            player.ScoreMultiplier = _difficulty;
-            matrix[startPosX, startPosY] = player;
-            setPlayer(player);
         }
 
         private void RandomizeSeedValues() {
@@ -292,10 +294,10 @@ namespace ClassLibrary.Matrix {
                     roomSizeX = rand.Next(0, maxSizeX);
                     roomSizeY = rand.Next(0, maxSizeY);
                 }
-                var startposX = posX - roomSizeX / 2;
-                var startposY = posY - roomSizeY / 2;
-                for (var i = startposX; i < startposX + roomSizeX; i++)
-                for (var j = startposY; j < startposY + roomSizeY; j++)
+                var startPosX = posX - roomSizeX / 2;
+                var startPosY = posY - roomSizeY / 2;
+                for (var i = startPosX; i < startPosX + roomSizeX; i++)
+                for (var j = startPosY; j < startPosY + roomSizeY; j++)
                     matrix[i, j] = fillOneTitle(i, j, 7);
                 _createRoomChance = 0;
             }
@@ -350,7 +352,7 @@ namespace ClassLibrary.Matrix {
                     var sand = new Sand(i, j);
                     return sand;
                 case 3:
-                    var rock = fillOneTitle(i, j, getLevel,substractPlayerHp, entityType);
+                    var rock = fillOneTitle(i, j, _getLevel, _substractPlayerHp, entityType);
                     return rock;
                 case 4:
                     var diamond = new Diamond(i, j);

@@ -1,5 +1,5 @@
 ﻿namespace BoulderDashForms {
-    partial class Form1 {
+    sealed partial class Form1 {
         /// <summary>
         ///  Required designer variable.
         /// </summary>
@@ -22,25 +22,20 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.SuspendLayout();
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (43)))), ((int) (((byte) (43)))),
-                ((int) (((byte) (51)))));
-            this.ClientSize = new System.Drawing.Size(1484, 868);
+            this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (43)))), ((int) (((byte) (43)))), ((int) (((byte) (51)))));
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Tahoma", 10F);
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
-            this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Tag = "timnti";
-            this.Text = "Boulder Dash";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
             this.ResumeLayout(false);
         }

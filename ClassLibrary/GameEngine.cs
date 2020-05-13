@@ -1,39 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ClassLibrary.ConsoleInterface;
 using ClassLibrary.DataLayer;
-using ClassLibrary.InputProcessors;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClassLibrary {
     public class GameEngine {
+        //menu 
+        private readonly int _menuItems = 6;
         private readonly Action _reDraw;
-
+        public readonly DataInterlayer DataInterlayer = new DataInterlayer();
+        public readonly GameLogic GameLogic;
+        private int _subActionSize = 5;
         public GameEngine(Action reDraw) {
             _reDraw = reDraw;
+            GameLogic = new GameLogic(ChangeGameStatus, () => DataInterlayer, RefreshSaves);
         }
+        public int GameStatus { get; private set; } // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
+        public List<Save> Saves { get; private set; }
+        public int CurrentMenuAction { get; private set; } = 1;
+
+        public int CurrentSubAction { get; private set; }
+
         //TODO: settings validation
-        public int GameStatus; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
-        public int CurrentMenuAction = 1;
-        public int CurrentSubAction = 0;
-        private int _subActionSize = 5;
-        private readonly int MenuItems = 6;
-        public bool IsActionActive = false;
-        public bool IsNameEntered = false;
-        public List<Save> Saves;
-        public Save NewGameSave = new Save();
+        public bool IsActionActive { get; private set; }
+        public bool IsNameEntered { get; private set; }
+        public Save NewGameSave { get; private set; } = new Save();
 
         public void ChangeIsNameEntered() {
             IsNameEntered = !IsNameEntered;
+        }
+        public void ChangeIsActionActive() {
+            IsActionActive = !IsActionActive;
         }
         public void ChangeGameStatus(int i) {
             if (i >= 0 && i < 4)
@@ -42,31 +40,29 @@ namespace ClassLibrary {
                 throw new Exception("Unknown game status");
         }
         public void ChangeCurrentMenuAction(int i) {
-            if (CurrentMenuAction < MenuItems && CurrentMenuAction >= 0) {
-                CurrentMenuAction += i;
-                if (CurrentMenuAction == MenuItems)
-                    CurrentMenuAction = 0;
-                else if (CurrentMenuAction == -1) CurrentMenuAction = MenuItems - 1;
-            }
+            if (CurrentMenuAction >= _menuItems || CurrentMenuAction < 0) return;
+            CurrentMenuAction += i;
+            if (CurrentMenuAction == _menuItems)
+                CurrentMenuAction = 0;
+            else if (CurrentMenuAction == -1) CurrentMenuAction = _menuItems - 1;
         }
 
-        public void SetSubAction(int size) {
+        private void SetSubAction(int size) {
             CurrentSubAction = 0;
             _subActionSize = size;
         }
         public void ChangeCurrentSubAction(int i) {
-            if (CurrentSubAction < _subActionSize && CurrentSubAction >= 0) {
-                CurrentSubAction += i;
-                if (CurrentSubAction == _subActionSize)
-                    CurrentSubAction = 0;
-                else if (CurrentSubAction == -1) CurrentSubAction = _subActionSize - 1;
-            }
+            if (CurrentSubAction >= _subActionSize || CurrentSubAction < 0) return;
+            CurrentSubAction += i;
+            if (CurrentSubAction == _subActionSize)
+                CurrentSubAction = 0;
+            else if (CurrentSubAction == -1) CurrentSubAction = _subActionSize - 1;
         }
 
         public void PerformSubAction(int i) {
             switch (CurrentMenuAction) {
                 case 0:
-                    ResumeGame(Saves[CurrentSubAction]);
+                    LaunchGame(Saves[CurrentSubAction]);
                     GameStatus = 1;
                     break;
                 case 1:
@@ -77,18 +73,16 @@ namespace ClassLibrary {
                             if (NewGameSave.Hero > 5) NewGameSave.Hero = 0;
                             break;
                         case 1:
-                            DataInterlayer.Settings.SizeX += i;
                             ChangeIsNameEntered();
                             break;
                         case 2:
                             DataInterlayer.AddGameSave(NewGameSave);
-                            GameStatus = 1;
-                            ResumeGame(NewGameSave);
+                            LaunchGame(NewGameSave);
                             break;
                     }
                     break;
                 case 2:
-                    if (i==0) {
+                    if (i == 0) {
                         DataInterlayer.SaveSettings();
                         IsActionActive = false;
                         return;
@@ -142,28 +136,12 @@ namespace ClassLibrary {
                     break;
             }
         }
-
-        public readonly GameLogic GameLogic = new GameLogic();
-        public readonly DataInterlayer DataInterlayer = new DataInterlayer();
         private void GraphicsThread() {
-            #region Console drawing
-            //Console
-            // while (_gameStatus == 1) {
-            //     _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
-            //     _gameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantity, player.CollectedDiamonds,
-            //         player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name, player.Inventory);
-            //     _gameInterface.NewDraw(() => currentLevel);
-            // }
-            // if (_gameStatus == 2) _afterLevelScreen.DrawGameWin(player.Score, player.AllScores);
-            // else if (_gameStatus == 3) _afterLevelScreen.DrawGameLose();
-            #endregion
-
             while (GameStatus == 1) {
                 Thread.Sleep(1000 / DataInterlayer.Settings.Fps);
                 _reDraw();
             }
         }
-
         private void MenuGraphicsThread() {
             while (GameStatus == 0) {
                 Thread.Sleep(1000 / (DataInterlayer.Settings.Fps * 2));
@@ -173,12 +151,13 @@ namespace ClassLibrary {
 
         private void GameLogicThread() {
             while (GameStatus == 1) {
-                //Console.CursorVisible = false;
                 Thread.Sleep(1000 / DataInterlayer.Settings.TickRate);
                 GameLogic.GameLoop();
             }
         }
-        
+        private void RefreshSaves() {
+            Saves = DataInterlayer.GetAllGameSaves();
+        }
         public void Start() {
             // Task musicPlayer = new Task(() => {
             //     SoundPlayer soundPlayer = new SoundPlayer();
@@ -186,36 +165,25 @@ namespace ClassLibrary {
             // });
             //musicPlayer.Start(); //TODO: dont forget to enable music on build!
 
-
-            //for develop
-
-            
-            Saves = DataInterlayer.GetAllGameSaves();
-
-            
+            RefreshSaves();
             MenuGameCycle();
-            
+
             void MenuGameCycle() {
-               
-               if (GameStatus == 0) {
-                   while (GameStatus == 0) {
-                       Thread.Sleep(1000 / (DataInterlayer.Settings.Fps * 2));
-                       _reDraw();
-                   }
-               } 
-               else if (GameStatus == 1) {
-                   Parallel.Invoke(GraphicsThread,
-                       GameLogicThread);
-               }
+                if (GameStatus == 0)
+                    Parallel.Invoke(MenuGraphicsThread);
+                else if (GameStatus == 1)
+                    Parallel.Invoke(GraphicsThread,
+                        GameLogicThread);
                 MenuGameCycle();
             }
         }
-        private void ResumeGame(Save save) {
-            GameLogic.CreateLevel(save.LevelName, save.Name, ChangeGameStatus, () => DataInterlayer,
-                DataInterlayer.Settings.SizeX,DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty);
+        private void LaunchGame(Save save) {
+            GameLogic.CreateLevel(save.LevelName, save.Name, DataInterlayer.Settings.SizeX,
+                DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty);
             GameLogic.Player.Score = save.Score;
             GameLogic.Player.Hero = save.Hero;
             GameLogic.CurrentSave = save;
+            GameStatus = 1;
         }
     }
 }

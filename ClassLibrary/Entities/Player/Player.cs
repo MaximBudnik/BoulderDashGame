@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Collectable.ItemsTiles;
@@ -10,51 +9,17 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Player {
     public class Player : Movable {
-        
-        //animation for forms
-        private int moveFrames = 4;
-        private int damageFrames = 2;
-        private int attackFrames = 3;
-        private int explosionFrames = 7;
-        private int teleportFrames = 4;
-        private int converterFrames = 3;
-        public int currentAnimation=0;
-        public bool IsMoving;
-        public int framesLimit;
-        public int reverse;
-        
-        public int MaxHp { get; set; } = 10;
-
-        public readonly string Name;
-        public readonly int MaxEnergy = 20;
-        public int Energy { get; private set; } = 20;
-        public int CollectedDiamonds { get; set; }
-        public int EnergyRestoreTick { get; set; } = 1;
-        public int ScoreMultiplier { get; set; } = 10;
-        public int Score { get; set; }
-        public int Hero { get; set; }
-
-        public readonly Inventory Inventory = new Inventory();
-        public readonly Keyboard Keyboard = new Keyboard();
-
-        public readonly Dictionary<string, int[]> AllScores;
-
+        private readonly int _attackEnergyCost = 6;
+        private readonly int _diamondsTowWin;
+        private readonly Action _lose;
         private readonly int _moveEnergyCost = 1;
         private readonly int _moveRockEnergyCost = 5;
-        private readonly int _attackEnergyCost = 6;
-
-        private readonly int _diamondsTowWin;
-
         private readonly Action _win;
-        private readonly Action _lose;
-
-        public int GetScoreToAdd(int value) {
-            return value * ScoreMultiplier;
-        }
-        //TODO: add scores for picking inventory and killing enemies
-        public void AddScore(int value) {
-            Score += value * ScoreMultiplier;
-        }
+        public readonly Dictionary<string, int[]> AllScores;
+        public readonly Inventory Inventory = new Inventory();
+        public readonly Keyboard Keyboard = new Keyboard();
+        private readonly int MaxEnergy = 20;
+        public readonly string Name;
 
         public Player(
             int i,
@@ -78,14 +43,29 @@ namespace ClassLibrary.Entities.Player {
                 {"Score from lucky box", new[] {0, 0}}
             };
             CanMove = false;
-            framesLimit = idleFrames;
-            reverse = 1;
 
             //TODO: delete thiS features (its only for testing)
+            PlayerAnimator = new PlayerAnimator(1);
             Inventory.ArmorLevel = 5;
             Inventory.SwordLevel = 5;
             Inventory.TntQuantity = 5;
             Inventory.StoneInDiamondsConverterQuantity = 5;
+        }
+        public int MaxHp { get; set; } = 10;
+        public int Energy { get; private set; } = 20;
+        public int CollectedDiamonds { get; set; }
+        public int EnergyRestoreTick { get; set; } = 1;
+        public int ScoreMultiplier { get; set; } = 10;
+        public int Score { get; set; }
+        public int Hero { get; set; }
+        public PlayerAnimator PlayerAnimator { get; }
+
+        public int GetScoreToAdd(int value) {
+            return value * ScoreMultiplier;
+        }
+        //TODO: add scores for picking inventory and killing enemies
+        public void AddScore(int value) {
+            Score += value * ScoreMultiplier;
         }
 
         public new void GameLoopAction() {
@@ -106,8 +86,8 @@ namespace ClassLibrary.Entities.Player {
             if (value > 0) Hp -= value;
             SetAnimation(2);
         }
-        
-        public void SubstractPlayerHp(int value,int animation) {
+
+        private void SubstractPlayerHp(int value, int animation) {
             if (Inventory.ArmorLevel > 0) {
                 Inventory.ArmorCellHp -= value;
                 value -= Inventory.ArmorLevel;
@@ -121,84 +101,69 @@ namespace ClassLibrary.Entities.Player {
         }
 
         public void Move(string direction, int value) {
-            bool EnoughEnergy() {
-                if (Energy >= _moveEnergyCost)
-                    return true;
-                return false;
-            }
-
-            bool EnoughEnergyForRock() {
-                if (Energy >= _moveRockEnergyCost)
-                    return true;
-                return false;
-            }
-
-            bool CheckNewPosition(Level level) {
-                if (
-                    PositionX == level.Width || PositionX == -1
-                                             ||
-                                             PositionY == level.Height || PositionY == -1
-                                             ||
-                                             level[PositionX, PositionY].CanMove == false
-                )
-                    return true;
-                return false;
-            }
-
-            if (EnoughEnergy()) {
-                var willMove = false;
-                var level = GetLevel();
-                level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
-                switch (direction) {
-                    case "vertical":
-                        PositionX += value;
-                        if (CheckNewPosition(level))
-                            PositionX -= value;
-                        else
-                            willMove = true;
-                        break;
-                    case "horizontal":
-                        PositionY += value;
-                        if (level[PositionX, PositionY].EntityType == 3 && EnoughEnergyForRock()) {
-                            ((Rock) level[PositionX, PositionY]).PushRock(PositionX, PositionY, "horizontal", value);
-                            Energy -= _moveRockEnergyCost;
-                        }
-                        if (CheckNewPosition(level))
-                            PositionY -= value;
-                        else
-                            willMove = true;
-                        break;
-                    default:
-                        throw new Exception("Unknown move direction in Player.cs");
-                }
-                if (willMove) {
-                    Energy -= _moveEnergyCost;
-                    switch (level[PositionX, PositionY].EntityType) {
-                        case 4:
-                            ((Diamond) level[PositionX, PositionY]).Collect(() => this);
-                            break;
-                        case 7:
-                            ((LuckyBox) level[PositionX, PositionY]).Collect(() => this);
-                            break;
-                        case 12:
-                            ((BarrelWithSubstance) level[PositionX, PositionY]).Collect(GetLevel, SubstractPlayerHp);
-                            break;
-                        case 20:
-                            SwordTile.Collect(() => Inventory);
-                            break;
-                        case 21:
-                            ConverterTile.Collect(() => Inventory);
-                            break;
-                        case 22:
-                            TntTile.Collect(() => Inventory);
-                            break;
-                        case 23:
-                            ArmorTile.Collect(() => Inventory);
-                            break;
+            if (!EnoughEnergy()) return;
+            var willMove = false;
+            var level = GetLevel();
+            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+            switch (direction) {
+                case "vertical":
+                    PositionX += value;
+                    if (CheckNewPosition(level))
+                        PositionX -= value;
+                    else
+                        willMove = true;
+                    break;
+                case "horizontal":
+                    PositionY += value;
+                    if (level[PositionX, PositionY].EntityType == 3 && EnoughEnergyForRock()) {
+                        ((Rock) level[PositionX, PositionY]).PushRock(PositionX, PositionY, "horizontal", value);
+                        Energy -= _moveRockEnergyCost;
                     }
-                }
-                level[PositionX, PositionY] = this;
+                    if (CheckNewPosition(level))
+                        PositionY -= value;
+                    else
+                        willMove = true;
+                    break;
+                default:
+                    throw new Exception("Unknown move direction in Player.cs");
             }
+            if (willMove) {
+                Energy -= _moveEnergyCost;
+                switch (level[PositionX, PositionY].EntityType) {
+                    case 4:
+                        ((Diamond) level[PositionX, PositionY]).Collect(() => this);
+                        break;
+                    case 7:
+                        ((LuckyBox) level[PositionX, PositionY]).Collect(() => this);
+                        break;
+                    case 12:
+                        ((BarrelWithSubstance) level[PositionX, PositionY]).Collect(GetLevel, SubstractPlayerHp);
+                        break;
+                    case 20:
+                        ((SwordTile) level[PositionX, PositionY]).Collect(() => Inventory);
+                        break;
+                    case 21:
+                        ((ConverterTile) level[PositionX, PositionY]).Collect(() => Inventory);
+                        break;
+                    case 22:
+                        ((TntTile) level[PositionX, PositionY]).Collect(() => Inventory);
+                        break;
+                    case 23:
+                        ((ArmorTile) level[PositionX, PositionY]).Collect(() => Inventory);
+                        break;
+                }
+            }
+            level[PositionX, PositionY] = this;
+        }
+        private bool CheckNewPosition(Level level) {
+            return PositionX == level.Width || PositionX == -1 || PositionY == level.Height || PositionY == -1 ||
+                   level[PositionX, PositionY].CanMove == false;
+        }
+        private bool EnoughEnergyForRock() {
+            return Energy >= _moveRockEnergyCost;
+        }
+        private bool EnoughEnergy() {
+            return Energy >= _moveEnergyCost;
         }
         public void HpInEnergy() {
             SubstractPlayerHp(1);
@@ -240,11 +205,11 @@ namespace ClassLibrary.Entities.Player {
             Energy = Energy / 2;
         }
         public void Attack() {
-            if(Energy<_attackEnergyCost) return;
+            if (Energy < _attackEnergyCost) return;
             SetAnimation(3);
             Energy -= _attackEnergyCost;
             var level = GetLevel();
-            Enemy tmp=null;
+            Enemy tmp = null;
             if (Right < level.Width && level[Right, PositionY] is Enemy) {
                 tmp = (Enemy) level[Right, PositionY];
                 tmp.Hp -= Inventory.SwordLevel;
@@ -261,16 +226,14 @@ namespace ClassLibrary.Entities.Player {
                 tmp = (Enemy) level[PositionX, Top];
                 tmp.Hp -= Inventory.SwordLevel;
             }
-            if (tmp!=null && tmp.Hp <= 0) {
-                level[tmp.PositionX,tmp.PositionY] = new Diamond(PositionX,PositionY);
-            }
+            if (tmp != null && tmp.Hp <= 0) level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY);
         }
         public void UseTnt() {
             if (Inventory.TntQuantity == 0) return;
             Inventory.TntQuantity--;
             var level = GetLevel();
             double dmg = 0;
-            double tileDamage = 0.9;
+            var tileDamage = 0.9;
 
             if (Right < level.Width) {
                 level[Right, PositionY] = new EmptySpace(Right, PositionY);
@@ -307,7 +270,7 @@ namespace ClassLibrary.Entities.Player {
             }
 
             Energy = Energy / 2;
-            SubstractPlayerHp(Convert.ToInt32(dmg),4);
+            SubstractPlayerHp(Convert.ToInt32(dmg), 4);
         }
         private void CheckLose() {
             if (Hp <= 0)
@@ -318,36 +281,11 @@ namespace ClassLibrary.Entities.Player {
                 _win();
         }
         private void RestoreEnergy() {
-            if (Energy < MaxEnergy) {
-                Energy += EnergyRestoreTick;
-            }
+            if (Energy < MaxEnergy) Energy += EnergyRestoreTick;
         }
-        
+
         public void SetAnimation(int currentAnimation) {
-            this.currentAnimation = currentAnimation;
-            switch (currentAnimation) {
-                case 0:
-                    framesLimit = idleFrames;
-                    break;
-                case 1:
-                    framesLimit = moveFrames;
-                    break;
-                case 2:
-                    framesLimit = damageFrames;
-                    break;
-                case 3:
-                    framesLimit = attackFrames;
-                    break;
-                case 4:
-                    framesLimit = explosionFrames;
-                    break;
-                case 5:
-                    framesLimit = teleportFrames;
-                    break;
-                case 6:
-                    framesLimit = converterFrames;
-                    break;
-            }
+            PlayerAnimator.SetAnimation(currentAnimation);
         }
     }
 }
