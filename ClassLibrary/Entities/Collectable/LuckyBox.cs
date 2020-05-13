@@ -31,10 +31,10 @@ namespace ClassLibrary.Entities.Collectable {
             switch (effect) {
                 case 1:
                     tmp = Randomizer.Random(10);
-                    player.CollectedDiamonds += tmp;
                     player.AddScore(tmp);
                     player.AllScores["Diamonds from lucky box"][0] += 1;
                     player.AllScores["Diamonds from lucky box"][1] += player.GetScoreToAdd(tmp);
+                    player.CollectedDiamonds += tmp;
                     break;
                 case 2:
                     player.Hp = player.MaxHp;

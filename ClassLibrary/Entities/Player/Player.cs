@@ -40,7 +40,8 @@ namespace ClassLibrary.Entities.Player {
                 {"Collected diamonds", new[] {0, 0}},
                 {"Collected lucky boxes", new[] {0, 0}},
                 {"Diamonds from lucky box", new[] {0, 0}},
-                {"Score from lucky box", new[] {0, 0}}
+                {"Score from lucky box", new[] {0, 0}},
+                {"Killed enemies", new[] {0, 0}}
             };
             CanMove = false;
 
@@ -226,7 +227,12 @@ namespace ClassLibrary.Entities.Player {
                 tmp = (Enemy) level[PositionX, Top];
                 tmp.Hp -= Inventory.SwordLevel;
             }
-            if (tmp != null && tmp.Hp <= 0) level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY);
+            if (tmp != null && tmp.Hp <= 0) {
+                level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY);
+                AddScore(tmp.ScoreForKill);
+                AllScores["Killed enemies"][0] += 1;
+                AllScores["Killed enemies"][1] += GetScoreToAdd(tmp.ScoreForKill);
+            }
         }
         public void UseTnt() {
             if (Inventory.TntQuantity == 0) return;
@@ -277,7 +283,7 @@ namespace ClassLibrary.Entities.Player {
                 _lose();
         }
         private void CheckWin() {
-            if (CollectedDiamonds >= _diamondsTowWin) //TODO: must change depending on level
+            if (CollectedDiamonds >= _diamondsTowWin)
                 _win();
         }
         private void RestoreEnergy() {

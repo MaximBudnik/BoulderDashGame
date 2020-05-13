@@ -26,7 +26,12 @@ namespace ClassLibrary {
         public bool IsActionActive { get; private set; }
         public bool IsNameEntered { get; private set; }
         public Save NewGameSave { get; private set; } = new Save();
+        private readonly SoundPlayer _soundPlayer = new SoundPlayer();
 
+        public void ChangeVolume(float val) {
+            _soundPlayer.ChangeVolume(val);
+        }
+        
         public void ChangeIsNameEntered() {
             IsNameEntered = !IsNameEntered;
         }
@@ -169,11 +174,17 @@ namespace ClassLibrary {
             MenuGameCycle();
 
             void MenuGameCycle() {
-                if (GameStatus == 0)
+                if (GameStatus == 0) {
+                    _soundPlayer.StopTheme();
+                    _soundPlayer.PlayTheme("menu");
                     Parallel.Invoke(MenuGraphicsThread);
-                else if (GameStatus == 1)
+                }
+                else if (GameStatus == 1) {
+                    _soundPlayer.StopTheme();
+                    _soundPlayer.PlayTheme("game");
                     Parallel.Invoke(GraphicsThread,
                         GameLogicThread);
+                }
                 MenuGameCycle();
             }
         }

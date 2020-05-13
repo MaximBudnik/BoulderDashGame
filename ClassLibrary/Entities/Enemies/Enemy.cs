@@ -7,6 +7,7 @@ namespace ClassLibrary.Entities.Enemies {
         protected readonly Func<int> GetPlayerPosX;
         protected readonly Func<int> GetPlayerPosY;
         protected int Damage;
+        public int ScoreForKill=20;
 
         protected Enemy(
             int i,

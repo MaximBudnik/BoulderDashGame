@@ -274,7 +274,7 @@ namespace BoulderDashForms.FormsDrawers {
             DrawDiamondsLeftToWin(graphics, currentLevel, player);
             graphics.DrawString($"{currentLevel.Aim}", MenuFont, GuiBrush, 1000, 8);
             graphics.DrawString($"Level {currentLevel.LevelName}", BoldFont, GuiBrush, 1200, 8);
-            graphics.DrawString($"{player.Name}", BoldFont, GuiBrush, 1200, 30);
+            //graphics.DrawString($"{player.Name}", BoldFont, GuiBrush, 1200, 30);
             graphics.DrawString($"Score x{player.ScoreMultiplier.ToString()}", BoldFont, GuiBrush, 1330, 8);
             graphics.DrawString(player.Score.ToString(), BoldFont, GuiBrush, 1330, 30);
         }

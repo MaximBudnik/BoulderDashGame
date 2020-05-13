@@ -13,13 +13,13 @@ namespace ClassLibrary.Entities.Enemies {
             EntityType = 6;
             Damage = 5;
             Hp = 10;
-
+            ScoreForKill = 40;
             //forms
             CurrentFrame = Randomizer.Random(0, 3);
         }
         public new void GameLoopAction() {
-            EnemyMovement();
             EnemyDamageNearTitles();
+            EnemyMovement();
         }
 
         private void EnemyMovement() {

@@ -59,7 +59,8 @@ namespace BoulderDashForms {
                     _gameEngine.PerformSubAction,
                     _gameEngine.IsNameEntered,
                     _gameEngine.ChangeIsNameEntered,
-                    s => { _gameEngine.NewGameSave.Name += s; }
+                    s => { _gameEngine.NewGameSave.Name += s; },
+                    _gameEngine.ChangeVolume
                 );
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {

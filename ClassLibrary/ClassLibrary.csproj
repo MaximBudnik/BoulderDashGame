@@ -15,9 +15,6 @@
 
     <ItemGroup>
       <None Remove="Sounds\menuTheme.mp3" />
-      <Content Include="Sounds\menuTheme.mp3">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="gameFiles\saves.json" />
       <None Remove="gameFiles\scores.json" />
       <None Remove="gameFiles\NewFile1.txt" />
@@ -33,10 +30,24 @@
       <Content Include="gameFiles\settings.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Sounds\melt.mp3" />
+      <Content Include="Sounds\melt.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\silverBullet.mp3" />
+      <None Remove="Sounds\trigger.mp3" />
+      <Content Include="Sounds\trigger.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\bullet.mp3" />
+      <Content Include="Sounds\bullet.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="LiteDB" Version="5.0.7" />
+      <PackageReference Include="NAudio" Version="1.10.0" />
     </ItemGroup>
 
 </Project>

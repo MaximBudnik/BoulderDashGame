@@ -154,7 +154,9 @@
         <e p="Randomizer.cs" t="Include" />
         <e p="SoundPlayer.cs" t="Include" />
         <e p="Sounds" t="Include">
-          <e p="menuTheme.mp3" t="Include" />
+          <e p="bullet.mp3" t="Include" />
+          <e p="melt.mp3" t="Include" />
+          <e p="trigger.mp3" t="Include" />
         </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />

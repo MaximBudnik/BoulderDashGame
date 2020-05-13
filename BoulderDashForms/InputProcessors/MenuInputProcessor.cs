@@ -13,7 +13,8 @@ namespace BoulderDashForms.InputProcessors {
             Action<int> performSubAction,
             bool isNameEntered,
             Action changeIsNameEntered,
-            Action<string> addCharToName
+            Action<string> addCharToName,
+            Action<float> changeVolume
         ) {
             if (isNameEntered) {
                 if (key == Keys.Enter) {
@@ -60,6 +61,12 @@ namespace BoulderDashForms.InputProcessors {
                         performCurrentMenuAction();
                     else
                         performSubAction(0);
+                    break;
+                case Keys.Add:
+                    changeVolume(0.1f);
+                    break;
+                case Keys.Subtract:
+                    changeVolume(-0.1f);
                     break;
                 case Keys.Escape:
                     changeActiveAction();
