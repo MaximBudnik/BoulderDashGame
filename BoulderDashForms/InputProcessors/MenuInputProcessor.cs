@@ -10,8 +10,20 @@ namespace BoulderDashForms.InputProcessors {
             Action changeActiveAction,
             bool isBlockActive,
             Action<int> changeSubAction,
-            Action<int> performSubAction
+            Action<int> performSubAction,
+            bool isNameEntered,
+            Action changeIsNameEntered,
+            Action<string> addCharToName
         ) {
+            if (isNameEntered) {
+                if (key==Keys.Enter) {
+                    changeIsNameEntered();
+                    return;
+                }
+                KeysConverter kc = new KeysConverter();
+                string keyChar = kc.ConvertToString(key);
+                addCharToName(keyChar);
+            }
             switch (key) {
                 case Keys.W:
                     if (isBlockActive == false) {

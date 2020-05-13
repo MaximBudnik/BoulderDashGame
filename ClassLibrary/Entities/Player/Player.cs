@@ -32,6 +32,7 @@ namespace ClassLibrary.Entities.Player {
         public int EnergyRestoreTick { get; set; } = 1;
         public int ScoreMultiplier { get; set; } = 10;
         public int Score { get; set; }
+        public int Hero { get; set; }
 
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();

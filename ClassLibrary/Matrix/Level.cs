@@ -27,6 +27,7 @@ namespace ClassLibrary.Matrix {
         private int _diggerMovesUpper = 40;
         private int _createRoomMaxSizeX = 10;
         private int _createRoomMaxSizeY = 10;
+        private int _difficulty;
 
         private string playerName;
         private Func<Level> getLevel;
@@ -42,11 +43,12 @@ namespace ClassLibrary.Matrix {
             Action win, Action lose,
             Func<int> getPlayerPositionX,
             Func<int> getPlayerPositionY,
-            Action<int> substractPlayerHp, Action<Player> setPlayer
+            Action<int> substractPlayerHp, Action<Player> setPlayer,
+            int sizeX, int sizeY, int difficulty
         ) {
             //TODO: now choose the size of the level from starting game/random
-            width = 31; //20 for console
-            height = 53; //65 for console
+            width = sizeX; //20 for console
+            height = sizeY; //65 for console
             LevelName = levelName;
             this.playerName = playerName;
             this.getLevel = getLevel;
@@ -56,8 +58,9 @@ namespace ClassLibrary.Matrix {
             this.getPlayerPositionY = getPlayerPositionY;
             this.substractPlayerHp = substractPlayerHp;
             this.setPlayer = setPlayer;
-            WalkersCount = 4;
-            DiggersCount = 3;
+            _difficulty = difficulty;
+            WalkersCount = difficulty;
+            DiggersCount = difficulty/2;
             matrix = new GameEntity[width, height];
             DiggerAlgorithm();
         }
@@ -250,6 +253,7 @@ namespace ClassLibrary.Matrix {
 
             var player = new Player(startPosX, startPosY, playerName,
                 getLevel, win, lose, DiamondsQuantity);
+            player.ScoreMultiplier = _difficulty;
             matrix[startPosX, startPosY] = player;
             setPlayer(player);
         }

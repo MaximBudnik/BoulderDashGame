@@ -6,6 +6,9 @@ using System.IO;
 
 namespace BoulderDashForms.FormsDrawers {
     public class FormDrawer {
+        protected PrivateFontCollection fontCollection;
+        protected FontFamily family1;
+        protected FontFamily family2;
         protected Font _menuFont;
         protected Font _boldFont;
         protected readonly Brush _guiBrush = Brushes.Crimson;
@@ -40,26 +43,42 @@ namespace BoulderDashForms.FormsDrawers {
 
         protected FormDrawer() {
             MainSprites = new Bitmap(mainsSpritesPath);
+            GC.KeepAlive(MainSprites);
             SecondarySprites = new Bitmap(secondarySpritesPath);
+            GC.KeepAlive(SecondarySprites);
             Icons = new Bitmap(iconsPath);
+            GC.KeepAlive(Icons);
             Tileset = new Bitmap(TilesetPath);
-            Icons = new Bitmap(iconsPath);
+            GC.KeepAlive(Tileset);
             Effects = new Bitmap(effectPath);
+            GC.KeepAlive(Effects);
             Attack = new Bitmap(attackPath);
+            GC.KeepAlive(Attack);
             HpFull = new Bitmap(hpFullPath);
+            GC.KeepAlive(HpFull);
             HpEmpty = new Bitmap(hpEmptyPath);
+            GC.KeepAlive(HpEmpty);
             Shield = new Bitmap(shieldPath);
+            GC.KeepAlive(Shield);
             Energy = new Bitmap(energyPath);
+            GC.KeepAlive(Energy);
             Keyboard = new Bitmap(keyboardPath);
+            GC.KeepAlive(Keyboard);
 
 
-            PrivateFontCollection fontCollection = new PrivateFontCollection();
+
+             fontCollection = new PrivateFontCollection();
+            GC.KeepAlive(fontCollection);
             fontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\monogram.ttf"));
             fontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\ThaleahFat.ttf"));
-            FontFamily family1 = fontCollection.Families[0];
-            FontFamily family2 = fontCollection.Families[1];
+            family1 = fontCollection.Families[0];
+            family2 = fontCollection.Families[1];
+            GC.KeepAlive(family1);
+            GC.KeepAlive(family2);
             _menuFont = new Font(family1, 22);
             _boldFont = new Font(family2, 22);
+            GC.KeepAlive(_menuFont);
+            GC.KeepAlive(_boldFont);
         }
     }
 }

@@ -41,10 +41,10 @@ namespace ClassLibrary.DataLayer {
             return result;
         }
 
-        public void AddGameSave(string name) {
+        public void AddGameSave(string name,int Hero) {
             using var db = new LiteDatabase(_savesDatabase);
             var col = db.GetCollection<Save>("saves");
-            var currentSave = new Save {Name = name, Score = 0, LevelName = 0};
+            var currentSave = new Save {Name = name, Score = 0, LevelName = 0, Hero = Hero};
             col.EnsureIndex(x => x.Name);
             if (col.Exists(x => x.Name == name)) col.Update(currentSave);
             else col.Insert(currentSave);

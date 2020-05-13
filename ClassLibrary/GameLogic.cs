@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using ClassLibrary.DataLayer;
 using ClassLibrary.Entities;
@@ -17,7 +18,7 @@ namespace ClassLibrary {
         private Action<int> _changeGameStatus;
         private Func<DataInterlayer> _getDataLayer;
         private int _chanceToDeleteAcidBlock = 0;
-        
+
         private void SetPlayer(Player pl) {
             Player = pl;
         }
@@ -27,7 +28,8 @@ namespace ClassLibrary {
         }
 
         public void CreateLevel(int levelName, string playerName, Action<int> changeGameStatus,
-            Func<DataInterlayer> getDataLayer) {
+            Func<DataInterlayer> getDataLayer, int sizeX, int sizeY, int Difficulty
+        ) {
             _changeGameStatus = changeGameStatus;
             _getDataLayer = getDataLayer;
             CurrentLevel = new Level(
@@ -38,7 +40,10 @@ namespace ClassLibrary {
                 () => Player.PositionX,
                 () => Player.PositionY,
                 SubstractPlayerHp,
-                SetPlayer
+                SetPlayer,
+                sizeX,
+                sizeY,
+                Difficulty
             );
         }
 
@@ -47,18 +52,18 @@ namespace ClassLibrary {
             for (int i = 0; i < CurrentLevel.Width; i++) {
                 for (int j = 0; j < CurrentLevel.Height; j++) {
                     if (used.Contains(CurrentLevel[i, j])) continue;
-                    if (CurrentLevel[i, j] is Player ) {
+                    if (CurrentLevel[i, j] is Player) {
                         var tmp = (Player) CurrentLevel[i, j];
                         tmp.GameLoopAction();
                         used.Add(tmp);
                         Player = tmp;
                     }
-                    if (CurrentLevel[i, j] is EnemyWalker ) {
+                    if (CurrentLevel[i, j] is EnemyWalker) {
                         var tmp = (EnemyWalker) CurrentLevel[i, j];
                         tmp.GameLoopAction();
                         used.Add(tmp);
                     }
-                    if (CurrentLevel[i, j] is Rock ) {
+                    if (CurrentLevel[i, j] is Rock) {
                         var tmp = (Rock) CurrentLevel[i, j];
                         tmp.GameLoopAction();
                         used.Add(tmp);
@@ -68,11 +73,12 @@ namespace ClassLibrary {
                         tmp.GameLoopAction();
                         used.Add(tmp);
                     }
-                    if (CurrentLevel[i, j] is Acid) { //player instantly breaks created block
+                    if (CurrentLevel[i, j] is Acid) {
+                        //player instantly breaks created block
                         var tmp = (Acid) CurrentLevel[i, j];
                         tmp.GameLoopAction();
                         used.Add(tmp);
-                        _chanceToDeleteAcidBlock+=1;
+                        _chanceToDeleteAcidBlock += 1;
                         CheckIfDeleteAllAcidBlocks();
                     }
                     if (CurrentLevel[i, j] is EnemyDigger) {
@@ -88,7 +94,7 @@ namespace ClassLibrary {
                 for (int i = 0; i < CurrentLevel.Width; i++) {
                     for (int j = 0; j < CurrentLevel.Height; j++) {
                         if (CurrentLevel[i, j] is Acid) {
-                            ((Acid)CurrentLevel[i, j]).TurnIntoRock();
+                            ((Acid) CurrentLevel[i, j]).TurnIntoRock();
                         }
                     }
                 }
@@ -105,17 +111,17 @@ namespace ClassLibrary {
             CurrentSave.LevelName += 1;
             dataInterlayer.ChangeGameSave(CurrentSave);
             _changeGameStatus(0);
-         //   Console.ReadLine();
+            //   Console.ReadLine();
         }
 
         private void Lose() {
             _changeGameStatus(3);
-          //  Thread.Sleep(1000);
+            //  Thread.Sleep(1000);
             DataInterlayer dataInterlayer = _getDataLayer();
             dataInterlayer.AddBestScore(Player.Name, Player.Score);
             dataInterlayer.DeleteGameSave(CurrentSave);
             _changeGameStatus(0);
-          //  Console.ReadLine();
+            //  Console.ReadLine();
         }
     }
 }

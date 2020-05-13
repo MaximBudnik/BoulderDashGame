@@ -77,7 +77,10 @@ namespace BoulderDashForms {
                     () => { _gameEngine.IsActionActive = !_gameEngine.IsActionActive; },
                     _gameEngine.IsActionActive,
                     _gameEngine.ChangeCurrentSubAction,
-                    _gameEngine.PerformSubAction
+                    _gameEngine.PerformSubAction,
+                    _gameEngine.IsNameEntered,
+                    _gameEngine.ChangeIsNameEntered,
+                    s => { _gameEngine.NewGameSave.Name += s;}
                     );
             }
         }
