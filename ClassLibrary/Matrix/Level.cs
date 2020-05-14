@@ -17,6 +17,7 @@ namespace ClassLibrary.Matrix {
         private readonly Action<Player> _setPlayer;
         private readonly Action<int> _substractPlayerHp;
         private readonly Action _win;
+        private readonly Action<string> _playSound;
         private int _createRoomChance;
         private int _createRoomMaxSizeX = 10;
         private int _createRoomMaxSizeY = 10;
@@ -31,8 +32,7 @@ namespace ClassLibrary.Matrix {
             Func<int> getPlayerPositionX,
             Func<int> getPlayerPositionY,
             Action<int> substractPlayerHp, Action<Player> setPlayer,
-            int sizeX, int sizeY, int difficulty
-        ) {
+            int sizeX, int sizeY, int difficulty, Action<string> playSound) {
             width = sizeX; //20 for console
             height = sizeY; //65 for console
             LevelName = levelName;
@@ -44,6 +44,7 @@ namespace ClassLibrary.Matrix {
             _getPlayerPositionY = getPlayerPositionY;
             _substractPlayerHp = substractPlayerHp;
             _setPlayer = setPlayer;
+            _playSound = playSound;
 
             SetDifficulty(difficulty);
 
@@ -111,7 +112,7 @@ namespace ClassLibrary.Matrix {
             FillEmptySpace();
 
             var player = new Player(startPosX, startPosY, _playerName,
-                _getLevel, _win, _lose, DiamondsQuantity);
+                _getLevel, _win, _lose,_playSound, DiamondsQuantity);
             player.ScoreMultiplier = _difficulty;
             matrix[startPosX, startPosY] = player;
             _setPlayer(player);

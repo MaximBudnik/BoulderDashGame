@@ -14,8 +14,15 @@ namespace BoulderDashForms.InputProcessors {
             bool isNameEntered,
             Action changeIsNameEntered,
             Action<string> addCharToName,
-            Action<float> changeVolume
+            Action<float> changeVolume,
+            Action<string> playSound
         ) {
+            if (key == Keys.Enter || key == Keys.Escape) {
+                playSound("menuAccept");
+            }
+            else {
+                playSound("menuClick");
+            }
             if (isNameEntered) {
                 if (key == Keys.Enter) {
                     changeIsNameEntered();
@@ -24,6 +31,7 @@ namespace BoulderDashForms.InputProcessors {
                 var kc = new KeysConverter();
                 var keyChar = kc.ConvertToString(key);
                 addCharToName(keyChar);
+                return;
             }
             switch (key) {
                 case Keys.W:

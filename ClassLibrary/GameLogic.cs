@@ -34,7 +34,7 @@ namespace ClassLibrary {
             Player.SubstractPlayerHp(i);
         }
 
-        public void CreateLevel(int levelName, string playerName, int sizeX, int sizeY, int Difficulty
+        public void CreateLevel(int levelName, string playerName, int sizeX, int sizeY, int Difficulty, Action<string> playSound
         ) {
             CurrentLevel = new Level(
                 levelName, playerName,
@@ -47,7 +47,8 @@ namespace ClassLibrary {
                 SetPlayer,
                 sizeX,
                 sizeY,
-                Difficulty
+                Difficulty,
+                playSound
             );
         }
 

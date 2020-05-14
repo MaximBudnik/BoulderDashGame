@@ -152,10 +152,22 @@
           </e>
         </e>
         <e p="Randomizer.cs" t="Include" />
-        <e p="SoundPlayer.cs" t="Include" />
+        <e p="SoundPlayer" t="Include">
+          <e p="SoundPlayer.cs" t="Include" />
+        </e>
         <e p="Sounds" t="Include">
           <e p="bullet.mp3" t="Include" />
-          <e p="melt.mp3" t="Include" />
+          <e p="sfx" t="Include">
+            <e p="attack.wav" t="Include" />
+            <e p="bomb.wav" t="Include" />
+            <e p="converter.wav" t="Include" />
+            <e p="hit.wav" t="Include" />
+            <e p="menuAccept.wav" t="Include" />
+            <e p="menuClick.wav" t="Include" />
+            <e p="pickup.wav" t="Include" />
+            <e p="teleport.wav" t="Include" />
+            <e p="walk.wav" t="Include" />
+          </e>
           <e p="trigger.mp3" t="Include" />
         </e>
       </e>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
+using System.Linq;
 using ClassLibrary;
 using ClassLibrary.Entities;
 
@@ -78,8 +79,7 @@ namespace BoulderDashForms.FormsDrawers {
         }
         private void DrawNewGame(Graphics graphics, GameEngine gameEngine) {
             var selected = new Rectangle(520, 220 + gameEngine.CurrentSubAction * 60, 940, 40);
-            graphics.FillRectangle(_darkBrush,
-                selected);
+            graphics.FillRectangle(gameEngine.IsNameEntered == false ? _darkBrush : _redBrush, selected);
             var hero = 36;
             switch (gameEngine.NewGameSave.Hero) {
                 case 0:
@@ -268,7 +268,8 @@ namespace BoulderDashForms.FormsDrawers {
         private void DrawBestScores(Graphics graphics, GameEngine gameEngine) {
             _results ??= gameEngine.DataInterlayer.GetBestScores();
             var counter = 1;
-            foreach (var result in _results) {
+            var keyValuePairs = _results.Reverse();
+            foreach (var result in keyValuePairs) {
                 graphics.DrawString($"{counter}. {result.Value}: {result.Key}",
                     _mainFont, _whiteBrush, 520, 180 + 30 * counter);
                 counter++;

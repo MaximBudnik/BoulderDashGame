@@ -47,7 +47,7 @@ namespace BoulderDashForms {
         private void KeyDownProcessor(object sender, KeyEventArgs e) {
             if (_gameEngine.GameStatus == 1)
                 _gameInputProcessor.ProcessKeyDown(e.KeyCode, () => _gameEngine.GameLogic.Player,
-                    _gameEngine.ChangeGameStatus);
+                    _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound);
             else if (_gameEngine.GameStatus == 0)
                 _menuInputProcessor.ProcessKeyDown(e.KeyCode,
                     _gameEngine.ChangeCurrentMenuAction,
@@ -59,8 +59,16 @@ namespace BoulderDashForms {
                     _gameEngine.PerformSubAction,
                     _gameEngine.IsNameEntered,
                     _gameEngine.ChangeIsNameEntered,
-                    s => { _gameEngine.NewGameSave.Name += s; },
-                    _gameEngine.ChangeVolume
+                    s => {
+                        if (s == Keys.Back.ToString()) {
+                            _gameEngine.NewGameSave.Name =
+                                _gameEngine.NewGameSave.Name.Substring(0,_gameEngine.NewGameSave.Name.Length - 1);
+                            return;
+                        }
+                        _gameEngine.NewGameSave.Name += s;
+                    },
+                    _gameEngine.ChangeVolume,
+                    _gameEngine.PlaySound
                 );
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {

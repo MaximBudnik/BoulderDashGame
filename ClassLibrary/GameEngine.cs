@@ -26,18 +26,15 @@ namespace ClassLibrary {
         public bool IsActionActive { get; private set; }
         public bool IsNameEntered { get; private set; }
         public Save NewGameSave { get; private set; } = new Save();
-        private readonly SoundPlayer _soundPlayer = new SoundPlayer();
+        private readonly SoundPlayer.MusicPlayer _musicPlayer = new SoundPlayer.MusicPlayer();
 
-        public void ChangeVolume(float val) {
-            _soundPlayer.ChangeVolume(val);
-        }
-        
-        public void ChangeIsNameEntered() {
-            IsNameEntered = !IsNameEntered;
-        }
-        public void ChangeIsActionActive() {
-            IsActionActive = !IsActionActive;
-        }
+
+        public void ChangeVolume(float val) => _musicPlayer.ChangeVolume(val);
+
+        public void PlaySound(string name) => _musicPlayer.PlaySound(name);
+
+        public void ChangeIsNameEntered() => IsNameEntered = !IsNameEntered;
+        public void ChangeIsActionActive() => IsActionActive = !IsActionActive;
         public void ChangeGameStatus(int i) {
             if (i >= 0 && i < 4)
                 GameStatus = i;
@@ -160,9 +157,7 @@ namespace ClassLibrary {
                 GameLogic.GameLoop();
             }
         }
-        private void RefreshSaves() {
-            Saves = DataInterlayer.GetAllGameSaves();
-        }
+        private void RefreshSaves() => Saves = DataInterlayer.GetAllGameSaves();
         public void Start() {
             // Task musicPlayer = new Task(() => {
             //     SoundPlayer soundPlayer = new SoundPlayer();
@@ -174,23 +169,27 @@ namespace ClassLibrary {
             MenuGameCycle();
 
             void MenuGameCycle() {
-                if (GameStatus == 0) {
-                    _soundPlayer.StopTheme();
-                    _soundPlayer.PlayTheme("menu");
-                    Parallel.Invoke(MenuGraphicsThread);
+                try {
+                    if (GameStatus == 0) {
+                        _musicPlayer.PlayTheme("menu");
+                        Parallel.Invoke(MenuGraphicsThread);
+                    }
+                    else if (GameStatus == 1) {
+                        _musicPlayer.PlayTheme("game");
+                        Parallel.Invoke(GraphicsThread,
+                            GameLogicThread);
+                    }
+                    MenuGameCycle();
                 }
-                else if (GameStatus == 1) {
-                    _soundPlayer.StopTheme();
-                    _soundPlayer.PlayTheme("game");
-                    Parallel.Invoke(GraphicsThread,
-                        GameLogicThread);
+                catch (Exception e) {
+                    Console.WriteLine(e);
+                    throw;
                 }
-                MenuGameCycle();
             }
         }
         private void LaunchGame(Save save) {
             GameLogic.CreateLevel(save.LevelName, save.Name, DataInterlayer.Settings.SizeX,
-                DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty);
+                DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty, PlaySound);
             GameLogic.Player.Score = save.Score;
             GameLogic.Player.Hero = save.Hero;
             GameLogic.CurrentSave = save;

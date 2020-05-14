@@ -230,8 +230,10 @@ namespace BoulderDashForms.FormsDrawers {
                             break;
                         case 13:
                             DrawFloorTile();
-                            srcRect = GetDiggerAnimation((EnemyDigger) currentLevel[i, j]);
-                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            if (currentLevel[i, j] is EnemyDigger) {
+                                srcRect = GetDiggerAnimation((EnemyDigger) currentLevel[i, j]);
+                                graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            }
                             break;
                         case 20:
                             DrawFloorTile();

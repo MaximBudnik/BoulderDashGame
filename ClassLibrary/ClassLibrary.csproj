@@ -31,9 +31,6 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
       <None Remove="Sounds\melt.mp3" />
-      <Content Include="Sounds\melt.mp3">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="Sounds\silverBullet.mp3" />
       <None Remove="Sounds\trigger.mp3" />
       <Content Include="Sounds\trigger.mp3">
@@ -41,6 +38,42 @@
       </Content>
       <None Remove="Sounds\bullet.mp3" />
       <Content Include="Sounds\bullet.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\menuAccept.wav" />
+      <Content Include="Sounds\sfx\menuAccept.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\menuClick.wav" />
+      <Content Include="Sounds\sfx\menuClick.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\attack.wav" />
+      <Content Include="Sounds\sfx\attack.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\bomb.wav" />
+      <Content Include="Sounds\sfx\bomb.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\converter.wav" />
+      <Content Include="Sounds\sfx\converter.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\hit.wav" />
+      <Content Include="Sounds\sfx\hit.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\pickup.wav" />
+      <Content Include="Sounds\sfx\pickup.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\teleport.wav" />
+      <Content Include="Sounds\sfx\teleport.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\walk.wav" />
+      <Content Include="Sounds\sfx\walk.wav">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
