@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.DataLayer;
+using ClassLibrary.Entities.Player;
+using ClassLibrary.Matrix;
 
 namespace ClassLibrary {
     public class GameEngine {
@@ -16,7 +18,9 @@ namespace ClassLibrary {
             _reDraw = reDraw;
             GameLogic = new GameLogic(ChangeGameStatus, () => DataInterlayer, RefreshSaves);
         }
-        public int GameStatus { get; private set; } // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
+
+        //TODO: SET AS 0
+        public int GameStatus { get; private set; } = 0; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
         public List<Save> Saves { get; private set; }
         public int CurrentMenuAction { get; private set; } = 1;
 
@@ -28,13 +32,16 @@ namespace ClassLibrary {
         public Save NewGameSave { get; private set; } = new Save();
         private readonly SoundPlayer.MusicPlayer _musicPlayer = new SoundPlayer.MusicPlayer();
 
-
         public void ChangeVolume(float val) => _musicPlayer.ChangeVolume(val);
 
         public void PlaySound(string name) => _musicPlayer.PlaySound(name);
 
         public void ChangeIsNameEntered() => IsNameEntered = !IsNameEntered;
         public void ChangeIsActionActive() => IsActionActive = !IsActionActive;
+        public int GetScores() => GameLogic.Player.Score;
+        public string GetPlayerName() => GameLogic.Player.Name;
+        public Dictionary<string, int[]> GetAllPlayerScores() => GameLogic.Player.AllScores;
+
         public void ChangeGameStatus(int i) {
             if (i >= 0 && i < 4)
                 GameStatus = i;
@@ -62,6 +69,10 @@ namespace ClassLibrary {
         }
 
         public void PerformSubAction(int i) {
+            if (GameStatus==3|| GameStatus==4) {
+                GameStatus = 0;
+                return;
+            }
             switch (CurrentMenuAction) {
                 case 0:
                     LaunchGame(Saves[CurrentSubAction]);
@@ -151,6 +162,13 @@ namespace ClassLibrary {
             }
         }
 
+        private void ResultsGraphicsThread() {
+            while (GameStatus == 2 || GameStatus == 3) {
+                Thread.Sleep(1000 / DataInterlayer.Settings.Fps);
+                _reDraw();
+            }
+        }
+
         private void GameLogicThread() {
             while (GameStatus == 1) {
                 Thread.Sleep(1000 / DataInterlayer.Settings.TickRate);
@@ -159,25 +177,26 @@ namespace ClassLibrary {
         }
         private void RefreshSaves() => Saves = DataInterlayer.GetAllGameSaves();
         public void Start() {
-            // Task musicPlayer = new Task(() => {
-            //     SoundPlayer soundPlayer = new SoundPlayer();
-            //     soundPlayer.playMusic();
-            // });
-            //musicPlayer.Start(); //TODO: dont forget to enable music on build!
-
             RefreshSaves();
             MenuGameCycle();
 
             void MenuGameCycle() {
                 try {
                     if (GameStatus == 0) {
-                        _musicPlayer.PlayTheme("menu");
+                        //  _musicPlayer.PlayTheme("menu");
                         Parallel.Invoke(MenuGraphicsThread);
                     }
                     else if (GameStatus == 1) {
-                        _musicPlayer.PlayTheme("game");
+                        //  _musicPlayer.PlayTheme("game");
                         Parallel.Invoke(GraphicsThread,
                             GameLogicThread);
+                    }
+                    else if (GameStatus == 2 || GameStatus == 3) {
+                        //   _musicPlayer.PlayTheme("results");
+                        Parallel.Invoke(ResultsGraphicsThread);
+                    }
+                    else {
+                        throw new Exception("Unknown game status");
                     }
                     MenuGameCycle();
                 }

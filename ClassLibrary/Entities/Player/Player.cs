@@ -15,6 +15,7 @@ namespace ClassLibrary.Entities.Player {
         private readonly int _moveEnergyCost = 1;
         private readonly int _moveRockEnergyCost = 5;
         private readonly Action _win;
+        private readonly Action<string> _playSound;
         public readonly Dictionary<string, int[]> AllScores;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
@@ -28,11 +29,13 @@ namespace ClassLibrary.Entities.Player {
             Func<Level> getLevel,
             Action win,
             Action lose,
+            Action<string> playSound,
             int diamondsTowWin)
             : base(getLevel, i, j) {
             Name = name;
             _win = win;
             _lose = lose;
+            _playSound = playSound;
             Hp = MaxHp;
             _diamondsTowWin = diamondsTowWin;
             EntityType = 0;
@@ -85,6 +88,7 @@ namespace ClassLibrary.Entities.Player {
                 Inventory.ArmorCellHp = 10;
             }
             if (value > 0) Hp -= value;
+            _playSound("hit");
             SetAnimation(2);
         }
 
@@ -98,6 +102,7 @@ namespace ClassLibrary.Entities.Player {
                 Inventory.ArmorCellHp = 10;
             }
             if (value > 0) Hp -= value;
+            _playSound("hit");
             SetAnimation(animation);
         }
 
@@ -133,24 +138,30 @@ namespace ClassLibrary.Entities.Player {
                 switch (level[PositionX, PositionY].EntityType) {
                     case 4:
                         ((Diamond) level[PositionX, PositionY]).Collect(() => this);
+                        _playSound("pickup");
                         break;
                     case 7:
                         ((LuckyBox) level[PositionX, PositionY]).Collect(() => this);
+                        _playSound("pickup");
                         break;
                     case 12:
                         ((BarrelWithSubstance) level[PositionX, PositionY]).Collect(GetLevel, SubstractPlayerHp);
                         break;
                     case 20:
                         ((SwordTile) level[PositionX, PositionY]).Collect(() => Inventory);
+                        _playSound("pickup");
                         break;
                     case 21:
                         ((ConverterTile) level[PositionX, PositionY]).Collect(() => Inventory);
+                        _playSound("pickup");
                         break;
                     case 22:
                         ((TntTile) level[PositionX, PositionY]).Collect(() => Inventory);
+                        _playSound("pickup");
                         break;
                     case 23:
                         ((ArmorTile) level[PositionX, PositionY]).Collect(() => Inventory);
+                        _playSound("pickup");
                         break;
                 }
             }

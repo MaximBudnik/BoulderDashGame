@@ -76,6 +76,10 @@
       <Content Include="Sounds\sfx\walk.wav">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Sounds\Deconsecrated.mp3" />
+      <Content Include="Sounds\jw.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>

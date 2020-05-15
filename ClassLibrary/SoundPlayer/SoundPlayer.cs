@@ -8,6 +8,7 @@ namespace ClassLibrary.SoundPlayer {
     public class MusicPlayer {
         private readonly string _menuTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\trigger.mp3");
         private readonly string _gameTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\bullet.mp3");
+        private readonly string _resultTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\jw.mp3");
         private float _currentVolume;
         private readonly float _startVolume = 0.3f;
         private Mp3FileReader _fileReader;
@@ -39,6 +40,7 @@ namespace ClassLibrary.SoundPlayer {
                 _fileReader = name switch {
                     "menu" => new Mp3FileReader(_menuTheme),
                     "game" => new Mp3FileReader(_gameTheme),
+                    "results" => new Mp3FileReader(_resultTheme),
                     _ => throw new Exception("Unknown theme")
                 };
                 _musicOutput = new WaveOut {Volume = _currentVolume};

@@ -38,6 +38,7 @@ namespace BoulderDashForms.FormsDrawers {
         protected readonly Image Effects;
         protected readonly Image Energy;
         protected readonly Brush GuiBrush = Brushes.Crimson;
+
         protected readonly Image HpEmpty;
         protected readonly Image HpFull;
         protected readonly Image Icons;
@@ -51,6 +52,15 @@ namespace BoulderDashForms.FormsDrawers {
         protected FontFamily Family2;
         protected PrivateFontCollection FontCollection;
         protected Font MenuFont;
+        protected  Font HeaderFont;
+        protected  Font MainFont;
+        
+        protected readonly SolidBrush RedBrush = new SolidBrush(Color.FromArgb(255, 218, 78, 56));
+        protected readonly SolidBrush WhiteBrush = new SolidBrush(Color.FromArgb(255, 249, 245, 255));
+        protected readonly SolidBrush DarkBrush = new SolidBrush(Color.FromArgb(255, 34, 29, 35));
+        protected readonly SolidBrush RedBrushTransparent = new SolidBrush(Color.FromArgb(130, 218, 78, 56));
+        protected readonly SolidBrush RedBrushHalfTransparent = new SolidBrush(Color.FromArgb(200, 218, 78, 56));
+
         protected FormDrawer() {
             MainSprites = new Bitmap(_mainsSpritesPath);
             SecondarySprites = new Bitmap(_secondarySpritesPath);
@@ -70,6 +80,7 @@ namespace BoulderDashForms.FormsDrawers {
             Family2 = FontCollection.Families[1];
             MenuFont = new Font(Family1, 22);
             BoldFont = new Font(Family2, 22);
+            GuiBrush = RedBrush;
         }
     }
 }

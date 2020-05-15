@@ -12,6 +12,8 @@ namespace BoulderDashForms {
         private readonly GameInputProcessor _gameInputProcessor = new GameInputProcessor();
         private readonly MenuDrawer _menuDrawer;
         private readonly MenuInputProcessor _menuInputProcessor = new MenuInputProcessor();
+        private readonly ResultScreenDrawer _resultScreenDrawer;
+        private readonly ResultsInputProcessor _resultsInputProcessor = new ResultsInputProcessor();
         private GameEngine _gameEngine;
         public Form1() {
             InitializeComponent();
@@ -19,6 +21,7 @@ namespace BoulderDashForms {
                 Cursor = new Cursor(Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\cursor.ico"));
                 _menuDrawer = new MenuDrawer();
                 _gameDrawer = new GameDrawer();
+                _resultScreenDrawer = new ResultScreenDrawer();
                 KeyDown += KeyDownProcessor;
                 KeyUp += KeyUpProcessor;
                 InitEngine();
@@ -62,7 +65,7 @@ namespace BoulderDashForms {
                     s => {
                         if (s == Keys.Back.ToString()) {
                             _gameEngine.NewGameSave.Name =
-                                _gameEngine.NewGameSave.Name.Substring(0,_gameEngine.NewGameSave.Name.Length - 1);
+                                _gameEngine.NewGameSave.Name.Substring(0, _gameEngine.NewGameSave.Name.Length - 1);
                             return;
                         }
                         _gameEngine.NewGameSave.Name += s;
@@ -70,6 +73,11 @@ namespace BoulderDashForms {
                     _gameEngine.ChangeVolume,
                     _gameEngine.PlaySound
                 );
+            else if (_gameEngine.GameStatus == 2 || _gameEngine.GameStatus == 3) 
+                _resultsInputProcessor.ProcessKeyDown(
+                    e.KeyCode,_gameEngine.ChangeGameStatus,_gameEngine.ChangeVolume, _gameEngine.PlaySound,
+                    _gameEngine.PerformSubAction);
+            
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
             if (_gameEngine.GameStatus == 1)
@@ -79,17 +87,20 @@ namespace BoulderDashForms {
         private void OnPaint(object sender, PaintEventArgs e) {
             var graphics = e.Graphics;
             if (_gameEngine == null) return;
-            switch (_gameEngine.GameStatus) {
-                case 0:
-                    _menuDrawer.DrawMenu(graphics, _gameEngine);
-                    break;
-                case 1:
-                    var currentLevel = _gameEngine.GameLogic.CurrentLevel;
-                    var player = _gameEngine.GameLogic.Player;
-                    _gameDrawer.DrawGame(graphics, currentLevel, player);
-                    break;
-                default:
-                    throw new Exception($"Unhandled game status, can be 0-3, is {_gameEngine.GameStatus}");
+            if (_gameEngine.GameStatus == 0) {
+                _menuDrawer.DrawMenu(graphics, _gameEngine);
+            }
+            else if (_gameEngine.GameStatus == 1) {
+                var currentLevel = _gameEngine.GameLogic.CurrentLevel;
+                var player = _gameEngine.GameLogic.Player;
+                _gameDrawer.DrawGame(graphics, currentLevel, player);
+            }
+            else if(_gameEngine.GameStatus == 2 || _gameEngine.GameStatus == 3) {
+                _resultScreenDrawer.DrawResults(graphics, _gameEngine.GameStatus,_gameEngine.GetPlayerName(),
+                    _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores(), _gameEngine.CurrentSubAction);
+            }
+            else {
+                throw new Exception($"Unhandled game status, can be 0-3, is {_gameEngine.GameStatus}");
             }
         }
 
