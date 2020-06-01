@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
-using ClassLibrary.Entities.Player;
 using ClassLibrary.InputProcessors;
 
 namespace BoulderDashForms.InputProcessors {
-    public class ResultsInputProcessor: InputProcessor {
-        
+    public class ResultsInputProcessor : InputProcessor {
         public void ProcessKeyDown(Keys key, Action<int> changeGameStatus, Action<float> changeVolume,
             Action<string> playSound,
             Action<int> performSubAction
-            ) {
+        ) {
             switch (key) {
                 case Keys.Enter:
                     playSound("menuAccept");
@@ -27,6 +25,5 @@ namespace BoulderDashForms.InputProcessors {
                     break;
             }
         }
-        
     }
 }

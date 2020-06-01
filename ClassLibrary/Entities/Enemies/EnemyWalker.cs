@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Linq;
+using ClassLibrary.Entities.Basic;
+using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
-    public class EnemyWalker : Enemy {
+    public partial class EnemyWalker : Enemy {
         public EnemyWalker(int i, int j,
             Func<Level> getLevel,
             Func<int> getPlayerPosX, Func<int> getPlayerPosY,
             Action<int> changePlayerHp
         )
             : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
-            EntityType = 6;
+            EntityType = GameEntities.EnemyWalker;
             Damage = 5;
             Hp = 10;
             ScoreForKill = 40;
@@ -19,7 +24,7 @@ namespace ClassLibrary.Entities.Enemies {
         }
         public new void GameLoopAction() {
             EnemyDamageNearTitles();
-            EnemyMovement();
+            Moving();
         }
 
         private void EnemyMovement() {
@@ -28,15 +33,15 @@ namespace ClassLibrary.Entities.Enemies {
             var playerPosY = GetPlayerPosY();
             var moves = new List<string>();
 
-            if (playerPosX < PositionX && Left < level.Width &&
-                level[Left, PositionY].CanMove)
+            if (playerPosX < PositionX && LeftX < level.Width &&
+                level[LeftX, PositionY].CanMove)
                 moves.Add("left");
-            if (playerPosX > PositionX && Right >= 0 && level[Right, PositionY].CanMove)
+            if (playerPosX > PositionX && RightX >= 0 && level[RightX, PositionY].CanMove)
                 moves.Add("right");
-            if (playerPosY > PositionY && Bot < level.Height &&
-                level[PositionX, Bot].CanMove)
+            if (playerPosY > PositionY && BotY < level.Height &&
+                level[PositionX, BotY].CanMove)
                 moves.Add("down");
-            if (playerPosY < PositionY && Top >= 0 && level[PositionX, Top].CanMove)
+            if (playerPosY < PositionY && TopY >= 0 && level[PositionX, TopY].CanMove)
                 moves.Add("up");
             moves.Add("hold");
             var action = Randomizer.GetRandomFromList(moves);
@@ -56,6 +61,30 @@ namespace ClassLibrary.Entities.Enemies {
                     Move("horizontal", -1, PositionX, PositionY);
                     break;
             }
+        }
+
+        private Level level;
+
+        private void Moving() {
+            level = GetLevel();
+            var playerPosX = GetPlayerPosX();
+            var playerPosY = GetPlayerPosY();
+
+            List<Point> path;
+
+            try {
+                path = FindPath(PositionX, PositionY, playerPosX, playerPosY) ??
+                       throw new ArgumentNullException(
+                           "FindPath(PositionX, PositionY, playerPosX, playerPosY)");
+            }
+            catch (Exception e) {
+                return;
+            }
+            var dest = path[1];
+            level[dest.X, dest.Y] = this;
+            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+            PositionX = dest.X;
+            PositionY = dest.Y;
         }
     }
 }

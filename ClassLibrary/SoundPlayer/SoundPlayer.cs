@@ -6,23 +6,21 @@ using NAudio.Wave;
 
 namespace ClassLibrary.SoundPlayer {
     public class MusicPlayer {
-        private readonly string _menuTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\trigger.mp3");
         private readonly string _gameTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\bullet.mp3");
+        private readonly string _menuTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\trigger.mp3");
         private readonly string _resultTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\jw.mp3");
-        private float _currentVolume;
         private readonly float _startVolume = 0.3f;
-        private Mp3FileReader _fileReader;
-        private AudioFileReader _effectsReader;
-        private WaveOut _musicOutput;
+        private float _currentVolume;
         private WaveOut _effectsOutput;
-
-        private delegate void FadeOutEnd(string name);
-
-        private event FadeOutEnd FadeOutEndNotification;
+        private AudioFileReader _effectsReader;
+        private Mp3FileReader _fileReader;
+        private WaveOut _musicOutput;
 
         public MusicPlayer() {
             FadeOutEndNotification += OnFadeOutEndNotification;
         }
+
+        private event FadeOutEnd FadeOutEndNotification;
         private void OnFadeOutEndNotification(string name) {
             StopTheme();
             PlayThemePrivate(name);
@@ -82,15 +80,21 @@ namespace ClassLibrary.SoundPlayer {
         public void PlaySound(string name) {
             try {
                 _effectsReader = name switch {
-                    "menuAccept" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\menuAccept.wav")),
-                    "menuClick" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\menuClick.wav")),
-                    "attack" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\attack.wav")),
+                    "menuAccept" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                        @"Sounds\sfx\menuAccept.wav")),
+                    "menuClick" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                        @"Sounds\sfx\menuClick.wav")),
+                    "attack" => new AudioFileReader(
+                        Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\attack.wav")),
                     "bomb" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\bomb.wav")),
-                    "converter" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\converter.wav")),
+                    "converter" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                        @"Sounds\sfx\converter.wav")),
                     "hit" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\hit.wav")),
-                    "teleport" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\teleport.wav")),
+                    "teleport" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                        @"Sounds\sfx\teleport.wav")),
                     "walk" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\walk.wav")),
-                    "pickup" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\pickup.wav")),
+                    "pickup" => new AudioFileReader(
+                        Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\pickup.wav")),
                     _ => throw new Exception("Unknown theme")
                 };
                 _effectsOutput = new WaveOut();
@@ -111,5 +115,7 @@ namespace ClassLibrary.SoundPlayer {
                 throw;
             }
         }
+
+        private delegate void FadeOutEnd(string name);
     }
 }

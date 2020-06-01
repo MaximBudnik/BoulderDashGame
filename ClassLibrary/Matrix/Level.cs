@@ -14,10 +14,10 @@ namespace ClassLibrary.Matrix {
         private readonly Func<int> _getPlayerPositionY;
         private readonly Action _lose;
         private readonly string _playerName;
+        private readonly Action<string> _playSound;
         private readonly Action<Player> _setPlayer;
         private readonly Action<int> _substractPlayerHp;
         private readonly Action _win;
-        private readonly Action<string> _playSound;
         private int _createRoomChance;
         private int _createRoomMaxSizeX = 10;
         private int _createRoomMaxSizeY = 10;
@@ -112,7 +112,7 @@ namespace ClassLibrary.Matrix {
             FillEmptySpace();
 
             var player = new Player(startPosX, startPosY, _playerName,
-                _getLevel, _win, _lose,_playSound, DiamondsQuantity);
+                _getLevel, _win, _lose, _playSound, DiamondsQuantity);
             player.ScoreMultiplier = _difficulty;
             matrix[startPosX, startPosY] = player;
             _setPlayer(player);
@@ -120,7 +120,7 @@ namespace ClassLibrary.Matrix {
         private void FillEmptySpace() {
             for (var i = 0; i < width; i++)
             for (var j = 0; j < height; j++)
-                if (matrix[i, j].EntityType == 7) {
+                if (matrix[i, j].EntityType == GameEntities.LuckyBox) {
                     var pool = new List<int> {
                         //this values represent titles and probability of spawn
                         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -135,7 +135,7 @@ namespace ClassLibrary.Matrix {
                     };
                     matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
                 }
-                else if (matrix[i, j].EntityType == 1) {
+                else if (matrix[i, j].EntityType == GameEntities.EmptySpace) {
                     var pool = new List<int> {
                         //this values represent titles and probability of spawn
                         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -146,7 +146,7 @@ namespace ClassLibrary.Matrix {
                     };
                     matrix[i, j] = fillOneTitle(i, j, innerEntitySpawner(pool));
                 }
-                else if (matrix[i, j].EntityType == 101) {
+                else if (matrix[i, j].EntityType == GameEntities.DedicatedEmptySpace) {
                     matrix[i, j] = fillOneTitle(i, j, 1);
                 }
         }
@@ -154,7 +154,7 @@ namespace ClassLibrary.Matrix {
             while (WalkersCount > 0) {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
-                if (matrix[posX, posY].EntityType == 7) {
+                if (matrix[posX, posY].EntityType == GameEntities.LuckyBox) {
                     var enemy = new EnemyWalker(posX, posY, _getLevel, _getPlayerPositionX,
                         _getPlayerPositionY, _substractPlayerHp);
                     matrix[posX, posY] = enemy;
@@ -165,7 +165,7 @@ namespace ClassLibrary.Matrix {
             while (DiggersCount > 0) {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
-                if (matrix[posX, posY].EntityType == 7) {
+                if (matrix[posX, posY].EntityType == GameEntities.LuckyBox) {
                     var enemy = new EnemyDigger(posX, posY, _getLevel, _getPlayerPositionX,
                         _getPlayerPositionY, _substractPlayerHp);
                     matrix[posX, posY] = enemy;
@@ -176,22 +176,22 @@ namespace ClassLibrary.Matrix {
         private void SetWalls() {
             for (var i = 0; i < width; i++)
             for (var j = 0; j < height; j++)
-                if (matrix[i, j].EntityType == 5) {
+                if (matrix[i, j].EntityType == GameEntities.Wall) {
                     // i make wal sand but only if it doesnt border wit empty space
                     //so player just cant get out the map so easily
                     matrix[i, j] = fillOneTitle(i, j, 2);
-                    if (i + 1 < Width && (matrix[i + 1, j].EntityType == 1 || matrix[i + 1, j].EntityType == 7 ||
-                                          matrix[i + 1, j].EntityType == 9))
+                    if (i + 1 < Width && (matrix[i + 1, j].EntityType == GameEntities.EmptySpace ||
+                                          matrix[i + 1, j].EntityType == GameEntities.LuckyBox))
                         matrix[i, j] = fillOneTitle(i, j, 5);
-                    else if (i - 1 >= 0 && (matrix[i - 1, j].EntityType == 1 || matrix[i - 1, j].EntityType == 7 ||
-                                            matrix[i - 1, j].EntityType == 9))
+                    else if (i - 1 >= 0 && (matrix[i - 1, j].EntityType == GameEntities.EmptySpace ||
+                                            matrix[i - 1, j].EntityType == GameEntities.LuckyBox))
                         matrix[i, j] = fillOneTitle(i, j, 5);
                     else if (j + 1 < Height &&
-                             (matrix[i, j + 1].EntityType == 1 || matrix[i, j + 1].EntityType == 7 ||
-                              matrix[i, j + 1].EntityType == 9))
+                             (matrix[i, j + 1].EntityType == GameEntities.EmptySpace ||
+                              matrix[i, j + 1].EntityType == GameEntities.LuckyBox))
                         matrix[i, j] = fillOneTitle(i, j, 5);
-                    else if (j - 1 >= 0 && (matrix[i, j - 1].EntityType == 1 || matrix[i, j - 1].EntityType == 7 ||
-                                            matrix[i, j - 1].EntityType == 9))
+                    else if (j - 1 >= 0 && (matrix[i, j - 1].EntityType == GameEntities.EmptySpace ||
+                                            matrix[i, j - 1].EntityType == GameEntities.LuckyBox))
                         matrix[i, j] = fillOneTitle(i, j, 5);
                 }
         }
@@ -265,11 +265,11 @@ namespace ClassLibrary.Matrix {
             var rnd = new Random();
             var roomChancePercents = new List<int> {0, 5, 10, 100};
             _createRoomChance = roomChancePercents[rnd.Next(roomChancePercents.Count)]; // 0/5/10/100
-            _roomChanceGrow = rnd.Next(0, 8); // the bigger the  chance, the bigger open spaces on level will be
+            _roomChanceGrow = rnd.Next(0, 5); // the bigger the  chance, the bigger open spaces on level will be
             _diggerMovesLower = rnd.Next(10, 20);
-            _diggerMovesUpper = rnd.Next(30, 50);
-            _createRoomMaxSizeX = rnd.Next(7, 15);
-            _createRoomMaxSizeY = rnd.Next(7, 15);
+            _diggerMovesUpper = rnd.Next(30, 40);
+            _createRoomMaxSizeX = rnd.Next(7, 14);
+            _createRoomMaxSizeY = rnd.Next(7, 14);
             var levelTypes = new List<string> {"default", "blue", "red"};
             LevelType = levelTypes[rnd.Next(levelTypes.Count)];
         }
@@ -367,9 +367,6 @@ namespace ClassLibrary.Matrix {
                 case 8:
                     var sandTranclucent = new SandTranclucent(i, j);
                     return sandTranclucent;
-                case 9:
-                    var wood = new Wood(i, j);
-                    return wood;
                 case 12:
                     var barrel = new BarrelWithSubstance(i, j);
                     return barrel;
@@ -380,7 +377,7 @@ namespace ClassLibrary.Matrix {
                     var converter = new ConverterTile(i, j);
                     return converter;
                 case 22:
-                    var tnt = new TntTile(i, j);
+                    var tnt = new DynamiteTile(i, j);
                     return tnt;
                 case 23:
                     var armor = new ArmorTile(i, j);

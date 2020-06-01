@@ -9,7 +9,6 @@ using ClassLibrary.Entities;
 
 namespace BoulderDashForms.FormsDrawers {
     public class MenuDrawer : FormDrawer {
-       
         private readonly string[] _menuActions = {"Continue", "New game", "Settings", "Scores", "Help", "Exit"};
         private readonly int maxFramesForEnemies = 4;
         private int _currentFrameForEnemies;

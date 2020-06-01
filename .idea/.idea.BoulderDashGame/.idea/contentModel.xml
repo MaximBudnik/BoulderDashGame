@@ -27,7 +27,7 @@
           <e p="ResultsInputProcessor.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="BoulderDashForms.AssemblyInfo.cs" t="Include" />
             </e>
@@ -60,7 +60,7 @@
         <e p="BoulderDashGame.csproj" t="IncludeRecursive" />
         <e p="Game.txt" t="Include" />
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="BoulderDashGame.AssemblyInfo.cs" t="Include" />
             </e>
@@ -73,12 +73,6 @@
       <e p="ClassLibrary" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="ClassLibrary.csproj" t="IncludeRecursive" />
-        <e p="ConsoleInterface" t="Include">
-          <e p="AfterLevelScreen.cs" t="Include" />
-          <e p="GameInterface.cs" t="Include" />
-          <e p="Menu.cs" t="Include" />
-          <e p="UserInterface.cs" t="Include" />
-        </e>
         <e p="DataLayer" t="Include">
           <e p="DataInterlayer.cs" t="Include" />
           <e p="Save.cs" t="Include" />
@@ -93,7 +87,6 @@
             <e p="Sand.cs" t="Include" />
             <e p="SandTranclucent.cs" t="Include" />
             <e p="Wall.cs" t="Include" />
-            <e p="Wood.cs" t="Include" />
           </e>
           <e p="Collectable" t="Include">
             <e p="BarrelWithSubstance.cs" t="Include" />
@@ -102,8 +95,8 @@
             <e p="ItemsTiles" t="Include">
               <e p="ArmorTile.cs" t="Include" />
               <e p="ConverterTile.cs" t="Include" />
+              <e p="DynamiteTile.cs" t="Include" />
               <e p="SwordTile.cs" t="Include" />
-              <e p="TntTile.cs" t="Include" />
             </e>
             <e p="LuckyBox.cs" t="Include" />
           </e>
@@ -111,6 +104,8 @@
             <e p="Enemy.cs" t="Include" />
             <e p="EnemyDigger.cs" t="Include" />
             <e p="EnemyWalker.cs" t="Include" />
+            <e p="NewFile1.txt" t="Include" />
+            <e p="PathFinder.cs" t="Include" />
             <e p="Rock.cs" t="Include" />
           </e>
           <e p="Expanding" t="Include">
@@ -123,11 +118,14 @@
           <e p="Player" t="Include">
             <e p="Inventory.cs" t="Include" />
             <e p="Keyboard.cs" t="Include" />
+            <e p="KeyboardEnum.cs" t="Include" />
             <e p="Player.cs" t="Include" />
+            <e p="PlayerAnimations.cs" t="Include" />
             <e p="PlayerAnimator.cs" t="Include" />
           </e>
         </e>
         <e p="GameEngine.cs" t="Include" />
+        <e p="GameEntities.cs" t="Include" />
         <e p="gameFiles" t="Include">
           <e p="BestScores.db" t="Include" />
           <e p="Saves.db" t="Include" />
@@ -147,7 +145,7 @@
           <e p="Matrix.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="ClassLibrary.AssemblyInfo.cs" t="Include" />
             </e>

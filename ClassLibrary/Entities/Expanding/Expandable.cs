@@ -12,10 +12,10 @@ namespace ClassLibrary.Entities.Expanding {
         public override void GameLoopAction() { }
         protected void Expand(Func<int, int, bool> getCondition, Action<int, int> classConstructor) {
             var level = GetLevel();
-            if (Right < level.Width && getCondition(Right, PositionY)) classConstructor(Right, PositionY);
-            if (Left >= 0 && getCondition(Left, PositionY)) classConstructor(Left, PositionY);
-            if (Bot < level.Height && getCondition(PositionX, Bot)) classConstructor(PositionX, Bot);
-            if (Top >= 0 && getCondition(PositionX, Top)) classConstructor(PositionX, Top);
+            if (RightX < level.Width && getCondition(RightX, PositionY)) classConstructor(RightX, PositionY);
+            if (LeftX >= 0 && getCondition(LeftX, PositionY)) classConstructor(LeftX, PositionY);
+            if (BotY < level.Height && getCondition(PositionX, BotY)) classConstructor(PositionX, BotY);
+            if (TopY >= 0 && getCondition(PositionX, TopY)) classConstructor(PositionX, TopY);
         }
     }
 }

@@ -41,10 +41,7 @@ namespace BoulderDashForms {
                 engineStart.Start();
             }
             catch (Exception e) {
-                Console.WriteLine(e.Data);
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.StackTrace);
+                throw;
             }
         }
         private void KeyDownProcessor(object sender, KeyEventArgs e) {
@@ -73,11 +70,10 @@ namespace BoulderDashForms {
                     _gameEngine.ChangeVolume,
                     _gameEngine.PlaySound
                 );
-            else if (_gameEngine.GameStatus == 2 || _gameEngine.GameStatus == 3) 
+            else if (_gameEngine.GameStatus == 2 || _gameEngine.GameStatus == 3)
                 _resultsInputProcessor.ProcessKeyDown(
-                    e.KeyCode,_gameEngine.ChangeGameStatus,_gameEngine.ChangeVolume, _gameEngine.PlaySound,
+                    e.KeyCode, _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound,
                     _gameEngine.PerformSubAction);
-            
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
             if (_gameEngine.GameStatus == 1)
@@ -87,20 +83,23 @@ namespace BoulderDashForms {
         private void OnPaint(object sender, PaintEventArgs e) {
             var graphics = e.Graphics;
             if (_gameEngine == null) return;
-            if (_gameEngine.GameStatus == 0) {
-                _menuDrawer.DrawMenu(graphics, _gameEngine);
-            }
-            else if (_gameEngine.GameStatus == 1) {
-                var currentLevel = _gameEngine.GameLogic.CurrentLevel;
-                var player = _gameEngine.GameLogic.Player;
-                _gameDrawer.DrawGame(graphics, currentLevel, player);
-            }
-            else if(_gameEngine.GameStatus == 2 || _gameEngine.GameStatus == 3) {
-                _resultScreenDrawer.DrawResults(graphics, _gameEngine.GameStatus,_gameEngine.GetPlayerName(),
-                    _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores(), _gameEngine.CurrentSubAction);
-            }
-            else {
-                throw new Exception($"Unhandled game status, can be 0-3, is {_gameEngine.GameStatus}");
+            switch (_gameEngine.GameStatus) {
+                case 0:
+                    _menuDrawer.DrawMenu(graphics, _gameEngine);
+                    break;
+                case 1: {
+                    var currentLevel = _gameEngine.GameLogic.CurrentLevel;
+                    var player = _gameEngine.GameLogic.Player;
+                    _gameDrawer.DrawGame(graphics, currentLevel, player);
+                    break;
+                }
+                case 2:
+                case 3:
+                    _resultScreenDrawer.DrawResults(graphics, _gameEngine.GameStatus, _gameEngine.GetPlayerName(),
+                        _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores(), _gameEngine.CurrentSubAction);
+                    break;
+                default:
+                    throw new Exception($"Unhandled game status, can be 0-3, is {_gameEngine.GameStatus}");
             }
         }
 

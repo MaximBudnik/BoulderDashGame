@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.DataLayer;
-using ClassLibrary.Entities.Player;
-using ClassLibrary.Matrix;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary {
     public class GameEngine {
         //menu 
         private readonly int _menuItems = 6;
+        private readonly MusicPlayer _musicPlayer = new MusicPlayer();
         private readonly Action _reDraw;
         public readonly DataInterlayer DataInterlayer = new DataInterlayer();
         public readonly GameLogic GameLogic;
@@ -20,7 +20,7 @@ namespace ClassLibrary {
         }
 
         //TODO: SET AS 0
-        public int GameStatus { get; private set; } = 0; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
+        public int GameStatus { get; private set; } // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
         public List<Save> Saves { get; private set; }
         public int CurrentMenuAction { get; private set; } = 1;
 
@@ -30,17 +30,30 @@ namespace ClassLibrary {
         public bool IsActionActive { get; private set; }
         public bool IsNameEntered { get; private set; }
         public Save NewGameSave { get; private set; } = new Save();
-        private readonly SoundPlayer.MusicPlayer _musicPlayer = new SoundPlayer.MusicPlayer();
 
-        public void ChangeVolume(float val) => _musicPlayer.ChangeVolume(val);
+        public void ChangeVolume(float val) {
+            _musicPlayer.ChangeVolume(val);
+        }
 
-        public void PlaySound(string name) => _musicPlayer.PlaySound(name);
+        public void PlaySound(string name) {
+            _musicPlayer.PlaySound(name);
+        }
 
-        public void ChangeIsNameEntered() => IsNameEntered = !IsNameEntered;
-        public void ChangeIsActionActive() => IsActionActive = !IsActionActive;
-        public int GetScores() => GameLogic.Player.Score;
-        public string GetPlayerName() => GameLogic.Player.Name;
-        public Dictionary<string, int[]> GetAllPlayerScores() => GameLogic.Player.AllScores;
+        public void ChangeIsNameEntered() {
+            IsNameEntered = !IsNameEntered;
+        }
+        public void ChangeIsActionActive() {
+            IsActionActive = !IsActionActive;
+        }
+        public int GetScores() {
+            return GameLogic.Player.Score;
+        }
+        public string GetPlayerName() {
+            return GameLogic.Player.Name;
+        }
+        public Dictionary<string, int[]> GetAllPlayerScores() {
+            return GameLogic.Player.AllScores;
+        }
 
         public void ChangeGameStatus(int i) {
             if (i >= 0 && i < 4)
@@ -69,7 +82,7 @@ namespace ClassLibrary {
         }
 
         public void PerformSubAction(int i) {
-            if (GameStatus==3|| GameStatus==4) {
+            if (GameStatus == 3 || GameStatus == 4) {
                 GameStatus = 0;
                 return;
             }
@@ -175,7 +188,9 @@ namespace ClassLibrary {
                 GameLogic.GameLoop();
             }
         }
-        private void RefreshSaves() => Saves = DataInterlayer.GetAllGameSaves();
+        private void RefreshSaves() {
+            Saves = DataInterlayer.GetAllGameSaves();
+        }
         public void Start() {
             RefreshSaves();
             MenuGameCycle();
@@ -183,16 +198,16 @@ namespace ClassLibrary {
             void MenuGameCycle() {
                 try {
                     if (GameStatus == 0) {
-                        //  _musicPlayer.PlayTheme("menu");
+                        _musicPlayer.PlayTheme("menu");
                         Parallel.Invoke(MenuGraphicsThread);
                     }
                     else if (GameStatus == 1) {
-                        //  _musicPlayer.PlayTheme("game");
+                        _musicPlayer.PlayTheme("game");
                         Parallel.Invoke(GraphicsThread,
                             GameLogicThread);
                     }
                     else if (GameStatus == 2 || GameStatus == 3) {
-                        //   _musicPlayer.PlayTheme("results");
+                        _musicPlayer.PlayTheme("results");
                         Parallel.Invoke(ResultsGraphicsThread);
                     }
                     else {

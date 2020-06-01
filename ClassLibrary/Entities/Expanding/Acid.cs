@@ -10,7 +10,7 @@ namespace ClassLibrary.Entities.Expanding {
         private int _actionsCounter;
 
         public Acid(int i, int j, Func<Level> getLevel, Action<int> changePlayerHp) : base(i, j, getLevel) {
-            EntityType = 11;
+            EntityType = GameEntities.Acid;
             _changePlayerHp = changePlayerHp;
             CanMove = false;
             ConstructorForExpand = (i, j) => {

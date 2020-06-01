@@ -9,7 +9,7 @@ namespace ClassLibrary.Entities {
             GetLevel = getLevel;
         }
         public int Hp { get; set; }
-        public override void GameLoopAction() { }
+        public  void GameLoopAction() { }
         protected virtual void Move(string direction, int value, int posX, int posY) {
             PositionX = posX;
             PositionY = posY;

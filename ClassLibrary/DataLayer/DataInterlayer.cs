@@ -32,24 +32,7 @@ namespace ClassLibrary.DataLayer {
             foreach (var save in searchResult) result.Add(save);
             return result;
         }
-
-        // public Save GetGameSaveByName(string name) {
-        //     using var db = new LiteDatabase(_savesDatabase);
-        //     var col = db.GetCollection<Save>("saves");
-        //     col.EnsureIndex(x => x.Name);
-        //     var result = col.FindOne(x => x.Name.Equals(name));
-        //     return result;
-        // }
-        //
-        // public void AddGameSave(string name, int Hero) {
-        //     using var db = new LiteDatabase(_savesDatabase);
-        //     var col = db.GetCollection<Save>("saves");
-        //     var currentSave = new Save {Name = name, Score = 0, LevelName = 0, Hero = Hero};
-        //     col.EnsureIndex(x => x.Name);
-        //     if (col.Exists(x => x.Name == name)) col.Update(currentSave);
-        //     else col.Insert(currentSave);
-        // }
-
+        
         public void AddGameSave(Save save) {
             using var db = new LiteDatabase(_savesDatabase);
             var col = db.GetCollection<Save>("saves");

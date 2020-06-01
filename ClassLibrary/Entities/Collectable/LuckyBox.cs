@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace ClassLibrary.Entities.Collectable {
     public class LuckyBox : ItemCollectible {
-        private new static readonly int PickUpValue = 3;
+        private new readonly int PickUpValue = 3;
         public LuckyBox(int i, int j) : base(i, j) {
-            EntityType = 7;
+            EntityType = GameEntities.LuckyBox;
         }
 
         public void Collect(Func<Player.Player> getPlayer) {

@@ -4,7 +4,7 @@ using ClassLibrary.Entities.Player;
 namespace ClassLibrary.Entities.Collectable.ItemsTiles {
     public class ConverterTile : ItemCollectible {
         public ConverterTile(int i, int j) : base(i, j) {
-            EntityType = 21;
+            EntityType = GameEntities.ConverterTile;
         }
         public void Collect(Func<Inventory> getPlayerInventory) {
             getPlayerInventory().StoneInDiamondsConverterQuantity++;

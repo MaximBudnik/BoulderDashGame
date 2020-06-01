@@ -17,12 +17,8 @@ namespace BoulderDashForms.InputProcessors {
             Action<float> changeVolume,
             Action<string> playSound
         ) {
-            if (key == Keys.Enter || key == Keys.Escape) {
-                playSound("menuAccept");
-            }
-            else {
-                playSound("menuClick");
-            }
+            if (key == Keys.Enter || key == Keys.Escape) playSound("menuAccept");
+            else playSound("menuClick");
             if (isNameEntered) {
                 if (key == Keys.Enter) {
                     changeIsNameEntered();

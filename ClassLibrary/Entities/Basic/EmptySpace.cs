@@ -1,7 +1,7 @@
 ﻿namespace ClassLibrary.Entities.Basic {
     public class EmptySpace : GameEntity {
         public EmptySpace(int i, int j) : base(i, j) {
-            EntityType = 1;
+            EntityType = GameEntities.EmptySpace;
         }
     }
 }

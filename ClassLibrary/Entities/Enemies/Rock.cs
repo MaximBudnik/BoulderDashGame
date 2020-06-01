@@ -7,7 +7,7 @@ namespace ClassLibrary.Entities.Enemies {
         public Rock(int i, int j, Func<Level> getLevel,
             Action<int> changePlayerHp
         ) : base(i, j, getLevel, changePlayerHp) {
-            EntityType = 3;
+            EntityType = GameEntities.Rock;
             Damage = 3;
             CanMove = false;
             Hp = 1000;
@@ -21,7 +21,7 @@ namespace ClassLibrary.Entities.Enemies {
             var currentLevel = GetLevel();
             _isFalling = false;
 
-            if (Right >= currentLevel.Width || currentLevel[Right, PositionY].EntityType != 1 ||
+            if (RightX >= currentLevel.Width || currentLevel[RightX, PositionY].EntityType != GameEntities.EmptySpace ||
                 _isFalling) return;
             Move("horizontal", 1, PositionX, PositionY);
             _isFalling = true;
@@ -29,14 +29,14 @@ namespace ClassLibrary.Entities.Enemies {
         public void PushRock(int posX, int posY, string direction, int value) {
             var currentLevel = GetLevel();
             if (posX + value <= currentLevel.Height && posX + value >= 0 &&
-                currentLevel[posX, posY + value].EntityType == 1)
+                currentLevel[posX, posY + value].EntityType == GameEntities.EmptySpace)
                 Move(direction, value, posX, posY);
         }
 
         private void RockDamage() {
-            if (Right == GetLevel().Width) //not to overflow matrix
+            if (RightX == GetLevel().Width) //not to overflow matrix
                 return;
-            if (_isFalling && GetLevel()[Right, PositionY].EntityType == 0) DealDamage();
+            if (_isFalling && GetLevel()[RightX, PositionY].EntityType == 0) DealDamage();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace ClassLibrary.Entities.Enemies {
             Action<int> changePlayerHp
         )
             : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
-            EntityType = 13;
+            EntityType = GameEntities.EnemyDigger;
             Damage = 2;
             Hp = 5;
             ScoreForKill = 30;
@@ -23,21 +23,22 @@ namespace ClassLibrary.Entities.Enemies {
             EnemyMovement();
         }
 
+        
         private void EnemyMovement() {
             var level = GetLevel();
             var playerPosX = GetPlayerPosX();
             var playerPosY = GetPlayerPosY();
             var moves = new List<string>();
 
-            if (playerPosX < PositionX && Left < level.Width &&
-                level[Left, PositionY].EntityType != 0)
+            if (playerPosX < PositionX && LeftX < level.Width &&
+                level[LeftX, PositionY].EntityType != GameEntities.Player)
                 moves.Add("left");
-            if (playerPosX > PositionX && Right >= 0 && level[Right, PositionY].EntityType != 0)
+            if (playerPosX > PositionX && RightX >= 0 && level[RightX, PositionY].EntityType != GameEntities.Player)
                 moves.Add("right");
-            if (playerPosY > PositionY && Bot < level.Height &&
-                level[PositionX, Bot].EntityType != 0)
+            if (playerPosY > PositionY && BotY < level.Height &&
+                level[PositionX, BotY].EntityType != GameEntities.Player)
                 moves.Add("down");
-            if (playerPosY < PositionY && Top >= 0 && level[PositionX, Top].EntityType != 0)
+            if (playerPosY < PositionY && TopY >= 0 && level[PositionX, TopY].EntityType != GameEntities.Player)
                 moves.Add("up");
             moves.Add("hold");
             var action = Randomizer.GetRandomFromList(moves);

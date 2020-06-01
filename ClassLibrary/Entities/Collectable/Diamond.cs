@@ -3,7 +3,7 @@
 namespace ClassLibrary.Entities.Collectable {
     public class Diamond : ItemCollectible {
         public Diamond(int i, int j) : base(i, j) {
-            EntityType = 4;
+            EntityType = GameEntities.Diamond;
             IdleFrames = 512;
             CurrentFrame = Randomizer.Random(0, 64);
         }

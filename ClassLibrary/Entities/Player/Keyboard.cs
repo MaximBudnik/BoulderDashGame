@@ -1,13 +1,14 @@
 ﻿namespace ClassLibrary.Entities.Player {
+    
     public class Keyboard {
-        public int A = 0;
-        public int D = 0;
-        public int E = 0;
-        public int Q = 0;
-        public int R = 0;
-        public int S = 0;
-        public int Space = 0;
-        public int T = 0;
-        public int W = 0;
+        public KeyboardEnum A = KeyboardEnum.Disabled;
+        public KeyboardEnum D = KeyboardEnum.Disabled;
+        public KeyboardEnum E = KeyboardEnum.Disabled;
+        public KeyboardEnum Q = KeyboardEnum.Disabled;
+        public KeyboardEnum R = KeyboardEnum.Disabled;
+        public KeyboardEnum S = KeyboardEnum.Disabled;
+        public KeyboardEnum Space = KeyboardEnum.Disabled;
+        public KeyboardEnum T = KeyboardEnum.Disabled;
+        public KeyboardEnum W = KeyboardEnum.Disabled;
     }
 }

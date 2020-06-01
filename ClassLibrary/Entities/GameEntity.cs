@@ -2,10 +2,8 @@
     public abstract class GameEntity {
         public static readonly int FormsSize = 14;
         public bool CanMove = true;
-
+        public bool PathFinderMove = false;
         public int CurrentFrame = 0;
-
-        //win forms
         public int IdleFrames = 4;
         public int PositionX;
         public int PositionY;
@@ -13,12 +11,11 @@
             PositionX = i;
             PositionY = j;
         }
-        protected GameEntity() { }
-        public int EntityType { get; protected set; }
-        protected int Right => PositionX + 1;
-        protected int Left => PositionX - 1;
-        protected int Bot => PositionY + 1;
-        protected int Top => PositionY - 1;
+        public GameEntities EntityType { get; protected set; }
+        protected int RightX => PositionX + 1;
+        protected int LeftX => PositionX - 1;
+        protected int BotY => PositionY + 1;
+        protected int TopY => PositionY - 1;
 
         public virtual void GameLoopAction() { }
     }

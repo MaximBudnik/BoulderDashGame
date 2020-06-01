@@ -6,60 +6,60 @@ using System.IO;
 namespace BoulderDashForms.FormsDrawers {
     public class FormDrawer {
         private readonly string _attackPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\attack.png");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\attack.png");
 
-        private readonly string _effectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\fx.png");
+        private readonly string _effectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\fx.png");
 
         private readonly string _energyPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\energy.png");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\energy.png");
 
         private readonly string _hpEmptyPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart_empty.png");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\heart_empty.png");
 
-        private readonly string _hpFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\heart.png");
-        private readonly string _iconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\icons.png");
+        private readonly string _hpFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\heart.png");
+        private readonly string _iconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\icons.png");
 
         private readonly string _keyboardPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\keyboard.png");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\keyboard.png");
 
         private readonly string _mainsSpritesPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\mainSprites.png");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\mainSprites.png");
 
         private readonly string _secondarySpritesPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\secondarySprites.png");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\secondarySprites.png");
 
         private readonly string _shieldPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\shield.png");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\shield.png");
 
         private readonly string _tilesetPath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Sprites\Tileset.png");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\Tileset.png");
 
         protected readonly Image Attack;
+        protected readonly SolidBrush DarkBrush = new SolidBrush(Color.FromArgb(255, 34, 29, 35));
         protected readonly Image Effects;
         protected readonly Image Energy;
-        protected readonly Brush GuiBrush = Brushes.Crimson;
+        protected readonly Brush GuiBrush;
 
         protected readonly Image HpEmpty;
         protected readonly Image HpFull;
         protected readonly Image Icons;
         protected readonly Image Keyboard;
         protected readonly Image MainSprites;
+
+        protected readonly SolidBrush RedBrush = new SolidBrush(Color.FromArgb(255, 218, 78, 56));
+        protected readonly SolidBrush RedBrushHalfTransparent = new SolidBrush(Color.FromArgb(200, 218, 78, 56));
+        protected readonly SolidBrush RedBrushTransparent = new SolidBrush(Color.FromArgb(130, 218, 78, 56));
         protected readonly Image SecondarySprites;
         protected readonly Image Shield;
         protected readonly Image TileSet;
+        protected readonly SolidBrush WhiteBrush = new SolidBrush(Color.FromArgb(255, 249, 245, 255));
         protected Font BoldFont;
         protected FontFamily Family1;
         protected FontFamily Family2;
         protected PrivateFontCollection FontCollection;
+        protected Font HeaderFont;
+        protected Font MainFont;
         protected Font MenuFont;
-        protected  Font HeaderFont;
-        protected  Font MainFont;
-        
-        protected readonly SolidBrush RedBrush = new SolidBrush(Color.FromArgb(255, 218, 78, 56));
-        protected readonly SolidBrush WhiteBrush = new SolidBrush(Color.FromArgb(255, 249, 245, 255));
-        protected readonly SolidBrush DarkBrush = new SolidBrush(Color.FromArgb(255, 34, 29, 35));
-        protected readonly SolidBrush RedBrushTransparent = new SolidBrush(Color.FromArgb(130, 218, 78, 56));
-        protected readonly SolidBrush RedBrushHalfTransparent = new SolidBrush(Color.FromArgb(200, 218, 78, 56));
 
         protected FormDrawer() {
             MainSprites = new Bitmap(_mainsSpritesPath);
