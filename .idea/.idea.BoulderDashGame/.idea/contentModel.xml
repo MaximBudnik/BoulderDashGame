@@ -40,6 +40,7 @@
           </e>
         </e>
         <e p="Sprites" t="Include">
+          <e p="adrenaline.png" t="Include" />
           <e p="attack.png" t="Include" />
           <e p="cursor.ico" t="Include" />
           <e p="energy.png" t="Include" />
@@ -144,6 +145,7 @@
         <e p="Matrix" t="Include">
           <e p="Level.cs" t="Include" />
           <e p="Matrix.cs" t="Include" />
+          <e p="NewFile1.txt" t="Include" />
         </e>
         <e p="Menu.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">

@@ -71,6 +71,10 @@
       <Content Include="Sprites\keyboard.png">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Sprites\adrenaline.png" />
+      <Content Include="Sprites\adrenaline.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>

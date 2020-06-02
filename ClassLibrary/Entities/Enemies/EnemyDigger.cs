@@ -18,7 +18,7 @@ namespace ClassLibrary.Entities.Enemies {
             ConditionToMove = (level, point) => true;
             CurrentFrame = Randomizer.Random(0, 4);
         }
-        public new void GameLoopAction() {
+        public override void GameLoopAction() {
             EnemyDamageNearTitles();
             EnemyMovement();
         }
@@ -32,10 +32,12 @@ namespace ClassLibrary.Entities.Enemies {
             catch (Exception) {
                 return;
             }
-            level[dest.X, dest.Y] = this;
-            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
-            PositionX = dest.X;
-            PositionY = dest.Y;
+            if (!(level[dest.X, dest.Y] is Player.Player)) {
+                level[dest.X, dest.Y] = this;
+                level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+                PositionX = dest.X;
+                PositionY = dest.Y;
+            }
         }
     }
 }

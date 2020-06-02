@@ -7,6 +7,7 @@ using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
 using ClassLibrary.SoundPlayer;
+using NAudio.Wave;
 
 namespace ClassLibrary {
     public class GameLogic {
@@ -43,7 +44,7 @@ namespace ClassLibrary {
         ) {
             CurrentLevel = new Level(
                 levelName, playerName,
-                () => CurrentLevel,
+                //() => CurrentLevel,
                 Win,
                 Lose,
                 () => Player.PositionX,
@@ -53,7 +54,11 @@ namespace ClassLibrary {
                 sizeX,
                 sizeY,
                 difficulty,
-                playSound
+                playSound,
+                () => {
+                    _chanceToDeleteAcidBlock += 1;
+                    CheckIfDeleteAllAcidBlocks();
+                }
             );
             _difficulty = difficulty;
         }
@@ -64,39 +69,9 @@ namespace ClassLibrary {
                 for (var i = 0; i < CurrentLevel.Width; i++)
                 for (var j = 0; j < CurrentLevel.Height; j++) {
                     if (used.Contains(CurrentLevel[i, j])) continue;
-                    if (CurrentLevel[i, j] is Player) {
-                        var tmp = (Player) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                        Player = tmp;
-                    }
-                    if (CurrentLevel[i, j] is EnemyWalker) {
-                        var tmp = (EnemyWalker) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                    }
-                    if (CurrentLevel[i, j] is Rock) {
-                        var tmp = (Rock) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                    }
-                    if (CurrentLevel[i, j] is StoneInDiamondConverter) {
-                        var tmp = (StoneInDiamondConverter) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                    }
-                    if (CurrentLevel[i, j] is Acid) {
-                        var tmp = (Acid) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                        _chanceToDeleteAcidBlock += 1;
-                        CheckIfDeleteAllAcidBlocks();
-                    }
-                    if (CurrentLevel[i, j] is EnemyDigger) {
-                        var tmp = (EnemyDigger) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                    }
+                    var tmp = CurrentLevel[i, j];
+                    tmp.GameLoopAction();
+                    used.Add(tmp);
                 }
 
                 SpawnEnemies();

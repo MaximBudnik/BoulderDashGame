@@ -326,7 +326,7 @@ namespace BoulderDashForms.FormsDrawers {
                     new Rectangle(new Point(16 * i, 64),
                         new Size(32, 32));
                 var srcRect = new Rectangle(new Point(0, 0), new Size(32, 32));
-                graphics.DrawImage(Energy, destRect, srcRect, GraphicsUnit.Pixel);
+                graphics.DrawImage(player.Adrenaline > 0 ? Adrenaline : Energy, destRect, srcRect, GraphicsUnit.Pixel);
             }
         }
         private void DrawPlayerArmor(Graphics graphics, Player player) {

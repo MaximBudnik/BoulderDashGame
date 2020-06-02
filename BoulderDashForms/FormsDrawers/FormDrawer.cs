@@ -12,6 +12,9 @@ namespace BoulderDashForms.FormsDrawers {
 
         private readonly string _energyPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\energy.png");
+        
+        private readonly string _adrenalinePath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\adrenaline.png");
 
         private readonly string _hpEmptyPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\heart_empty.png");
@@ -40,6 +43,7 @@ namespace BoulderDashForms.FormsDrawers {
         protected readonly SolidBrush DarkBrush = new SolidBrush(Color.FromArgb(255, 34, 29, 35));
         protected readonly Image Effects;
         protected readonly Image Energy;
+        protected readonly Image Adrenaline;
         protected readonly Brush GuiBrush;
 
         protected readonly Image HpEmpty;
@@ -74,6 +78,7 @@ namespace BoulderDashForms.FormsDrawers {
             HpEmpty = new Bitmap(_hpEmptyPath);
             Shield = new Bitmap(_shieldPath);
             Energy = new Bitmap(_energyPath);
+            Adrenaline = new Bitmap(_adrenalinePath);
             Keyboard = new Bitmap(_keyboardPath);
             FontCollection = new PrivateFontCollection();
             FontCollection.AddFontFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Fonts\monogram.ttf"));

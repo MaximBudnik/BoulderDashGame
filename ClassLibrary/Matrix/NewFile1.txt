@@ -19,7 +19,6 @@ namespace ClassLibrary.Matrix {
         private readonly Action<Player> _setPlayer;
         private readonly Action<int> _substractPlayerHp;
         private readonly Action _win;
-        private readonly Action _acidGameLoopAction;
         private int _createRoomChance;
         private int _createRoomMaxSizeX = 10;
         private int _createRoomMaxSizeY = 10;
@@ -29,11 +28,12 @@ namespace ClassLibrary.Matrix {
         private List<int> _quarterPool;
         private int _roomChanceGrow = 5; // the bigger the  chance, the bigger open spaces on level will be
         public Level(int levelName, string playerName,
+            // Func<Level> getLevel,
             Action win, Action lose,
             Func<int> getPlayerPositionX,
             Func<int> getPlayerPositionY,
             Action<int> substractPlayerHp, Action<Player> setPlayer,
-            int sizeX, int sizeY, int difficulty, Action<SoundFilesEnum> playSound, Action acidGameLoopAction) {
+            int sizeX, int sizeY, int difficulty, Action<SoundFilesEnum> playSound) {
             width = sizeX; //20 for console
             height = sizeY; //65 for console
             LevelName = levelName;
@@ -46,7 +46,6 @@ namespace ClassLibrary.Matrix {
             _substractPlayerHp = substractPlayerHp;
             _setPlayer = setPlayer;
             _playSound = playSound;
-            _acidGameLoopAction = acidGameLoopAction;
 
             SetDifficulty(difficulty);
 
@@ -60,6 +59,7 @@ namespace ClassLibrary.Matrix {
         private int DiggersCount { get; set; }
 
         //fields for creating level
+        public string LevelType { get; private set; } = "red";
         private void SetDifficulty(int difficulty) {
             _difficulty = difficulty;
             WalkersCount = difficulty;
@@ -89,7 +89,7 @@ namespace ClassLibrary.Matrix {
             //Digger moves through field in different positions and leaves behind empty space
             var diggerMoves = rand.Next(_diggerMovesLower, _diggerMovesUpper);
             //4) flag makes sure that he changes axis of movement after he gets every position
-            var diggerAxisDirectionFlag = false;
+            var flag = false;
             //5) quarters are created to make sure that digger will be in all parts of field     
             //12 - quarters pos
             //34
@@ -99,7 +99,7 @@ namespace ClassLibrary.Matrix {
                 currentQuarter
             };
             //6) loop that performs all operations 
-            MainGeneration(diggerMoves, rand, diggerAxisDirectionFlag, diggerPoxX, diggerPoxY);
+            MainGeneration(diggerMoves, rand, flag, diggerPoxX, diggerPoxY);
             //secondary generation
             //TODO: optimize following processes
             // here i fill matrix with hand-made objects
@@ -113,7 +113,7 @@ namespace ClassLibrary.Matrix {
             FillEmptySpace();
 
             var player = new Player(startPosX, startPosY, _playerName,
-                _getLevel, _win, _lose, _playSound,_setPlayer, DiamondsQuantityToWin) {ScoreMultiplier = _difficulty};
+                _getLevel, _win, _lose, _playSound, DiamondsQuantityToWin) {ScoreMultiplier = _difficulty};
             matrix[startPosX, startPosY] = player;
             _setPlayer(player);
         }
@@ -121,9 +121,9 @@ namespace ClassLibrary.Matrix {
             for (var i = 0; i < width; i++)
             for (var j = 0; j < height; j++)
                 if (matrix[i, j].EntityEnumType == GameEntitiesEnum.LuckyBox) {
-                    var pool = new List<int> {
+                    var pool = new List<GameEntitiesEnum> {
                         //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                        GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent,
                         3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
                         4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
                         7, 7,
@@ -133,18 +133,18 @@ namespace ClassLibrary.Matrix {
                         22,
                         23
                     };
-                    matrix[i, j] = FillOneTitle(i, j, (GameEntitiesEnum) Randomizer.GetRandomFromList(pool));
+                    matrix[i, j] = FillOneTitle(i, j, InnerEntitySpawner(pool));
                 }
                 else if (matrix[i, j].EntityEnumType == GameEntitiesEnum.EmptySpace) {
-                    var pool = new List<int> {
+                    var pool = new List<GameEntitiesEnum> {
                         //this values represent titles and probability of spawn
-                        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                        GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent, GameEntitiesEnum.SandTranslucent,
                         1, 1, 1, 1, 1, 1, 1,
                         4, 4, 4, 4, 4,
                         7, 7,
                         12
                     };
-                    matrix[i, j] = FillOneTitle(i, j, (GameEntitiesEnum) Randomizer.GetRandomFromList(pool));
+                    matrix[i, j] = FillOneTitle(i, j, InnerEntitySpawner(pool));
                 }
                 else if (matrix[i, j].EntityEnumType == GameEntitiesEnum.DedicatedEmptySpace) {
                     matrix[i, j] = FillOneTitle(i, j, GameEntitiesEnum.EmptySpace);
@@ -270,6 +270,8 @@ namespace ClassLibrary.Matrix {
             _diggerMovesUpper = rnd.Next(30, 40);
             _createRoomMaxSizeX = rnd.Next(7, 14);
             _createRoomMaxSizeY = rnd.Next(7, 14);
+            var levelTypes = new List<string> {"default", "blue", "red"};
+            LevelType = levelTypes[rnd.Next(levelTypes.Count)];
         }
         private bool CheckMoved(bool flag, int digX, int digY, int ranX, int ranY) {
             if (flag) return digX != ranX;
@@ -317,7 +319,7 @@ namespace ClassLibrary.Matrix {
             _quarterPool.Remove(quarter);
             _quarterPool.AddRange(new List<int> {1, 2, 3, 4});
         }
-        private int InnerEntitySpawner(List<int> pool) {
+        private Enum InnerEntitySpawner(List<Enum> pool) {
             var rand = new Random();
             var randNumber = pool[rand.Next(pool.Count)];
             return randNumber;
@@ -359,7 +361,7 @@ namespace ClassLibrary.Matrix {
                     var sandTranclucent = new SandTranclucent(i, j);
                     return sandTranclucent;
                 case GameEntitiesEnum.Barrel:
-                    var barrel = new BarrelWithSubstance(i, j, _acidGameLoopAction);
+                    var barrel = new BarrelWithSubstance(i, j);
                     return barrel;
                 case GameEntitiesEnum.SwordTile:
                     var sword = new SwordTile(i, j);

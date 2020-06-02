@@ -20,7 +20,7 @@ namespace ClassLibrary.Entities.Enemies {
                 level[point.X, point.Y].CanMove || level[point.X, point.Y].PathFinderMove;
         }
 
-        public new void GameLoopAction() {
+        public override void GameLoopAction() {
             EnemyDamageNearTitles();
             Move();
         }

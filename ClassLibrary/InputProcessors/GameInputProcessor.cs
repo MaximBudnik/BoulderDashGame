@@ -27,7 +27,7 @@ namespace ClassLibrary.
                     player.Teleport();
                     break;
                 case ConsoleKey.Spacebar:
-                    player.HpInEnergy();
+                    player.UseEnergyConverter();
                     break;
                 case ConsoleKey.Q:
                     player.ConvertNearStonesInDiamonds();

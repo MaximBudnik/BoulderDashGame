@@ -49,7 +49,6 @@ namespace ClassLibrary.SoundPlayer {
             }
             catch (Exception e) {
                 Console.WriteLine(e);
-                throw new Exception("Error in sound player");
             }
         }
 
@@ -107,7 +106,6 @@ namespace ClassLibrary.SoundPlayer {
             }
             catch (Exception e) {
                 Console.WriteLine(e);
-                throw new Exception("Error in sound player");
             }
         }
         private void StopTheme() {

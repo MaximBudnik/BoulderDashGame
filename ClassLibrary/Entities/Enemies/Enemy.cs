@@ -36,6 +36,7 @@ namespace ClassLibrary.Entities.Enemies {
             _changePlayerHp = changePlayerHp;
             CanMove = false;
         }
+        
 
         protected void EnemyDamageNearTitles() {
             var playerPosX = GetPlayerPosX();

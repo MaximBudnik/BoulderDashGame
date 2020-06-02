@@ -12,20 +12,25 @@ using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Player {
     public class Player : Movable {
-        private readonly int _attackEnergyCost = 6;
-        private readonly int _diamondsTowWin;
+        private readonly int _attackEnergyCost = 9;
         private readonly Action _lose;
+        private readonly int _diamondsTowWin;
         private readonly int _moveEnergyCost = 1;
         private readonly int _moveRockEnergyCost = 5;
         private readonly Action<SoundFilesEnum> _playSound;
         private readonly int _teleportRange = 20;
         private readonly Action _win;
+        private readonly Action <Player> _setPlayer;
         public readonly Dictionary<string, int[]> AllScores;
         private readonly double DynamiteTileDamage = 0.3;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
         private readonly int MaxEnergy = 20;
         public readonly string Name;
+        private readonly int _adrenalineOnCombo = 100;
+        private readonly int _adrenalineTickReduction = 5;
+        private readonly int DefaultArmorCellHp = 10;
+
 
         public Player(
             int i,
@@ -35,12 +40,14 @@ namespace ClassLibrary.Entities.Player {
             Action win,
             Action lose,
             Action<SoundFilesEnum> playSound,
+            Action<Player> setPlayer,
             int diamondsTowWin)
             : base(getLevel, i, j) {
             Name = name;
             _win = win;
             _lose = lose;
             _playSound = playSound;
+            _setPlayer = setPlayer;
             Hp = MaxHp;
             _diamondsTowWin = diamondsTowWin;
             EntityEnumType = 0;
@@ -62,6 +69,8 @@ namespace ClassLibrary.Entities.Player {
         }
         public int MaxHp { get; set; } = 10;
         public int Energy { get; private set; } = 20;
+
+        public int Adrenaline { get; private set; } = 0;
         public int CollectedDiamonds { get; set; }
         public int EnergyRestoreTick { get; set; } = 1;
         public int ScoreMultiplier { get; set; } = 10;
@@ -77,10 +86,12 @@ namespace ClassLibrary.Entities.Player {
             Score += value * ScoreMultiplier;
         }
 
-        public new void GameLoopAction() {
+        public override void GameLoopAction() {
             CheckWin();
             CheckLose();
             RestoreEnergy();
+            AdrenalineEffect();
+            _setPlayer(this);
         }
 
         public void SubstractPlayerHp(int value) {
@@ -90,7 +101,7 @@ namespace ClassLibrary.Entities.Player {
             }
             if (Inventory.ArmorCellHp <= 0) {
                 Inventory.ArmorLevel--;
-                Inventory.ArmorCellHp = 10;
+                Inventory.ArmorCellHp = DefaultArmorCellHp;
             }
             if (value > 0) Hp -= value;
             _playSound(SoundFilesEnum.HitSound);
@@ -98,22 +109,13 @@ namespace ClassLibrary.Entities.Player {
         }
 
         private void SubstractPlayerHp(int value, PlayerAnimationsEnum animationEnum) {
-            if (Inventory.ArmorLevel > 0) {
-                Inventory.ArmorCellHp -= value;
-                value -= Inventory.ArmorLevel;
-            }
-            if (Inventory.ArmorCellHp <= 0) {
-                Inventory.ArmorLevel--;
-                Inventory.ArmorCellHp = 10;
-            }
-            if (value > 0) Hp -= value;
-            _playSound(SoundFilesEnum.HitSound);
+            SubstractPlayerHp(value);
             SetAnimation(animationEnum);
         }
 
         public void Move(string direction, int value) {
-            SetAnimation(PlayerAnimationsEnum.Move);
             if (!EnoughEnergy()) return;
+            SetAnimation(PlayerAnimationsEnum.Move);
             var willMove = false;
             var level = GetLevel();
             level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
@@ -139,6 +141,8 @@ namespace ClassLibrary.Entities.Player {
                     throw new Exception("Unknown move direction in Player.cs");
             }
             if (willMove) {
+                _playSound(SoundFilesEnum.WalkSound);
+
                 Energy -= _moveEnergyCost;
                 switch (level[PositionX, PositionY].EntityEnumType) {
                     case GameEntitiesEnum.Diamond:
@@ -182,12 +186,15 @@ namespace ClassLibrary.Entities.Player {
         private bool EnoughEnergy() {
             return Energy >= _moveEnergyCost;
         }
-        public void HpInEnergy() {
-            SubstractPlayerHp(1);
-            Energy = MaxEnergy;
+        public void UseEnergyConverter() {
+            if (Inventory.StoneInDiamondsConverterQuantity>0) {
+                Energy = MaxEnergy;
+                Inventory.StoneInDiamondsConverterQuantity--;
+            }
         }
         public void Teleport() {
             if (Energy < MaxEnergy) return;
+            _playSound(SoundFilesEnum.TeleportSound);
             var level = GetLevel();
             Energy = 0;
             int posX;
@@ -217,6 +224,7 @@ namespace ClassLibrary.Entities.Player {
         }
         public void ConvertNearStonesInDiamonds() {
             if (Inventory.StoneInDiamondsConverterQuantity == 0) return;
+            _playSound(SoundFilesEnum.ConverterSound);
             SetAnimation(PlayerAnimationsEnum.Converting);
             Inventory.StoneInDiamondsConverterQuantity--;
             var level = GetLevel();
@@ -234,6 +242,7 @@ namespace ClassLibrary.Entities.Player {
         }
         public void Attack() {
             if (Energy < _attackEnergyCost) return;
+            _playSound(SoundFilesEnum.AttackSound);
             SetAnimation(PlayerAnimationsEnum.Attack);
             Energy -= _attackEnergyCost;
             var level = GetLevel();
@@ -246,6 +255,7 @@ namespace ClassLibrary.Entities.Player {
                     tmp.Hp -= Inventory.SwordLevel;
                     if (tmp.Hp <= 0) {
                         level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY);
+                        Adrenaline += tmp.ScoreForKill;
                         AddScore(tmp.ScoreForKill);
                         AllScores["Killed enemies"][0] += 1;
                         AllScores["Killed enemies"][1] += GetScoreToAdd(tmp.ScoreForKill);
@@ -255,6 +265,7 @@ namespace ClassLibrary.Entities.Player {
         }
         public void UseDynamite() {
             if (Inventory.TntQuantity == 0) return;
+            _playSound(SoundFilesEnum.BombSound);
             Inventory.TntQuantity--;
             var level = GetLevel();
             double dmg = 0;
@@ -282,6 +293,22 @@ namespace ClassLibrary.Entities.Player {
         }
         private void RestoreEnergy() {
             if (Energy < MaxEnergy) Energy += EnergyRestoreTick;
+        }
+
+        private void AdrenalineEffect() {
+            if (Adrenaline > 0) {
+                if(Adrenaline>50) RestoreEnergy();
+                RestoreEnergy();
+                Adrenaline -= _adrenalineTickReduction;
+                if (Adrenaline < 0) Adrenaline = 0;
+            }
+        }
+
+        public void CheckAdrenalineCombo() {
+            if (Keyboard.A == KeyboardEnum.Enabled && Keyboard.D == KeyboardEnum.Enabled) {
+                Adrenaline += _adrenalineOnCombo;
+                SubstractPlayerHp(1);
+            }
         }
 
         public void SetAnimation(PlayerAnimationsEnum currentAnimationEnum) {

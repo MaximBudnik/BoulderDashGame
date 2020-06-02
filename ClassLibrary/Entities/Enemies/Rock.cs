@@ -12,7 +12,7 @@ namespace ClassLibrary.Entities.Enemies {
             CanMove = false;
             Hp = 1000;
         }
-        public new void GameLoopAction() {
+        public override void GameLoopAction() {
             ProcessRock();
             RockDamage();
         }
@@ -29,9 +29,11 @@ namespace ClassLibrary.Entities.Enemies {
         }
         public void PushRock(int posX, int posY, string direction, int value) {
             var currentLevel = GetLevel();
-            if (posX + value <= currentLevel.Height && posX + value >= 0 &&
-                currentLevel[posX, posY + value].EntityEnumType == GameEntitiesEnum.EmptySpace)
+            bool b = posX + value <= currentLevel.Height && posX + value >= 0 &&
+                     currentLevel[posX, posY + value].EntityEnumType == GameEntitiesEnum.EmptySpace;
+            if (b) {
                 Move(direction, value, posX, posY);
+            }
         }
 
         private void RockDamage() {

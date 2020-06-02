@@ -53,22 +53,17 @@ namespace ClassLibrary.Entities.Enemies {
             neighbourArray[2] = new Point(node.PositionX, node.PositionY + 1);
             neighbourArray[3] = new Point(node.PositionX, node.PositionY - 1);
 
-            try {
-                foreach (var point in neighbourArray) {
-                    if (!GameEntity.IsLevelCellValid(point.X, point.Y, level.Width, level.Height)) continue;
-                    if (conditionToMove(level, point)) {
-                        var neighbour = new Node {
-                            PositionX = point.X,
-                            PositionY = point.Y,
-                            Parent = node,
-                            LengthFromStart = node.LengthFromStart + 1
-                        };
-                        result.Add(neighbour);
-                    }
+            foreach (var point in neighbourArray) {
+                if (!GameEntity.IsLevelCellValid(point.X, point.Y, level.Width, level.Height)) continue;
+                if (conditionToMove(level, point)) {
+                    var neighbour = new Node {
+                        PositionX = point.X,
+                        PositionY = point.Y,
+                        Parent = node,
+                        LengthFromStart = node.LengthFromStart + 1
+                    };
+                    result.Add(neighbour);
                 }
-            }
-            catch (Exception) {
-                return null;
             }
             return result;
         }

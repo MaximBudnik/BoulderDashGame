@@ -4,10 +4,12 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Collectable {
     public class BarrelWithSubstance : ItemCollectible {
-        public BarrelWithSubstance(int i, int j) : base(i, j) {
+        public BarrelWithSubstance(int i, int j, Action acidGameLoopAction) : base(i, j) {
+            _acidGameLoopAction = acidGameLoopAction;
             EntityEnumType = GameEntitiesEnum.Barrel;
         }
-
+        
+        private readonly Action _acidGameLoopAction;
         private bool WillReplace => 33 >= Randomizer.Random(100);
 
         public void Collect(Func<Level> getLevel, Action<int> changePlayerHp) {
@@ -18,7 +20,7 @@ namespace ClassLibrary.Entities.Collectable {
                     var posX = x + PositionX;
                     var posY = y + PositionY;
                     if (IsLevelCellValid(posX, posY, level.Width, level.Height) && WillReplace)
-                        level[posX, posY] = new Acid(posX, posY, getLevel, changePlayerHp);
+                        level[posX, posY] = new Acid(posX, posY, getLevel, changePlayerHp, _acidGameLoopAction);
                 }
         }
     }
