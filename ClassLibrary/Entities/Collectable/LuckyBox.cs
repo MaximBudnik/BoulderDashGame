@@ -5,7 +5,7 @@ namespace ClassLibrary.Entities.Collectable {
     public class LuckyBox : ItemCollectible {
         private new readonly int PickUpValue = 3;
         public LuckyBox(int i, int j) : base(i, j) {
-            EntityType = GameEntities.LuckyBox;
+            EntityEnumType = GameEntitiesEnum.LuckyBox;
         }
 
         public void Collect(Func<Player.Player> getPlayer) {

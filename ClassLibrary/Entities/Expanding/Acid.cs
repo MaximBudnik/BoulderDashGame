@@ -5,12 +5,10 @@ using ClassLibrary.Matrix;
 namespace ClassLibrary.Entities.Expanding {
     public class Acid : Expandable {
         private readonly Action<int> _changePlayerHp;
-        //must be refactored because it inherits logic of enemies and expandable
-
         private int _actionsCounter;
 
         public Acid(int i, int j, Func<Level> getLevel, Action<int> changePlayerHp) : base(i, j, getLevel) {
-            EntityType = GameEntities.Acid;
+            EntityEnumType = GameEntitiesEnum.Acid;
             _changePlayerHp = changePlayerHp;
             CanMove = false;
             ConstructorForExpand = (i, j) => {
@@ -21,8 +19,7 @@ namespace ClassLibrary.Entities.Expanding {
         }
 
         public override void GameLoopAction() {
-            var level = GetLevel();
-            if (_actionsCounter == 3) Expand((i, j) => level[i, j].CanMove, ConstructorForExpand);
+            if (_actionsCounter == 3) Expand((i, j) => GetLevel()[i, j].CanMove, ConstructorForExpand);
             if (_actionsCounter >= 4) {
                 TurnIntoRock();
                 _actionsCounter = 0;

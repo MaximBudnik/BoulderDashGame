@@ -35,17 +35,12 @@ namespace BoulderDashForms {
         }
 
         private void InitEngine() {
-            try {
-                _gameEngine = new GameEngine(ReDraw);
-                var engineStart = new Task(() => { _gameEngine.Start(); });
-                engineStart.Start();
-            }
-            catch (Exception e) {
-                throw;
-            }
+            _gameEngine = new GameEngine(ReDraw);
+            var engineStart = new Task(() => { _gameEngine.Start(); });
+            engineStart.Start();
         }
         private void KeyDownProcessor(object sender, KeyEventArgs e) {
-            if (_gameEngine.GameStatus == 1)
+            if (_gameEngine.GameStatus == GameStatusEnum.Game)
                 _gameInputProcessor.ProcessKeyDown(e.KeyCode, () => _gameEngine.GameLogic.Player,
                     _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound);
             else if (_gameEngine.GameStatus == 0)
@@ -70,13 +65,14 @@ namespace BoulderDashForms {
                     _gameEngine.ChangeVolume,
                     _gameEngine.PlaySound
                 );
-            else if (_gameEngine.GameStatus == 2 || _gameEngine.GameStatus == 3)
+            else if (_gameEngine.GameStatus == GameStatusEnum.WinScreen ||
+                     _gameEngine.GameStatus == GameStatusEnum.LoseScreen)
                 _resultsInputProcessor.ProcessKeyDown(
                     e.KeyCode, _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound,
                     _gameEngine.PerformSubAction);
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
-            if (_gameEngine.GameStatus == 1)
+            if (_gameEngine.GameStatus == GameStatusEnum.Game)
                 _gameInputProcessor.ProcessKeyUp(e.KeyCode, () => _gameEngine.GameLogic.Player);
         }
 
@@ -84,19 +80,19 @@ namespace BoulderDashForms {
             var graphics = e.Graphics;
             if (_gameEngine == null) return;
             switch (_gameEngine.GameStatus) {
-                case 0:
+                case GameStatusEnum.Menu:
                     _menuDrawer.DrawMenu(graphics, _gameEngine);
                     break;
-                case 1: {
+                case GameStatusEnum.Game: {
                     var currentLevel = _gameEngine.GameLogic.CurrentLevel;
                     var player = _gameEngine.GameLogic.Player;
                     _gameDrawer.DrawGame(graphics, currentLevel, player);
                     break;
                 }
-                case 2:
-                case 3:
+                case GameStatusEnum.WinScreen:
+                case GameStatusEnum.LoseScreen:
                     _resultScreenDrawer.DrawResults(graphics, _gameEngine.GameStatus, _gameEngine.GetPlayerName(),
-                        _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores(), _gameEngine.CurrentSubAction);
+                        _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores());
                     break;
                 default:
                     throw new Exception($"Unhandled game status, can be 0-3, is {_gameEngine.GameStatus}");

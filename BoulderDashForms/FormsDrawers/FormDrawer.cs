@@ -16,7 +16,9 @@ namespace BoulderDashForms.FormsDrawers {
         private readonly string _hpEmptyPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\heart_empty.png");
 
-        private readonly string _hpFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\heart.png");
+        private readonly string _hpFullPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\heart.png");
+
         private readonly string _iconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\icons.png");
 
         private readonly string _keyboardPath =

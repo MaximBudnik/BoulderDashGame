@@ -32,7 +32,7 @@ namespace ClassLibrary.DataLayer {
             foreach (var save in searchResult) result.Add(save);
             return result;
         }
-        
+
         public void AddGameSave(Save save) {
             using var db = new LiteDatabase(_savesDatabase);
             var col = db.GetCollection<Save>("saves");

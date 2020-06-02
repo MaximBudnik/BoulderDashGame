@@ -1,5 +1,4 @@
 ﻿namespace ClassLibrary.Entities.Player {
-    
     public class Keyboard {
         public KeyboardEnum A = KeyboardEnum.Disabled;
         public KeyboardEnum D = KeyboardEnum.Disabled;

@@ -1,5 +1,5 @@
 ﻿namespace ClassLibrary.Entities.Player {
-    public partial class PlayerAnimator {
+    public class PlayerAnimator {
         private readonly int attackFrames = 3;
         private readonly int converterFrames = 3;
         private readonly int damageFrames = 2;
@@ -7,7 +7,7 @@
         private readonly int IdleFrames = 4;
         private readonly int moveFrames = 4;
         private readonly int teleportFrames = 4;
-        public PlayerAnimations CurrentPlayerAnimation;
+        public PlayerAnimationsEnum CurrentPlayerAnimationEnum;
         public int FramesLimit;
         public int Reverse;
         public PlayerAnimator(int reverse) {
@@ -15,33 +15,31 @@
             Reverse = reverse;
         }
 
-        public void SetAnimation(PlayerAnimations currentPlayerAnimation) {
-            CurrentPlayerAnimation = currentPlayerAnimation;
-            switch (currentPlayerAnimation) {
-                case PlayerAnimations.Idle:
+        public void SetAnimation(PlayerAnimationsEnum currentPlayerAnimationEnum) {
+            CurrentPlayerAnimationEnum = currentPlayerAnimationEnum;
+            switch (currentPlayerAnimationEnum) {
+                case PlayerAnimationsEnum.Idle:
                     FramesLimit = IdleFrames;
                     break;
-                case PlayerAnimations.Move:
+                case PlayerAnimationsEnum.Move:
                     FramesLimit = moveFrames;
                     break;
-                case PlayerAnimations.GetDamage:
+                case PlayerAnimationsEnum.GetDamage:
                     FramesLimit = damageFrames;
                     break;
-                case PlayerAnimations.Attack:
+                case PlayerAnimationsEnum.Attack:
                     FramesLimit = attackFrames;
                     break;
-                case PlayerAnimations.Explosion:
+                case PlayerAnimationsEnum.Explosion:
                     FramesLimit = explosionFrames;
                     break;
-                case PlayerAnimations.Teleport:
+                case PlayerAnimationsEnum.Teleport:
                     FramesLimit = teleportFrames;
                     break;
-                case PlayerAnimations.Converting:
+                case PlayerAnimationsEnum.Converting:
                     FramesLimit = converterFrames;
                     break;
             }
         }
     }
-
-    
 }

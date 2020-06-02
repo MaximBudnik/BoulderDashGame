@@ -7,7 +7,7 @@ namespace ClassLibrary.Entities.Expanding {
         private int _actionsCounter;
 
         public StoneInDiamondConverter(int i, int j, Func<Level> getLevel) : base(i, j, getLevel) {
-            EntityType = GameEntities.Converter;
+            EntityEnumType = GameEntitiesEnum.Converter;
             CanMove = false;
             ConstructorForExpand = (i, j) => {
                 var level = GetLevel();
@@ -17,7 +17,8 @@ namespace ClassLibrary.Entities.Expanding {
         }
 
         public override void GameLoopAction() {
-            if (_actionsCounter == 1) Expand((i, j) => GetLevel()[i, j].EntityType == GameEntities.Rock, ConstructorForExpand);
+            if (_actionsCounter == 1)
+                Expand((i, j) => GetLevel()[i, j].EntityEnumType == GameEntitiesEnum.Rock, ConstructorForExpand);
             if (_actionsCounter >= 2) {
                 TurnIntoDiamond();
                 _actionsCounter = 0;

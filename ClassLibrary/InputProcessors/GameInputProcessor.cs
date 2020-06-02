@@ -33,7 +33,7 @@ namespace ClassLibrary.
                     player.ConvertNearStonesInDiamonds();
                     break;
                 case ConsoleKey.E:
-                    player.UseTnt();
+                    player.UseDynamite();
                     break;
                 case ConsoleKey.R:
                     player.Attack();

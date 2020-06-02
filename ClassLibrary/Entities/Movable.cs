@@ -9,22 +9,21 @@ namespace ClassLibrary.Entities {
             GetLevel = getLevel;
         }
         public int Hp { get; set; }
-        public  void GameLoopAction() { }
+        public new void GameLoopAction() { }
         protected virtual void Move(string direction, int value, int posX, int posY) {
             PositionX = posX;
             PositionY = posY;
-
             var level = GetLevel();
             level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY); //making previous position empty
-
+            var isValid = !IsLevelCellValid(PositionX, PositionY, level.Width, level.Height);
             switch (direction) {
                 case "horizontal":
                     PositionX += value;
-                    if (PositionX == level.Width || PositionX == -1) PositionX -= value;
+                    if (isValid) PositionX -= value;
                     break;
                 case "vertical":
                     PositionY += value;
-                    if (PositionY == level.Height || PositionY == -1) PositionY -= value;
+                    if (isValid) PositionY -= value;
                     break;
                 default:
                     throw new Exception("Unknown move direction in Movable.cs");

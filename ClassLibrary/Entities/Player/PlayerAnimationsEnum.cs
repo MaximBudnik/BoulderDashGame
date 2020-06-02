@@ -1,5 +1,5 @@
 ﻿namespace ClassLibrary.Entities.Player {
-    public enum PlayerAnimations {
+    public enum PlayerAnimationsEnum {
         Idle,
         Move,
         GetDamage,

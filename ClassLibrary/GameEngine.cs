@@ -6,45 +6,30 @@ using ClassLibrary.DataLayer;
 using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary {
-    public class GameEngine {
+    public partial class GameEngine {
         //menu 
-        private readonly int _menuItems = 6;
         private readonly MusicPlayer _musicPlayer = new MusicPlayer();
         private readonly Action _reDraw;
         public readonly DataInterlayer DataInterlayer = new DataInterlayer();
         public readonly GameLogic GameLogic;
-        private int _subActionSize = 5;
         public GameEngine(Action reDraw) {
             _reDraw = reDraw;
             GameLogic = new GameLogic(ChangeGameStatus, () => DataInterlayer, RefreshSaves);
         }
-
-        //TODO: SET AS 0
-        public int GameStatus { get; private set; } // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
+        public GameStatusEnum GameStatus { get; private set; }
         public List<Save> Saves { get; private set; }
-        public int CurrentMenuAction { get; private set; } = 1;
-
-        public int CurrentSubAction { get; private set; }
 
         //TODO: settings validation
-        public bool IsActionActive { get; private set; }
-        public bool IsNameEntered { get; private set; }
         public Save NewGameSave { get; private set; } = new Save();
 
         public void ChangeVolume(float val) {
             _musicPlayer.ChangeVolume(val);
         }
 
-        public void PlaySound(string name) {
+        public void PlaySound(SoundFilesEnum name) {
             _musicPlayer.PlaySound(name);
         }
 
-        public void ChangeIsNameEntered() {
-            IsNameEntered = !IsNameEntered;
-        }
-        public void ChangeIsActionActive() {
-            IsActionActive = !IsActionActive;
-        }
         public int GetScores() {
             return GameLogic.Player.Score;
         }
@@ -55,135 +40,32 @@ namespace ClassLibrary {
             return GameLogic.Player.AllScores;
         }
 
-        public void ChangeGameStatus(int i) {
-            if (i >= 0 && i < 4)
-                GameStatus = i;
-            else
-                throw new Exception("Unknown game status");
-        }
-        public void ChangeCurrentMenuAction(int i) {
-            if (CurrentMenuAction >= _menuItems || CurrentMenuAction < 0) return;
-            CurrentMenuAction += i;
-            if (CurrentMenuAction == _menuItems)
-                CurrentMenuAction = 0;
-            else if (CurrentMenuAction == -1) CurrentMenuAction = _menuItems - 1;
+        public void ChangeGameStatus(GameStatusEnum status) {
+            GameStatus = status;
         }
 
-        private void SetSubAction(int size) {
-            CurrentSubAction = 0;
-            _subActionSize = size;
-        }
-        public void ChangeCurrentSubAction(int i) {
-            if (CurrentSubAction >= _subActionSize || CurrentSubAction < 0) return;
-            CurrentSubAction += i;
-            if (CurrentSubAction == _subActionSize)
-                CurrentSubAction = 0;
-            else if (CurrentSubAction == -1) CurrentSubAction = _subActionSize - 1;
-        }
-
-        public void PerformSubAction(int i) {
-            if (GameStatus == 3 || GameStatus == 4) {
-                GameStatus = 0;
-                return;
-            }
-            switch (CurrentMenuAction) {
-                case 0:
-                    LaunchGame(Saves[CurrentSubAction]);
-                    GameStatus = 1;
-                    break;
-                case 1:
-                    switch (CurrentSubAction) {
-                        case 0:
-                            NewGameSave.Hero += i;
-                            if (NewGameSave.Hero < 0) NewGameSave.Hero = 5;
-                            if (NewGameSave.Hero > 5) NewGameSave.Hero = 0;
-                            break;
-                        case 1:
-                            ChangeIsNameEntered();
-                            break;
-                        case 2:
-                            DataInterlayer.AddGameSave(NewGameSave);
-                            LaunchGame(NewGameSave);
-                            break;
-                    }
-                    break;
-                case 2:
-                    if (i == 0) {
-                        DataInterlayer.SaveSettings();
-                        IsActionActive = false;
-                        return;
-                    }
-                    switch (CurrentSubAction) {
-                        case 0:
-                            DataInterlayer.Settings.Difficulty += i;
-                            break;
-                        case 1:
-                            DataInterlayer.Settings.SizeX += i;
-                            break;
-                        case 2:
-                            DataInterlayer.Settings.SizeY += i;
-                            break;
-                        case 3:
-                            DataInterlayer.Settings.Fps += i;
-                            break;
-                        case 4:
-                            DataInterlayer.Settings.TickRate += i;
-                            break;
-                    }
-                    break;
-            }
-        }
-
-        public void PerformCurrentMenuAction() {
-            switch (CurrentMenuAction) {
-                case 0:
-                    IsActionActive = true;
-                    SetSubAction(Saves.Count);
-                    break;
-                case 1:
-                    IsActionActive = true;
-                    NewGameSave = new Save();
-                    SetSubAction(3);
-                    break;
-                case 2:
-                    IsActionActive = true;
-                    SetSubAction(5);
-                    break;
-                case 3:
-                    IsActionActive = true;
-                    SetSubAction(0);
-                    break;
-                case 4:
-                    IsActionActive = true;
-                    SetSubAction(0);
-                    break;
-                case 5:
-                    Environment.Exit(0);
-                    break;
-            }
-        }
         private void GraphicsThread() {
-            while (GameStatus == 1) {
+            while (GameStatus == GameStatusEnum.Game) {
                 Thread.Sleep(1000 / DataInterlayer.Settings.Fps);
                 _reDraw();
             }
         }
         private void MenuGraphicsThread() {
-            while (GameStatus == 0) {
+            while (GameStatus == GameStatusEnum.Menu) {
                 Thread.Sleep(1000 / (DataInterlayer.Settings.Fps * 2));
                 _reDraw();
             }
         }
 
         private void ResultsGraphicsThread() {
-            while (GameStatus == 2 || GameStatus == 3) {
+            while (GameStatus == GameStatusEnum.WinScreen || GameStatus == GameStatusEnum.LoseScreen) {
                 Thread.Sleep(1000 / DataInterlayer.Settings.Fps);
                 _reDraw();
             }
         }
 
         private void GameLogicThread() {
-            while (GameStatus == 1) {
+            while (GameStatus == GameStatusEnum.Game) {
                 Thread.Sleep(1000 / DataInterlayer.Settings.TickRate);
                 GameLogic.GameLoop();
             }
@@ -197,17 +79,17 @@ namespace ClassLibrary {
 
             void MenuGameCycle() {
                 try {
-                    if (GameStatus == 0) {
-                        _musicPlayer.PlayTheme("menu");
+                    if (GameStatus == GameStatusEnum.Menu) {
+                        _musicPlayer.PlayTheme(SoundFilesEnum.MenuTheme);
                         Parallel.Invoke(MenuGraphicsThread);
                     }
-                    else if (GameStatus == 1) {
-                        _musicPlayer.PlayTheme("game");
+                    else if (GameStatus == GameStatusEnum.Game) {
+                        _musicPlayer.PlayTheme(SoundFilesEnum.GameTheme);
                         Parallel.Invoke(GraphicsThread,
                             GameLogicThread);
                     }
-                    else if (GameStatus == 2 || GameStatus == 3) {
-                        _musicPlayer.PlayTheme("results");
+                    else if (GameStatus == GameStatusEnum.WinScreen || GameStatus == GameStatusEnum.LoseScreen) {
+                        _musicPlayer.PlayTheme(SoundFilesEnum.ResultsTheme);
                         Parallel.Invoke(ResultsGraphicsThread);
                     }
                     else {
@@ -227,7 +109,7 @@ namespace ClassLibrary {
             GameLogic.Player.Score = save.Score;
             GameLogic.Player.Hero = save.Hero;
             GameLogic.CurrentSave = save;
-            GameStatus = 1;
+            GameStatus = GameStatusEnum.Game;
         }
     }
 }

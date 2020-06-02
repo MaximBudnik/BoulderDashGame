@@ -113,6 +113,7 @@
             <e p="Expandable.cs" t="Include" />
             <e p="StoneInDiamondConverter.cs" t="Include" />
           </e>
+          <e p="GameEntitiesEnum.cs" t="Include" />
           <e p="GameEntity.cs" t="Include" />
           <e p="Movable.cs" t="Include" />
           <e p="Player" t="Include">
@@ -120,12 +121,11 @@
             <e p="Keyboard.cs" t="Include" />
             <e p="KeyboardEnum.cs" t="Include" />
             <e p="Player.cs" t="Include" />
-            <e p="PlayerAnimations.cs" t="Include" />
+            <e p="PlayerAnimationsEnum.cs" t="Include" />
             <e p="PlayerAnimator.cs" t="Include" />
           </e>
         </e>
         <e p="GameEngine.cs" t="Include" />
-        <e p="GameEntities.cs" t="Include" />
         <e p="gameFiles" t="Include">
           <e p="BestScores.db" t="Include" />
           <e p="Saves.db" t="Include" />
@@ -135,6 +135,7 @@
           <e p="settings.json" t="Include" />
         </e>
         <e p="GameLogic.cs" t="Include" />
+        <e p="GamestatusEnum.cs" t="Include" />
         <e p="InputProcessors" t="Include">
           <e p="GameInputProcessor.cs" t="Include" />
           <e p="InputProcessor.cs" t="Include" />
@@ -144,6 +145,7 @@
           <e p="Level.cs" t="Include" />
           <e p="Matrix.cs" t="Include" />
         </e>
+        <e p="Menu.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
@@ -153,6 +155,7 @@
         </e>
         <e p="Randomizer.cs" t="Include" />
         <e p="SoundPlayer" t="Include">
+          <e p="SoundFilesEnum.cs" t="Include" />
           <e p="SoundPlayer.cs" t="Include" />
         </e>
         <e p="Sounds" t="Include">

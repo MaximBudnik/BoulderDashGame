@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using ClassLibrary.InputProcessors;
+using ClassLibrary.SoundPlayer;
 
 namespace BoulderDashForms.InputProcessors {
     public class MenuInputProcessor : InputProcessor {
@@ -15,10 +16,10 @@ namespace BoulderDashForms.InputProcessors {
             Action changeIsNameEntered,
             Action<string> addCharToName,
             Action<float> changeVolume,
-            Action<string> playSound
+            Action<SoundFilesEnum> playSound
         ) {
-            if (key == Keys.Enter || key == Keys.Escape) playSound("menuAccept");
-            else playSound("menuClick");
+            if (key == Keys.Enter || key == Keys.Escape) playSound(SoundFilesEnum.MenuAcceptSound);
+            else playSound(SoundFilesEnum.MenuClickSound);
             if (isNameEntered) {
                 if (key == Keys.Enter) {
                     changeIsNameEntered();

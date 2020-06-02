@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using ClassLibrary;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Enemies;
@@ -21,19 +20,19 @@ namespace BoulderDashForms.FormsDrawers {
                 new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
                     new Size(GameEntity.FormsSize * 2, GameEntity.FormsSize * 2));
             Rectangle srcRect;
-            switch (player.PlayerAnimator.CurrentPlayerAnimation) {
-                case PlayerAnimations.Move: {
+            switch (player.PlayerAnimator.CurrentPlayerAnimationEnum) {
+                case PlayerAnimationsEnum.Move: {
                     srcRect = new Rectangle(new Point(12 * 16 + player.CurrentFrame * 16, pixelY),
                         new Size(player.PlayerAnimator.Reverse * width, height));
                     break;
                 }
-                case PlayerAnimations.GetDamage: {
+                case PlayerAnimationsEnum.GetDamage: {
                     srcRect = new Rectangle(new Point(16 * 16 + player.CurrentFrame * 16, pixelY),
                         new Size(player.PlayerAnimator.Reverse * width, height));
                     NullifyPlayerAnimation(player);
                     break;
                 }
-                case PlayerAnimations.Attack: {
+                case PlayerAnimationsEnum.Attack: {
                     srcRect = new Rectangle(new Point(0 * 16 + player.CurrentFrame * 16, 0 * 16),
                         new Size(player.PlayerAnimator.Reverse * 16, 16));
                     var tmpDestRect =
@@ -48,7 +47,7 @@ namespace BoulderDashForms.FormsDrawers {
                     NullifyPlayerAnimation(player);
                     break;
                 }
-                case PlayerAnimations.Explosion: {
+                case PlayerAnimationsEnum.Explosion: {
                     srcRect = new Rectangle(new Point(5 * 32 + player.CurrentFrame * 32, 5 * 16),
                         new Size(32, 32));
                     var tmpDestRect =
@@ -63,7 +62,7 @@ namespace BoulderDashForms.FormsDrawers {
                     NullifyPlayerAnimation(player);
                     break;
                 }
-                case PlayerAnimations.Teleport: {
+                case PlayerAnimationsEnum.Teleport: {
                     srcRect = new Rectangle(new Point(6 * 16 + player.CurrentFrame * 16, 2 * 16),
                         new Size(16, 16));
                     var tmpDestRect =
@@ -78,7 +77,7 @@ namespace BoulderDashForms.FormsDrawers {
                     NullifyPlayerAnimation(player);
                     break;
                 }
-                case PlayerAnimations.Converting: {
+                case PlayerAnimationsEnum.Converting: {
                     srcRect = new Rectangle(new Point(11 * 16 + player.CurrentFrame * 16, 2 * 16),
                         new Size(16, 16));
                     graphics.DrawImage(Effects, destRect, srcRect, GraphicsUnit.Pixel);
@@ -174,84 +173,84 @@ namespace BoulderDashForms.FormsDrawers {
                         srcRect = new Rectangle(new Point(2 * 16, 5 * 16), new Size(16, 16));
                         graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     }
-                    switch (currentLevel[i, j].EntityType) {
-                        case GameEntities.Player:
+                    switch (currentLevel[i, j].EntityEnumType) {
+                        case GameEntitiesEnum.Player:
                             DrawFloorTile();
                             DrawPlayerAnimation(player, graphics, i, j);
                             break;
-                        case GameEntities.EmptySpace:
+                        case GameEntitiesEnum.EmptySpace:
                             srcRect = new Rectangle(new Point(2 * 16, 5 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.Sand:
+                        case GameEntitiesEnum.Sand:
                             srcRect = new Rectangle(new Point(9 * 16, 13 * 16), new Size(16, 16));
                             graphics.DrawImage(TileSet, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.Rock:
+                        case GameEntitiesEnum.Rock:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(7 * 16, 4 * 16), new Size(16, 16));
                             graphics.DrawImage(TileSet, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.Diamond:
+                        case GameEntitiesEnum.Diamond:
                             DrawFloorTile();
                             srcRect = GetDiamondAnimation((Diamond) currentLevel[i, j]);
                             graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.Wall:
+                        case GameEntitiesEnum.Wall:
                             srcRect = new Rectangle(new Point(1 * 16, 1 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.EnemyWalker:
+                        case GameEntitiesEnum.EnemyWalker:
                             DrawFloorTile();
                             srcRect = GetWalkerAnimation((EnemyWalker) currentLevel[i, j]);
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.LuckyBox:
+                        case GameEntitiesEnum.LuckyBox:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(15 * 16, 13 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.SandTranslucent:
+                        case GameEntitiesEnum.SandTranslucent:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(7 * 16, 10 * 16), new Size(16, 16));
                             graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.Converter:
+                        case GameEntitiesEnum.Converter:
                             srcRect = new Rectangle(new Point(2 * 16, 3 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.Acid:
+                        case GameEntitiesEnum.Acid:
                             srcRect = new Rectangle(new Point(4 * 16, 5 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.Barrel:
+                        case GameEntitiesEnum.Barrel:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(14 * 16, 13 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.EnemyDigger:
+                        case GameEntitiesEnum.EnemyDigger:
                             DrawFloorTile();
                             if (currentLevel[i, j] is EnemyDigger) {
                                 srcRect = GetDiggerAnimation((EnemyDigger) currentLevel[i, j]);
                                 graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             }
                             break;
-                        case GameEntities.SwordTile:
+                        case GameEntitiesEnum.SwordTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(20 * 16, 2 * 12), new Size(16, 22));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.ConverterTile:
+                        case GameEntitiesEnum.ConverterTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(12 * 16, 12 * 16), new Size(16, 16));
                             graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.DynamiteTile:
+                        case GameEntitiesEnum.DynamiteTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(15 * 16, 3 * 16), new Size(16, 16));
                             graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntities.ArmorTile:
+                        case GameEntitiesEnum.ArmorTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(6 * 16, 15 * 16), new Size(16, 16));
                             graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
@@ -282,7 +281,7 @@ namespace BoulderDashForms.FormsDrawers {
             graphics.DrawString(player.Score.ToString(), BoldFont, GuiBrush, 1330, 30);
         }
         private void DrawDiamondsLeftToWin(Graphics graphics, Level currentLevel, Player player) {
-            for (var i = 0; i < currentLevel.DiamondsQuantity - player.CollectedDiamonds; i++) {
+            for (var i = 0; i < currentLevel.DiamondsQuantityToWin - player.CollectedDiamonds; i++) {
                 var destRect =
                     new Rectangle(new Point(8 * i + 1000, 32),
                         new Size(16, 16));

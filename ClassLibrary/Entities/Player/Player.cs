@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Collectable.ItemsTiles;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Player {
     public class Player : Movable {
@@ -14,9 +17,11 @@ namespace ClassLibrary.Entities.Player {
         private readonly Action _lose;
         private readonly int _moveEnergyCost = 1;
         private readonly int _moveRockEnergyCost = 5;
-        private readonly Action<string> _playSound;
+        private readonly Action<SoundFilesEnum> _playSound;
+        private readonly int _teleportRange = 20;
         private readonly Action _win;
         public readonly Dictionary<string, int[]> AllScores;
+        private readonly double DynamiteTileDamage = 0.3;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
         private readonly int MaxEnergy = 20;
@@ -29,7 +34,7 @@ namespace ClassLibrary.Entities.Player {
             Func<Level> getLevel,
             Action win,
             Action lose,
-            Action<string> playSound,
+            Action<SoundFilesEnum> playSound,
             int diamondsTowWin)
             : base(getLevel, i, j) {
             Name = name;
@@ -38,7 +43,7 @@ namespace ClassLibrary.Entities.Player {
             _playSound = playSound;
             Hp = MaxHp;
             _diamondsTowWin = diamondsTowWin;
-            EntityType = 0;
+            EntityEnumType = 0;
             AllScores = new Dictionary<string, int[]> {
                 {"Collected diamonds", new[] {0, 0}},
                 {"Collected lucky boxes", new[] {0, 0}},
@@ -88,11 +93,11 @@ namespace ClassLibrary.Entities.Player {
                 Inventory.ArmorCellHp = 10;
             }
             if (value > 0) Hp -= value;
-            _playSound("hit");
-            SetAnimation(PlayerAnimations.GetDamage);
+            _playSound(SoundFilesEnum.HitSound);
+            SetAnimation(PlayerAnimationsEnum.GetDamage);
         }
 
-        private void SubstractPlayerHp(int value, PlayerAnimations animation) {
+        private void SubstractPlayerHp(int value, PlayerAnimationsEnum animationEnum) {
             if (Inventory.ArmorLevel > 0) {
                 Inventory.ArmorCellHp -= value;
                 value -= Inventory.ArmorLevel;
@@ -102,12 +107,12 @@ namespace ClassLibrary.Entities.Player {
                 Inventory.ArmorCellHp = 10;
             }
             if (value > 0) Hp -= value;
-            _playSound("hit");
-            SetAnimation(animation);
+            _playSound(SoundFilesEnum.HitSound);
+            SetAnimation(animationEnum);
         }
 
         public void Move(string direction, int value) {
-            SetAnimation(PlayerAnimations.Move);
+            SetAnimation(PlayerAnimationsEnum.Move);
             if (!EnoughEnergy()) return;
             var willMove = false;
             var level = GetLevel();
@@ -115,62 +120,61 @@ namespace ClassLibrary.Entities.Player {
             switch (direction) {
                 case "vertical":
                     PositionX += value;
-                    if (CheckNewPosition(level))
+                    if (!IsNewPositionSuitable(level))
                         PositionX -= value;
                     else
                         willMove = true;
                     break;
                 case "horizontal":
                     PositionY += value;
-                    if (level[PositionX, PositionY].EntityType == GameEntities.Rock && EnoughEnergyForRock()) {
+                    if (IsLevelCellValid(PositionX, PositionY, level.Width, level.Height) &&
+                        level[PositionX, PositionY].EntityEnumType == GameEntitiesEnum.Rock && EnoughEnergyForRock()) {
                         ((Rock) level[PositionX, PositionY]).PushRock(PositionX, PositionY, "horizontal", value);
                         Energy -= _moveRockEnergyCost;
                     }
-                    if (CheckNewPosition(level))
-                        PositionY -= value;
-                    else
-                        willMove = true;
+                    if (!IsNewPositionSuitable(level)) PositionY -= value;
+                    else willMove = true;
                     break;
                 default:
                     throw new Exception("Unknown move direction in Player.cs");
             }
             if (willMove) {
                 Energy -= _moveEnergyCost;
-                switch (level[PositionX, PositionY].EntityType) {
-                    case GameEntities.Diamond:
+                switch (level[PositionX, PositionY].EntityEnumType) {
+                    case GameEntitiesEnum.Diamond:
                         ((Diamond) level[PositionX, PositionY]).Collect(() => this);
-                        _playSound("pickup");
+                        _playSound(SoundFilesEnum.PickupSound);
                         break;
-                    case GameEntities.LuckyBox:
+                    case GameEntitiesEnum.LuckyBox:
                         ((LuckyBox) level[PositionX, PositionY]).Collect(() => this);
-                        _playSound("pickup");
+                        _playSound(SoundFilesEnum.PickupSound);
                         break;
-                    case GameEntities.Barrel:
+                    case GameEntitiesEnum.Barrel:
                         ((BarrelWithSubstance) level[PositionX, PositionY]).Collect(GetLevel, SubstractPlayerHp);
                         break;
-                    case GameEntities.SwordTile:
+                    case GameEntitiesEnum.SwordTile:
                         ((SwordTile) level[PositionX, PositionY]).Collect(() => Inventory);
-                        _playSound("pickup");
+                        _playSound(SoundFilesEnum.PickupSound);
                         break;
-                    case GameEntities.ConverterTile:
+                    case GameEntitiesEnum.ConverterTile:
                         ((ConverterTile) level[PositionX, PositionY]).Collect(() => Inventory);
-                        _playSound("pickup");
+                        _playSound(SoundFilesEnum.PickupSound);
                         break;
-                    case GameEntities.DynamiteTile:
+                    case GameEntitiesEnum.DynamiteTile:
                         ((DynamiteTile) level[PositionX, PositionY]).Collect(() => Inventory);
-                        _playSound("pickup");
+                        _playSound(SoundFilesEnum.PickupSound);
                         break;
-                    case GameEntities.ArmorTile:
+                    case GameEntitiesEnum.ArmorTile:
                         ((ArmorTile) level[PositionX, PositionY]).Collect(() => Inventory);
-                        _playSound("pickup");
+                        _playSound(SoundFilesEnum.PickupSound);
                         break;
                 }
             }
             level[PositionX, PositionY] = this;
         }
-        private bool CheckNewPosition(Level level) {
-            return PositionX == level.Width || PositionX == -1 || PositionY == level.Height || PositionY == -1 ||
-                   level[PositionX, PositionY].CanMove == false;
+        private bool IsNewPositionSuitable(Level level) {
+            return IsLevelCellValid(PositionX, PositionY, level.Width, level.Height) &&
+                   level[PositionX, PositionY].CanMove;
         }
         private bool EnoughEnergyForRock() {
             return Energy >= _moveRockEnergyCost;
@@ -184,111 +188,89 @@ namespace ClassLibrary.Entities.Player {
         }
         public void Teleport() {
             if (Energy < MaxEnergy) return;
-            SetAnimation(PlayerAnimations.Teleport);
             var level = GetLevel();
             Energy = 0;
-            var posX = Randomizer.Random(level.Width);
-            var posY = Randomizer.Random(level.Height);
+            int posX;
+            int posY;
+            do {
+                posX = Randomizer.Random(level.Width);
+                posY = Randomizer.Random(level.Height);
+            } while (Math.Abs(PositionX - posX) + Math.Abs(PositionY - posY) > _teleportRange);
+
             level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
-            PositionX = posX;
-            PositionY = posY;
-            level[PositionX, PositionY] = this;
+            var pathfinder = new Pathfinder();
+            var path = pathfinder.FindPath(PositionX, PositionY, posX, posY, level, (l, p) => true);
+            var task = new Task(() => {
+                GameEntity temp;
+                foreach (var point in path) {
+                    SetAnimation(PlayerAnimationsEnum.Teleport);
+                    PositionX = point.X;
+                    PositionY = point.Y;
+                    temp = level[PositionX, PositionY];
+                    level[PositionX, PositionY] = this;
+                    Thread.Sleep(50);
+                    level[PositionX, PositionY] = temp;
+                }
+                level[PositionX, PositionY] = this;
+            });
+            task.Start();
         }
         public void ConvertNearStonesInDiamonds() {
             if (Inventory.StoneInDiamondsConverterQuantity == 0) return;
-            SetAnimation(PlayerAnimations.Converting);
+            SetAnimation(PlayerAnimationsEnum.Converting);
             Inventory.StoneInDiamondsConverterQuantity--;
             var level = GetLevel();
-            if (PositionX + 1 < level.Width && level[PositionX + 1, PositionY].EntityType == GameEntities.Rock) {
-                var tmp = new StoneInDiamondConverter(PositionX + 1, PositionY, GetLevel);
-                level[PositionX + 1, PositionY] = tmp;
-            }
-            if (PositionX - 1 >= 0 && level[PositionX - 1, PositionY].EntityType == GameEntities.Rock) {
-                var tmp = new StoneInDiamondConverter(PositionX - 1, PositionY, GetLevel);
-                level[PositionX - 1, PositionY] = tmp;
-            }
-            if (PositionY + 1 < level.Height && level[PositionX, PositionY + 1].EntityType == GameEntities.Rock) {
-                var tmp = new StoneInDiamondConverter(PositionX, PositionY + 1, GetLevel);
-                level[PositionX, PositionY + 1] = tmp;
-            }
-            if (PositionY - 1 >= 0 && level[PositionX, PositionY - 1].EntityType == GameEntities.Rock) {
-                var tmp = new StoneInDiamondConverter(PositionX, PositionY - 1, GetLevel);
-                level[PositionX, PositionY - 1] = tmp;
-            }
+            for (var x = -1; x < 2; x++)
+            for (var y = -1; y < 2; y++)
+                if (x == 0 || y == 0) {
+                    var posX = x + PositionX;
+                    var posY = y + PositionY;
+                    if (level[posX, posY].EntityEnumType == GameEntitiesEnum.Rock) {
+                        var tmp = new StoneInDiamondConverter(posX, posY, GetLevel);
+                        level[posX, posY] = tmp;
+                    }
+                }
             Energy = Energy / 2;
         }
         public void Attack() {
             if (Energy < _attackEnergyCost) return;
-            SetAnimation(PlayerAnimations.Attack);
+            SetAnimation(PlayerAnimationsEnum.Attack);
             Energy -= _attackEnergyCost;
             var level = GetLevel();
-            Enemy tmp = null;
-            if (RightX < level.Width && level[RightX, PositionY] is Enemy) {
-                tmp = (Enemy) level[RightX, PositionY];
-                tmp.Hp -= Inventory.SwordLevel;
-            }
-            else if (LeftX >= 0 && level[LeftX, PositionY] is Enemy) {
-                tmp = (Enemy) level[LeftX, PositionY];
-                tmp.Hp -= Inventory.SwordLevel;
-            }
-            else if (BotY < level.Height && level[PositionX, BotY] is Enemy) {
-                tmp = (Enemy) level[PositionX, BotY];
-                tmp.Hp -= Inventory.SwordLevel;
-            }
-            else if (TopY >= 0 && level[PositionX, TopY] is Enemy) {
-                tmp = (Enemy) level[PositionX, TopY];
-                tmp.Hp -= Inventory.SwordLevel;
-            }
-            if (tmp != null && tmp.Hp <= 0) {
-                level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY);
-                AddScore(tmp.ScoreForKill);
-                AllScores["Killed enemies"][0] += 1;
-                AllScores["Killed enemies"][1] += GetScoreToAdd(tmp.ScoreForKill);
+            for (var x = -1; x < 2; x++)
+            for (var y = -1; y < 2; y++) {
+                var posX = x + PositionX;
+                var posY = y + PositionY;
+                if (IsLevelCellValid(posX, posY, level.Width, level.Height) && level[posX, posY] is Enemy) {
+                    var tmp = (Enemy) level[posX, posY];
+                    tmp.Hp -= Inventory.SwordLevel;
+                    if (tmp.Hp <= 0) {
+                        level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY);
+                        AddScore(tmp.ScoreForKill);
+                        AllScores["Killed enemies"][0] += 1;
+                        AllScores["Killed enemies"][1] += GetScoreToAdd(tmp.ScoreForKill);
+                    }
+                }
             }
         }
-        public void UseTnt() {
+        public void UseDynamite() {
             if (Inventory.TntQuantity == 0) return;
             Inventory.TntQuantity--;
             var level = GetLevel();
             double dmg = 0;
-            var tileDamage = 0.9;
 
-            if (RightX < level.Width) {
-                level[RightX, PositionY] = new EmptySpace(RightX, PositionY);
-                dmg += tileDamage;
+            for (var x = -2; x < 3; x++)
+            for (var y = -2; y < 3; y++) {
+                if (x == 0 && y == 0 || (x == -2 || x == 2) && (y == -2 || y == 2)) continue;
+                var posX = x + PositionX;
+                var posY = y + PositionY;
+                if (IsLevelCellValid(posX, posY, level.Width, level.Height)) {
+                    level[posX, posY] = new EmptySpace(RightX, PositionY);
+                    dmg += DynamiteTileDamage;
+                }
             }
-            if (LeftX >= 0) {
-                level[LeftX, PositionY] = new EmptySpace(LeftX, PositionY);
-                dmg += tileDamage;
-            }
-            if (BotY < level.Height) {
-                level[PositionX, BotY] = new EmptySpace(PositionX, BotY);
-                dmg += tileDamage;
-            }
-            if (TopY >= 0) {
-                level[PositionX, TopY] = new EmptySpace(PositionX, TopY);
-                dmg += tileDamage;
-            }
-
-            if (RightX < level.Width && BotY < level.Height) {
-                level[RightX, BotY] = new EmptySpace(RightX, BotY);
-                dmg += tileDamage;
-            }
-            if (RightX < level.Width && TopY >= 0) {
-                level[RightX, TopY] = new EmptySpace(RightX, TopY);
-                dmg += tileDamage;
-            }
-            if (LeftX >= 0 && BotY < level.Height) {
-                level[LeftX, BotY] = new EmptySpace(LeftX, BotY);
-                dmg += tileDamage;
-            }
-            if (LeftX >= 0 && TopY >= 0) {
-                level[LeftX, TopY] = new EmptySpace(LeftX, TopY);
-                dmg += tileDamage;
-            }
-
             Energy = Energy / 2;
-            SubstractPlayerHp(Convert.ToInt32(dmg), PlayerAnimations.Explosion);
+            SubstractPlayerHp(Convert.ToInt32(dmg), PlayerAnimationsEnum.Explosion);
         }
         private void CheckLose() {
             if (Hp <= 0)
@@ -302,8 +284,8 @@ namespace ClassLibrary.Entities.Player {
             if (Energy < MaxEnergy) Energy += EnergyRestoreTick;
         }
 
-        public void SetAnimation(PlayerAnimations currentAnimation) {
-            PlayerAnimator.SetAnimation(currentAnimation);
+        public void SetAnimation(PlayerAnimationsEnum currentAnimationEnum) {
+            PlayerAnimator.SetAnimation(currentAnimationEnum);
         }
     }
 }

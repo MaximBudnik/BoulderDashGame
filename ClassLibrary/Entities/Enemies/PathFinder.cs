@@ -1,33 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
+using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
-    public partial class EnemyWalker {
-        public class Node {
-            public int PositionX { get; set; }
-            public int PositionY { get; set; }
-            public int LengthFromStart { get; set; }
-            public Node Parent { get; set; }
-            public int Heuristic { get; set; }
-        }
-
-        private List<Point> FindPath(int selfX, int selfY, int targetX, int targetY) {
+    public class Pathfinder {
+        public List<Point> FindPath(int selfX, int selfY, int targetX, int targetY, Level level,
+            Func<Level, Point, bool> conditionToMove) {
             var closed = new Collection<Node>();
             var open = new Collection<Node>();
-
-            // int maxDepth = 200;
-            // int depth = 0;
 
             var root = new Node {
                 PositionX = selfX,
                 PositionY = selfY,
                 Parent = null,
-                LengthFromStart = 0,
-                Heuristic = GetHeuristic(selfX, selfY, targetX, targetY)
+                LengthFromStart = 0
             };
             open.Add(root);
             while (open.Count > 0) {
@@ -35,13 +24,19 @@ namespace ClassLibrary.Entities.Enemies {
                 if (current.PositionX == targetX && current.PositionY == targetY) return GetPathForNode(current);
                 open.Remove(current);
                 closed.Add(current);
-                foreach (var neighbour in GetNeighbours(current, targetX, targetY)) {
+                //get all neighbours of current point
+                foreach (var neighbour in GetNeighbours(current, level, conditionToMove)) {
+                    //if neighbour is closed, ignore it
                     if (closed.Count(key =>
                         key.PositionX == neighbour.PositionX && key.PositionY == neighbour.PositionY) > 0)
                         continue;
                     var next = open.FirstOrDefault(key =>
                         key.PositionX == neighbour.PositionX && key.PositionY == neighbour.PositionY);
-                    if (next == null) open.Add(neighbour);
+                    //if it is not in open, add
+                    if (next == null) {
+                        open.Add(neighbour);
+                    }
+                    //else check distance (route from neighbours to here can be less) and add 
                     else if (next.LengthFromStart > neighbour.LengthFromStart) {
                         next.Parent = current;
                         next.LengthFromStart = neighbour.LengthFromStart;
@@ -50,47 +45,49 @@ namespace ClassLibrary.Entities.Enemies {
             }
             return null;
         }
-        private static int GetHeuristic(int selfX, int selfY, int targetX, int targetY) {
-            return Math.Abs(selfX - targetX) + Math.Abs(selfY - targetY);
-        }
-        private Collection<Node> GetNeighbours(Node node,
-            int targetX, int targetY) {
+        private Collection<Node> GetNeighbours(Node node, Level level, Func<Level, Point, bool> conditionToMove) {
             var result = new Collection<Node>();
-            var neighbourPoints = new Point[4];
-            neighbourPoints[0] = new Point(node.PositionX + 1, node.PositionY);
-            neighbourPoints[1] = new Point(node.PositionX - 1, node.PositionY);
-            neighbourPoints[2] = new Point(node.PositionX, node.PositionY + 1);
-            neighbourPoints[3] = new Point(node.PositionX, node.PositionY - 1);
+            var neighbourArray = new Point[4];
+            neighbourArray[0] = new Point(node.PositionX + 1, node.PositionY);
+            neighbourArray[1] = new Point(node.PositionX - 1, node.PositionY);
+            neighbourArray[2] = new Point(node.PositionX, node.PositionY + 1);
+            neighbourArray[3] = new Point(node.PositionX, node.PositionY - 1);
 
             try {
-                foreach (var point in neighbourPoints) {
-                    if (point.X < 0 || point.X >= level.Width || point.Y < 0 || point.Y >= level.Height) continue;
-                    if (level[point.X, point.Y].CanMove || level[point.X, point.Y].PathFinderMove) {
+                foreach (var point in neighbourArray) {
+                    if (!GameEntity.IsLevelCellValid(point.X, point.Y, level.Width, level.Height)) continue;
+                    if (conditionToMove(level, point)) {
                         var neighbour = new Node {
                             PositionX = point.X,
                             PositionY = point.Y,
                             Parent = node,
-                            LengthFromStart = node.LengthFromStart + 1,
-                            Heuristic = GetHeuristic(point.X, point.Y, targetX, targetY)
+                            LengthFromStart = node.LengthFromStart + 1
                         };
                         result.Add(neighbour);
                     }
                 }
             }
-            catch (Exception e) {
+            catch (Exception) {
                 return null;
             }
             return result;
         }
         private static List<Point> GetPathForNode(Node node) {
             var result = new List<Point>();
-            var currentNode = node;
-            while (currentNode != null) {
-                result.Add(new Point(currentNode.PositionX, currentNode.PositionY));
-                currentNode = currentNode.Parent;
+            var current = node;
+            while (current != null) {
+                result.Add(new Point(current.PositionX, current.PositionY));
+                current = current.Parent;
             }
             result.Reverse();
             return result;
+        }
+
+        public class Node {
+            public int PositionX { get; set; }
+            public int PositionY { get; set; }
+            public int LengthFromStart { get; set; }
+            public Node Parent { get; set; }
         }
     }
 }

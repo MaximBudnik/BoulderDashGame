@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
+using ClassLibrary;
 using ClassLibrary.Entities;
 
 namespace BoulderDashForms.FormsDrawers {
@@ -28,15 +29,14 @@ namespace BoulderDashForms.FormsDrawers {
 
         public void DrawResults(
             Graphics graphics,
-            int gameStatus,
+            GameStatusEnum gameStatus,
             string playerName,
             int playerScore,
-            Dictionary<string, int[]> allPlayerScores,
-            int currentSubAction
+            Dictionary<string, int[]> allPlayerScores
         ) {
             FillBackground(graphics, gameStatus);
             DrawCenterBlock(graphics);
-            var header = gameStatus == 2 ? "LEVEL COMPLETED" : "YOU LOST";
+            var header = gameStatus == GameStatusEnum.WinScreen ? "LEVEL COMPLETED" : "YOU LOST";
             graphics.DrawString(header, HeaderFont, RedBrush, 750, 100, _alignCenter);
             graphics.DrawString($"{playerName} total score: {playerScore}", MainFont, WhiteBrush, 750, 160,
                 _alignCenter);
@@ -51,7 +51,7 @@ namespace BoulderDashForms.FormsDrawers {
             graphics.DrawString("Press ENTER to continue", MainFont, WhiteBrush, 750, 750, _alignCenter);
         }
 
-        private void FillBackground(Graphics graphics, int gameStatus) {
+        private void FillBackground(Graphics graphics, GameStatusEnum gameStatus) {
             for (var i = 0; i < 31; i++)
             for (var j = 0; j < 53; j++) {
                 var destRect =
@@ -60,7 +60,7 @@ namespace BoulderDashForms.FormsDrawers {
                 var srcRect = new Rectangle(new Point(1 * 16, 1 * 16), new Size(16, 16));
                 graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
             }
-            var semiTransBrush = gameStatus == 2
+            var semiTransBrush = gameStatus == GameStatusEnum.WinScreen
                 ? new SolidBrush(Color.FromArgb(100, 4, 114, 77))
                 : new SolidBrush(Color.FromArgb(100, 178, 13, 48));
             var rect = new Rectangle(0, 0, 1500, 900);

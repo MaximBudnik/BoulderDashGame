@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using ClassLibrary.DataLayer;
 using ClassLibrary.Entities;
-using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary {
     public class GameLogic {
-        private readonly Action<int> _changeGameStatus;
+        private readonly Action<GameStatusEnum> _changeGameStatus;
         private readonly Func<DataInterlayer> _getDataLayer;
         private readonly Action _refreshEngineSaves;
 
         private int _chanceToDeleteAcidBlock;
+
+        private int _chanceToSpawnWalker;
         private int _difficulty;
         public Save CurrentSave = null;
 
-        public GameLogic(Action<int> changeGameStatus,
+        public GameLogic(Action<GameStatusEnum> changeGameStatus,
             Func<DataInterlayer> getDataLayer,
             Action refreshEngineSaves) {
             _changeGameStatus = changeGameStatus;
@@ -37,7 +39,7 @@ namespace ClassLibrary {
         }
 
         public void CreateLevel(int levelName, string playerName, int sizeX, int sizeY, int difficulty,
-            Action<string> playSound
+            Action<SoundFilesEnum> playSound
         ) {
             CurrentLevel = new Level(
                 levelName, playerName,
@@ -84,7 +86,6 @@ namespace ClassLibrary {
                         used.Add(tmp);
                     }
                     if (CurrentLevel[i, j] is Acid) {
-                        //player instantly breaks created block
                         var tmp = (Acid) CurrentLevel[i, j];
                         tmp.GameLoopAction();
                         used.Add(tmp);
@@ -99,25 +100,23 @@ namespace ClassLibrary {
                 }
 
                 SpawnEnemies();
-
             }
             catch (Exception e) {
                 Console.WriteLine(e);
                 throw;
             }
         }
-
-        private int _chanceToSpawnWalker;
         private void SpawnEnemies() {
-            _chanceToSpawnWalker+= _difficulty;
-            int randomX = Randomizer.Random(CurrentLevel.Width);
-            int randomY = Randomizer.Random(CurrentLevel.Height);
-            if (CurrentLevel[randomX, randomY].EntityType == GameEntities.EmptySpace && _chanceToSpawnWalker>= Randomizer.Random(100))
+            _chanceToSpawnWalker += _difficulty;
+            var randomX = Randomizer.Random(CurrentLevel.Width);
+            var randomY = Randomizer.Random(CurrentLevel.Height);
+            if (CurrentLevel[randomX, randomY].EntityEnumType == GameEntitiesEnum.EmptySpace &&
+                _chanceToSpawnWalker >= Randomizer.Random(100))
                 CurrentLevel[randomX, randomY] =
                     new EnemyWalker(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
                         () => Player.PositionY, SubstractPlayerHp);
         }
-        
+
         private void CheckIfDeleteAllAcidBlocks() {
             if (_chanceToDeleteAcidBlock >= 50) {
                 for (var i = 0; i < CurrentLevel.Width; i++)
@@ -129,7 +128,7 @@ namespace ClassLibrary {
         }
 
         private void Win() {
-            _changeGameStatus(2);
+            _changeGameStatus(GameStatusEnum.WinScreen);
             var dataInterlayer = _getDataLayer();
             CurrentSave.LevelName = CurrentLevel.LevelName;
             CurrentSave.Score = Player.Score;
@@ -139,7 +138,7 @@ namespace ClassLibrary {
         }
 
         private void Lose() {
-            _changeGameStatus(3);
+            _changeGameStatus(GameStatusEnum.LoseScreen);
             var dataInterlayer = _getDataLayer();
             dataInterlayer.AddBestScore(Player.Name, Player.Score);
             dataInterlayer.DeleteGameSave(CurrentSave);

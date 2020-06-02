@@ -9,7 +9,7 @@ namespace ClassLibrary.SoundPlayer {
         private readonly string _gameTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\bullet.mp3");
         private readonly string _menuTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\trigger.mp3");
         private readonly string _resultTheme = Path.Combine(Environment.CurrentDirectory, @"Sounds\jw.mp3");
-        private readonly float _startVolume = 0.3f;
+        private readonly float _startVolume = 0.15f;
         private float _currentVolume;
         private WaveOut _effectsOutput;
         private AudioFileReader _effectsReader;
@@ -21,7 +21,8 @@ namespace ClassLibrary.SoundPlayer {
         }
 
         private event FadeOutEnd FadeOutEndNotification;
-        private void OnFadeOutEndNotification(string name) {
+
+        private void OnFadeOutEndNotification(SoundFilesEnum name) {
             StopTheme();
             PlayThemePrivate(name);
         }
@@ -33,12 +34,12 @@ namespace ClassLibrary.SoundPlayer {
             _musicOutput.Volume = _currentVolume;
         }
 
-        private void PlayThemePrivate(string name) {
+        private void PlayThemePrivate(SoundFilesEnum theme) {
             try {
-                _fileReader = name switch {
-                    "menu" => new Mp3FileReader(_menuTheme),
-                    "game" => new Mp3FileReader(_gameTheme),
-                    "results" => new Mp3FileReader(_resultTheme),
+                _fileReader = theme switch {
+                    SoundFilesEnum.MenuTheme => new Mp3FileReader(_menuTheme),
+                    SoundFilesEnum.GameTheme => new Mp3FileReader(_gameTheme),
+                    SoundFilesEnum.ResultsTheme => new Mp3FileReader(_resultTheme),
                     _ => throw new Exception("Unknown theme")
                 };
                 _musicOutput = new WaveOut {Volume = _currentVolume};
@@ -64,7 +65,7 @@ namespace ClassLibrary.SoundPlayer {
             fadeIn.Start();
         }
 
-        public void PlayTheme(string name) {
+        public void PlayTheme(SoundFilesEnum name) {
             var fadeOut = new Task(() => {
                 if (_musicOutput != null)
                     while (_currentVolume > 0.01f) {
@@ -77,23 +78,26 @@ namespace ClassLibrary.SoundPlayer {
             fadeOut.Start();
         }
 
-        public void PlaySound(string name) {
+        public void PlaySound(SoundFilesEnum sound) {
             try {
-                _effectsReader = name switch {
-                    "menuAccept" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                _effectsReader = sound switch {
+                    SoundFilesEnum.MenuAcceptSound => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
                         @"Sounds\sfx\menuAccept.wav")),
-                    "menuClick" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                    SoundFilesEnum.MenuClickSound => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
                         @"Sounds\sfx\menuClick.wav")),
-                    "attack" => new AudioFileReader(
+                    SoundFilesEnum.AttackSound => new AudioFileReader(
                         Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\attack.wav")),
-                    "bomb" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\bomb.wav")),
-                    "converter" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                    SoundFilesEnum.BombSound => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                        @"Sounds\sfx\bomb.wav")),
+                    SoundFilesEnum.ConverterSound => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
                         @"Sounds\sfx\converter.wav")),
-                    "hit" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\hit.wav")),
-                    "teleport" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                    SoundFilesEnum.HitSound => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                        @"Sounds\sfx\hit.wav")),
+                    SoundFilesEnum.TeleportSound => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
                         @"Sounds\sfx\teleport.wav")),
-                    "walk" => new AudioFileReader(Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\walk.wav")),
-                    "pickup" => new AudioFileReader(
+                    SoundFilesEnum.WalkSound => new AudioFileReader(Path.Combine(Environment.CurrentDirectory,
+                        @"Sounds\sfx\walk.wav")),
+                    SoundFilesEnum.PickupSound => new AudioFileReader(
                         Path.Combine(Environment.CurrentDirectory, @"Sounds\sfx\pickup.wav")),
                     _ => throw new Exception("Unknown theme")
                 };
@@ -116,6 +120,6 @@ namespace ClassLibrary.SoundPlayer {
             }
         }
 
-        private delegate void FadeOutEnd(string name);
+        private delegate void FadeOutEnd(SoundFilesEnum name);
     }
 }

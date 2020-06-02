@@ -1,5 +1,4 @@
 ﻿using System;
-using ClassLibrary.Entities.Player;
 
 namespace ClassLibrary.DataLayer {
     public class Save {
