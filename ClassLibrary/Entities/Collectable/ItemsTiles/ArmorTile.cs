@@ -7,8 +7,8 @@ namespace ClassLibrary.Entities.Collectable.ItemsTiles {
             EntityEnumType = GameEntitiesEnum.ArmorTile;
         }
 
-        public void Collect(Func<Inventory> getPlayerInventory) {
-            getPlayerInventory().ArmorLevel++;
+        public override void BreakAction(Player.Player player) {
+            player.Inventory.ArmorLevel++;
         }
     }
 }

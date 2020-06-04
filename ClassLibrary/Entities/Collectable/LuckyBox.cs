@@ -4,13 +4,12 @@ using System.Collections.Generic;
 namespace ClassLibrary.Entities.Collectable {
     public class LuckyBox : ItemCollectible {
         private new readonly int PickUpValue = 3;
-        public LuckyBox(int i, int j) : base(i, j) {
+        public LuckyBox(int i, int j) : base(i, j ) {
             EntityEnumType = GameEntitiesEnum.LuckyBox;
         }
 
-        public void Collect(Func<Player.Player> getPlayer) {
+        public override void BreakAction(Player.Player player) {
             //TODO: write text in forms on pickup 
-            var player = getPlayer();
             player.AllScores["Collected lucky boxes"][0] += 1;
             player.AllScores["Collected lucky boxes"][1] += player.GetScoreToAdd(PickUpValue);
             player.AddScore(PickUpValue);

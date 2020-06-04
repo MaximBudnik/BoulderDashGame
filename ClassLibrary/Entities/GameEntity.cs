@@ -19,6 +19,14 @@
 
         public virtual void GameLoopAction() { }
 
+        public virtual void BreakAction(Player.Player player) {
+            
+        }
+        
+        public virtual void BreakAction() {
+            
+        }
+        
         public static bool IsLevelCellValid(int x, int y, int width, int height) {
             return x >= 0 && x < width && y >= 0 && y < height;
         }

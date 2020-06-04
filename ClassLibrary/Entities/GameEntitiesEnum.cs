@@ -19,6 +19,10 @@
         DynamiteTile = 22,
         ArmorTile = 23,
 
-        DedicatedEmptySpace = 101
+        DedicatedEmptySpace = 101,
+        FutureWallsAndSand = 102,
+        FutureRooms = 103,
+        FutureCorridors = 104,
+        
     }
 }

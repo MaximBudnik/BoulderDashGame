@@ -6,8 +6,8 @@ namespace ClassLibrary.Entities.Collectable.ItemsTiles {
         public SwordTile(int i, int j) : base(i, j) {
             EntityEnumType = GameEntitiesEnum.SwordTile;
         }
-        public void Collect(Func<Inventory> getPlayerInventory) {
-            getPlayerInventory().SwordLevel++;
+        public override void BreakAction(Player.Player player) {
+            player.Inventory.SwordLevel++;
         }
     }
 }

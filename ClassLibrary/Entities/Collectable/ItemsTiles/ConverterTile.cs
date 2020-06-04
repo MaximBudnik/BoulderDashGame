@@ -6,8 +6,8 @@ namespace ClassLibrary.Entities.Collectable.ItemsTiles {
         public ConverterTile(int i, int j) : base(i, j) {
             EntityEnumType = GameEntitiesEnum.ConverterTile;
         }
-        public void Collect(Func<Inventory> getPlayerInventory) {
-            getPlayerInventory().StoneInDiamondsConverterQuantity++;
+        public override void BreakAction(Player.Player player) {
+            player.Inventory.StoneInDiamondsConverterQuantity++;
         }
     }
 }

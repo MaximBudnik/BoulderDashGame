@@ -6,8 +6,8 @@ namespace ClassLibrary.Entities.Collectable.ItemsTiles {
         public DynamiteTile(int i, int j) : base(i, j) {
             EntityEnumType = GameEntitiesEnum.DynamiteTile;
         }
-        public void Collect(Func<Inventory> getPlayerInventory) {
-            getPlayerInventory().TntQuantity++;
+        public override void BreakAction(Player.Player player) {
+            player.Inventory.TntQuantity++;
         }
     }
 }

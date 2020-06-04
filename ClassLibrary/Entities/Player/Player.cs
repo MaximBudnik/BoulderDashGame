@@ -20,7 +20,7 @@ namespace ClassLibrary.Entities.Player {
         private readonly Action<SoundFilesEnum> _playSound;
         private readonly int _teleportRange = 20;
         private readonly Action _win;
-        private readonly Action <Player> _setPlayer;
+        private readonly Action<Player> _setPlayer;
         public readonly Dictionary<string, int[]> AllScores;
         private readonly double DynamiteTileDamage = 0.3;
         public readonly Inventory Inventory = new Inventory();
@@ -30,7 +30,6 @@ namespace ClassLibrary.Entities.Player {
         private readonly int _adrenalineOnCombo = 100;
         private readonly int _adrenalineTickReduction = 5;
         private readonly int DefaultArmorCellHp = 10;
-
 
         public Player(
             int i,
@@ -142,37 +141,9 @@ namespace ClassLibrary.Entities.Player {
             }
             if (willMove) {
                 _playSound(SoundFilesEnum.WalkSound);
-
                 Energy -= _moveEnergyCost;
-                switch (level[PositionX, PositionY].EntityEnumType) {
-                    case GameEntitiesEnum.Diamond:
-                        ((Diamond) level[PositionX, PositionY]).Collect(() => this);
-                        _playSound(SoundFilesEnum.PickupSound);
-                        break;
-                    case GameEntitiesEnum.LuckyBox:
-                        ((LuckyBox) level[PositionX, PositionY]).Collect(() => this);
-                        _playSound(SoundFilesEnum.PickupSound);
-                        break;
-                    case GameEntitiesEnum.Barrel:
-                        ((BarrelWithSubstance) level[PositionX, PositionY]).Collect(GetLevel, SubstractPlayerHp);
-                        break;
-                    case GameEntitiesEnum.SwordTile:
-                        ((SwordTile) level[PositionX, PositionY]).Collect(() => Inventory);
-                        _playSound(SoundFilesEnum.PickupSound);
-                        break;
-                    case GameEntitiesEnum.ConverterTile:
-                        ((ConverterTile) level[PositionX, PositionY]).Collect(() => Inventory);
-                        _playSound(SoundFilesEnum.PickupSound);
-                        break;
-                    case GameEntitiesEnum.DynamiteTile:
-                        ((DynamiteTile) level[PositionX, PositionY]).Collect(() => Inventory);
-                        _playSound(SoundFilesEnum.PickupSound);
-                        break;
-                    case GameEntitiesEnum.ArmorTile:
-                        ((ArmorTile) level[PositionX, PositionY]).Collect(() => Inventory);
-                        _playSound(SoundFilesEnum.PickupSound);
-                        break;
-                }
+                level[PositionX, PositionY].BreakAction(this);
+                _playSound(SoundFilesEnum.PickupSound);
             }
             level[PositionX, PositionY] = this;
         }
@@ -187,7 +158,7 @@ namespace ClassLibrary.Entities.Player {
             return Energy >= _moveEnergyCost;
         }
         public void UseEnergyConverter() {
-            if (Inventory.StoneInDiamondsConverterQuantity>0) {
+            if (Inventory.StoneInDiamondsConverterQuantity > 0) {
                 Energy = MaxEnergy;
                 Inventory.StoneInDiamondsConverterQuantity--;
             }
@@ -297,7 +268,7 @@ namespace ClassLibrary.Entities.Player {
 
         private void AdrenalineEffect() {
             if (Adrenaline > 0) {
-                if(Adrenaline>50) RestoreEnergy();
+                if (Adrenaline > 50) RestoreEnergy();
                 RestoreEnergy();
                 Adrenaline -= _adrenalineTickReduction;
                 if (Adrenaline < 0) Adrenaline = 0;

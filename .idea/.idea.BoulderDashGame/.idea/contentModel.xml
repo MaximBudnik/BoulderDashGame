@@ -83,7 +83,6 @@
         </e>
         <e p="Entities" t="Include">
           <e p="basic" t="Include">
-            <e p="DedicatedEmptySpace.cs" t="Include" />
             <e p="EmptySpace.cs" t="Include" />
             <e p="Sand.cs" t="Include" />
             <e p="SandTranclucent.cs" t="Include" />
@@ -116,6 +115,12 @@
           </e>
           <e p="GameEntitiesEnum.cs" t="Include" />
           <e p="GameEntity.cs" t="Include" />
+          <e p="Generation" t="Include">
+            <e p="DedicatedEmptySpace.cs" t="Include" />
+            <e p="FutureCorridors.cs" t="Include" />
+            <e p="FutureRooms.cs" t="Include" />
+            <e p="FutureWallsAndSand.cs" t="Include" />
+          </e>
           <e p="Movable.cs" t="Include" />
           <e p="Player" t="Include">
             <e p="Inventory.cs" t="Include" />
@@ -143,6 +148,7 @@
           <e p="MenuInputProcessor.cs" t="Include" />
         </e>
         <e p="Matrix" t="Include">
+          <e p="Generation.cs" t="Include" />
           <e p="Level.cs" t="Include" />
           <e p="Matrix.cs" t="Include" />
           <e p="NewFile1.txt" t="Include" />

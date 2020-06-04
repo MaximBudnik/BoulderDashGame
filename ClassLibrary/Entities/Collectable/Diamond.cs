@@ -8,9 +8,8 @@ namespace ClassLibrary.Entities.Collectable {
             CurrentFrame = Randomizer.Random(0, 64);
         }
 
-        public void Collect(Func<Player.Player> getPlayer) {
+        public override void BreakAction(Player.Player player) {
             var value = PickUpValue;
-            var player = getPlayer();
             player.CollectedDiamonds += value;
             player.AllScores["Collected diamonds"][0] += 1;
             player.AllScores["Collected diamonds"][1] += player.GetScoreToAdd(value);
