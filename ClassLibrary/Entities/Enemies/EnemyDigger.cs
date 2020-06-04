@@ -13,6 +13,7 @@ namespace ClassLibrary.Entities.Enemies {
             : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
             EntityEnumType = GameEntitiesEnum.EnemyDigger;
             Damage = 2;
+            MaxHp = 5;
             Hp = 5;
             ScoreForKill = 30;
             ConditionToMove = (level, point) => true;

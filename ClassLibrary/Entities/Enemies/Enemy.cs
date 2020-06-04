@@ -4,10 +4,10 @@ using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
     public abstract class Enemy : Movable {
-        private readonly Action<int> _changePlayerHp;
-        private readonly Pathfinder _pathfinder;
-        private readonly Func<int> GetPlayerPosX;
-        private readonly Func<int> GetPlayerPosY;
+        protected readonly Action<int> _changePlayerHp;
+        protected readonly Pathfinder _pathfinder;
+        protected readonly Func<int> GetPlayerPosX;
+        protected readonly Func<int> GetPlayerPosY;
         protected Func<Level, Point, bool> ConditionToMove;
         protected int Damage;
         public int ScoreForKill = 20;
@@ -54,7 +54,7 @@ namespace ClassLibrary.Entities.Enemies {
             var playerPosY = GetPlayerPosY();
             var path = _pathfinder.FindPath(PositionX, PositionY, playerPosX, playerPosY, level, ConditionToMove) ??
                        throw new ArgumentNullException(
-                           "FindPath(PositionX, PositionY, playerPosX, playerPosY)");
+                           "level");
             return path[1];
         }
     }

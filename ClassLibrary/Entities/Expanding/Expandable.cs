@@ -8,6 +8,7 @@ namespace ClassLibrary.Entities.Expanding {
         protected Action<int, int> ConstructorForExpand;
         protected Expandable(int i, int j, Func<Level> getLevel) : base(i, j) {
             GetLevel = getLevel;
+            MoveWeight = 120;
         }
         public override void GameLoopAction() { }
         protected void Expand(Func<int, int, bool> getCondition, Action<int, int> classConstructor) {

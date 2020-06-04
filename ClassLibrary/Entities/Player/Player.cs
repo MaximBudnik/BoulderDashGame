@@ -27,7 +27,7 @@ namespace ClassLibrary.Entities.Player {
         private readonly double DynamiteTileDamage = 0.3;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
-        public readonly int MaxEnergy = 20;
+        private readonly int MaxEnergy = 20;
         public readonly string Name;
 
         public Player(
@@ -46,6 +46,7 @@ namespace ClassLibrary.Entities.Player {
             _lose = lose;
             _playSound = playSound;
             _setPlayer = setPlayer;
+            MaxHp = 10;
             Hp = MaxHp;
             _diamondsTowWin = diamondsTowWin;
             EntityEnumType = 0;
@@ -65,7 +66,6 @@ namespace ClassLibrary.Entities.Player {
             Inventory.TntQuantity = 5;
             Inventory.StoneInDiamondsConverterQuantity = 5;
         }
-        public int MaxHp { get; set; } = 10;
         public int Energy { get; private set; } = 20;
 
         public int Adrenaline { get; private set; }
@@ -250,10 +250,12 @@ namespace ClassLibrary.Entities.Player {
                 if (x == 0 && y == 0 || (x == -2 || x == 2) && (y == -2 || y == 2)) continue;
                 var posX = x + PositionX;
                 var posY = y + PositionY;
-                if (IsLevelCellValid(posX, posY, level.Width, level.Height)) {
-                    level[posX, posY] = new EmptySpace(RightX, PositionY);
-                    dmg += DynamiteTileDamage;
+                if (!IsLevelCellValid(posX, posY, level.Width, level.Height)) continue;
+                if (level[posX, posY] is Enemy enemy) enemy.Hp -= Convert.ToInt32(dmg);
+                else {
+                    level[posX, posY] = new EmptySpace(posX, posY);
                 }
+                dmg += DynamiteTileDamage;
             }
             Energy = Energy / 2;
             SubstractPlayerHp(Convert.ToInt32(dmg), PlayerAnimationsEnum.Explosion);
@@ -273,6 +275,11 @@ namespace ClassLibrary.Entities.Player {
         private void AdrenalineEffect() {
             if (Adrenaline > 0) {
                 if (Adrenaline > 50) RestoreEnergy();
+                if (Adrenaline > 75) RestoreEnergy();
+                if (Adrenaline > 100) {
+                    Hp++;
+                    Adrenaline -= 20;
+                }
                 RestoreEnergy();
                 Adrenaline -= _adrenalineTickReduction;
                 if (Adrenaline < 0) Adrenaline = 0;

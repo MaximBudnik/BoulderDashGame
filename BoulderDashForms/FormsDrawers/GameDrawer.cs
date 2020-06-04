@@ -4,6 +4,7 @@ using System.Drawing;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Enemies;
+using ClassLibrary.Entities.Enemies.SmartEnemies;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
 
@@ -202,8 +203,11 @@ namespace BoulderDashForms.FormsDrawers {
                             break;
                         case GameEntitiesEnum.EnemyWalker:
                             DrawFloorTile();
-                            srcRect = GetWalkerAnimation(currentLevel[i, j] as EnemyWalker);
+                            var enemyWalker = currentLevel[i, j] as EnemyWalker;
+                            srcRect = GetWalkerAnimation(enemyWalker);
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            //drawing hp
+                            DrawEnemyHp(graphics, j, i, enemyWalker);
                             break;
                         case GameEntitiesEnum.LuckyBox:
                             DrawFloorTile();
@@ -231,8 +235,10 @@ namespace BoulderDashForms.FormsDrawers {
                         case GameEntitiesEnum.EnemyDigger:
                             DrawFloorTile();
                             if (currentLevel[i, j] is EnemyDigger) {
-                                srcRect = GetDiggerAnimation((EnemyDigger) currentLevel[i, j]);
+                                var enemyDigger = currentLevel[i, j] as EnemyDigger;
+                                srcRect = GetDiggerAnimation(enemyDigger);
                                 graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                                DrawEnemyHp(graphics, j, i, enemyDigger);
                             }
                             break;
                         case GameEntitiesEnum.SwordTile:
@@ -265,6 +271,15 @@ namespace BoulderDashForms.FormsDrawers {
             }
             DrawInterface(graphics, currentLevel, player);
             DrawKeys(graphics, player);
+        }
+        private void DrawEnemyHp(Graphics graphics, int j, int i, Enemy enemyWalker) {
+            var enemyWalkerHp = enemyWalker.Hp;
+            if (enemyWalkerHp < enemyWalker.MaxHp) {
+                var hpRectangle =
+                    new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2 - 4),
+                        new Size(GameEntity.FormsSize * 2*enemyWalkerHp/enemyWalker.MaxHp, 4));
+                graphics.FillRectangle(RedBrushHalfTransparent, hpRectangle);
+            }
         }
         private void DrawInterface(Graphics graphics, Level currentLevel, Player player) {
             DrawPlayerHp(graphics, player);

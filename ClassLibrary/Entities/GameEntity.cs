@@ -13,10 +13,7 @@
             PositionY = j;
         }
         public GameEntitiesEnum EntityEnumType { get; protected set; }
-        protected int RightX => PositionX + 1;
-        protected int LeftX => PositionX - 1;
-        protected int BotY => PositionY + 1;
-        protected int TopY => PositionY - 1;
+
 
         public virtual void GameLoopAction() { }
 

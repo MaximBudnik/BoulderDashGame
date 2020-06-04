@@ -12,6 +12,7 @@ namespace ClassLibrary.Entities.Enemies {
             Damage = 3;
             CanMove = false;
             Hp = 1000;
+            MoveWeight = 200;
         }
         public override void GameLoopAction() {
             RockFall();
@@ -22,8 +23,8 @@ namespace ClassLibrary.Entities.Enemies {
             var currentLevel = GetLevel();
             _isFalling = false;
 
-            if (RightX >= currentLevel.Width ||
-                currentLevel[RightX, PositionY].EntityEnumType != GameEntitiesEnum.EmptySpace ||
+            if (PositionX + 1 >= currentLevel.Width ||
+                currentLevel[PositionX + 1, PositionY].EntityEnumType != GameEntitiesEnum.EmptySpace ||
                 _isFalling) return;
             Move(MoveDirectionEnum.Vertical, 1);
             _isFalling = true;
@@ -38,7 +39,8 @@ namespace ClassLibrary.Entities.Enemies {
 
         private void RockDamage() {
             if (PositionX + 1 == GetLevel().Width) return;
-            if (_isFalling && GetLevel()[RightX, PositionY].EntityEnumType == GameEntitiesEnum.Player) DealDamage();
+            if (_isFalling && GetLevel()[PositionX + 1, PositionY].EntityEnumType == GameEntitiesEnum.Player)
+                DealDamage();
         }
     }
 }

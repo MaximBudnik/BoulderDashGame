@@ -67,7 +67,7 @@ namespace ClassLibrary {
 
         private void GameLogicThread() {
             while (GameStatus == GameStatusEnum.Game) {
-                Thread.Sleep(1000 / DataInterlayer.Settings.TickRate);
+                Thread.Sleep(10000 / DataInterlayer.Settings.TickRate);
                 GameLogic.GameLoop();
             }
         }

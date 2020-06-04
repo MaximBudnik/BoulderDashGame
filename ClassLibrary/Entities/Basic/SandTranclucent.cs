@@ -2,6 +2,7 @@
     public class SandTranclucent : GameEntity {
         public SandTranclucent(int i, int j) : base(i, j) {
             EntityEnumType = GameEntitiesEnum.SandTranslucent;
+            MoveWeight = 110;
         }
     }
 }

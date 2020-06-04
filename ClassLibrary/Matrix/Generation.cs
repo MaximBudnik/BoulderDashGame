@@ -6,6 +6,7 @@ using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Collectable.ItemsTiles;
 using ClassLibrary.Entities.Enemies;
+using ClassLibrary.Entities.Enemies.SmartEnemies;
 using ClassLibrary.Entities.Generation;
 using ClassLibrary.Entities.Player;
 
@@ -100,22 +101,24 @@ namespace ClassLibrary.Matrix {
                 var posY = rand.Next(height);
                 if (matrix[posX, posY].EntityEnumType == GameEntitiesEnum.FutureRooms) {
                     var enemy = new EnemyWalker(posX, posY, _getLevel, _getPlayerPositionX,
-                        _getPlayerPositionY, _substractPlayerHp);
+                        _getPlayerPositionY, _substractPlayerHp,_getOutdatedPlayer);
                     matrix[posX, posY] = enemy;
                     WalkersCount--;
                 }
             }
+            
+            //TODO: not forget enable this
 
-            while (DiggersCount > 0) {
-                var posX = rand.Next(width);
-                var posY = rand.Next(height);
-                if (matrix[posX, posY].EntityEnumType == GameEntitiesEnum.FutureRooms) {
-                    var enemy = new EnemyDigger(posX, posY, _getLevel, _getPlayerPositionX,
-                        _getPlayerPositionY, _substractPlayerHp);
-                    matrix[posX, posY] = enemy;
-                    DiggersCount--;
-                }
-            }
+            // while (DiggersCount > 0) {
+            //     var posX = rand.Next(width);
+            //     var posY = rand.Next(height);
+            //     if (matrix[posX, posY].EntityEnumType == GameEntitiesEnum.FutureRooms) {
+            //         var enemy = new EnemyDigger(posX, posY, _getLevel, _getPlayerPositionX,
+            //             _getPlayerPositionY, _substractPlayerHp);
+            //         matrix[posX, posY] = enemy;
+            //         DiggersCount--;
+            //     }
+            // }
         }
         private void SetWalls() {
             for (var i = 0; i < width; i++)

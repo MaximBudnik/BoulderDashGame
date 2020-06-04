@@ -7,6 +7,7 @@ using ClassLibrary.SoundPlayer;
 namespace ClassLibrary.Matrix {
     public partial class Level : Matrix {
         private readonly Action _acidGameLoopAction;
+        private readonly Func<Player> _getOutdatedPlayer;
         private readonly Func<Level> _getLevel;
         private readonly Func<int> _getPlayerPositionX;
         private readonly Func<int> _getPlayerPositionY;
@@ -24,12 +25,15 @@ namespace ClassLibrary.Matrix {
         private int _diggerMovesUpper = 40;
         private List<int> _quarterPool;
         private int _roomChanceGrow = 2; // the bigger the  chance, the bigger open spaces on level will be
-        public Level(int levelName, string playerName,
+        public Level(
+            int levelName, string playerName,
             Action win, Action lose,
             Func<int> getPlayerPositionX,
             Func<int> getPlayerPositionY,
             Action<int> substractPlayerHp, Action<Player> setPlayer,
-            int sizeX, int sizeY, int difficulty, Action<SoundFilesEnum> playSound, Action acidGameLoopAction) {
+            int sizeX, int sizeY, int difficulty, Action<SoundFilesEnum> playSound, Action acidGameLoopAction,
+            Func<Entities.Player.Player> getOutdatedPlayer
+            ) {
             width = sizeX; //20 for console
             height = sizeY; //65 for console
             LevelName = levelName;
@@ -43,6 +47,7 @@ namespace ClassLibrary.Matrix {
             _setPlayer = setPlayer;
             _playSound = playSound;
             _acidGameLoopAction = acidGameLoopAction;
+            _getOutdatedPlayer = getOutdatedPlayer;
 
             SetDifficulty(difficulty);
 

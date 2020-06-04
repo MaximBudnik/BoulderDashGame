@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ClassLibrary.DataLayer;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Enemies;
+using ClassLibrary.Entities.Enemies.SmartEnemies;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
@@ -57,7 +58,8 @@ namespace ClassLibrary {
                 () => {
                     _chanceToDeleteAcidBlock += 1;
                     CheckIfDeleteAllAcidBlocks();
-                }
+                },
+                () => Player
             );
             _difficulty = difficulty;
         }
@@ -88,7 +90,7 @@ namespace ClassLibrary {
                 _chanceToSpawnWalker >= Randomizer.Random(100))
                 CurrentLevel[randomX, randomY] =
                     new EnemyWalker(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
-                        () => Player.PositionY, SubstractPlayerHp);
+                        () => Player.PositionY, SubstractPlayerHp,()=>Player);
         }
 
         private void CheckIfDeleteAllAcidBlocks() {

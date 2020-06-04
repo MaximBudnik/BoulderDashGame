@@ -5,6 +5,8 @@ using ClassLibrary.Matrix;
 namespace ClassLibrary.Entities {
     public class Movable : GameEntity {
         protected readonly Func<Level> GetLevel;
+        public int MaxHp { get; set; }
+
         protected Movable(Func<Level> getLevel, int i, int j) : base(i, j) {
             GetLevel = getLevel;
         }

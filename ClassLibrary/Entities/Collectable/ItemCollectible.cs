@@ -8,6 +8,7 @@ namespace ClassLibrary.Entities.Collectable {
 
         protected ItemCollectible(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j) {
             _playSound = playSound;
+            MoveWeight = 65;
         }
 
         protected virtual void Collect(Player.Player player) { }

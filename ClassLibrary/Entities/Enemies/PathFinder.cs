@@ -16,16 +16,18 @@ namespace ClassLibrary.Entities.Enemies {
                 PositionX = selfX,
                 PositionY = selfY,
                 Parent = null,
-                LengthFromStart = 0
+                LengthFromStart = 0,
+                HeuristicLength = GetHeuristicPathLength(selfX, selfY, targetX, targetY)
             };
             open.Add(root);
             while (open.Count > 0) {
-                var current = open.First();
+                var current = open.OrderBy(node =>
+                    node.FullPathLength).First();
                 if (current.PositionX == targetX && current.PositionY == targetY) return GetPathForNode(current);
                 open.Remove(current);
                 closed.Add(current);
                 //get all neighbours of current point
-                foreach (var neighbour in GetNeighbours(current, level, conditionToMove)) {
+                foreach (var neighbour in GetNeighbours(current, level, conditionToMove, targetX, targetY)) {
                     //if neighbour is closed, ignore it
                     if (closed.Count(key =>
                         key.PositionX == neighbour.PositionX && key.PositionY == neighbour.PositionY) > 0)
@@ -45,7 +47,13 @@ namespace ClassLibrary.Entities.Enemies {
             }
             return null;
         }
-        private Collection<Node> GetNeighbours(Node node, Level level, Func<Level, Point, bool> conditionToMove) {
+
+        private static int GetDistanceWithWeight(Level level, int posX, int posY) {
+            return level[posX, posY].MoveWeight;
+        }
+
+        private Collection<Node> GetNeighbours(Node node, Level level, Func<Level, Point, bool> conditionToMove,
+            int targetX, int targetY) {
             var result = new Collection<Node>();
             var neighbourArray = new Point[4];
             neighbourArray[0] = new Point(node.PositionX + 1, node.PositionY);
@@ -60,7 +68,8 @@ namespace ClassLibrary.Entities.Enemies {
                         PositionX = point.X,
                         PositionY = point.Y,
                         Parent = node,
-                        LengthFromStart = node.LengthFromStart + 1
+                        LengthFromStart = node.LengthFromStart + GetDistanceWithWeight(level, point.X, point.Y),
+                        HeuristicLength = GetHeuristicPathLength(point.X, point.Y, targetX, targetY)
                     };
                     result.Add(neighbour);
                 }
@@ -83,6 +92,12 @@ namespace ClassLibrary.Entities.Enemies {
             public int PositionY { get; set; }
             public int LengthFromStart { get; set; }
             public Node Parent { get; set; }
+            public int HeuristicLength { get; set; }
+            public int FullPathLength => LengthFromStart + HeuristicLength;
+        }
+
+        private int GetHeuristicPathLength(int selfX, int selfY, int targetX, int targetY) {
+            return Math.Abs(selfX - targetX) + Math.Abs(selfY - targetY);
         }
     }
 }
