@@ -2,9 +2,16 @@
 using System.Collections.Generic;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
+using ClassLibrary.Entities;
+using ClassLibrary.Entities.Collectable.ItemsTiles;
 
 namespace ClassLibrary.ConsoleInterface {
     public class GameInterface : UserInterface {
+        private readonly int _bottomHeight = 3;
+
+        // private int interfaceMultiplier = 2; //should be retrieved from settings
+        private readonly ConsoleColor _secondTextColor = ConsoleColor.DarkCyan;
+
         private readonly Dictionary<int, string> _sprites = new Dictionary<int, string> {
             {0, "☺"},
             {1, " "},
@@ -19,6 +26,7 @@ namespace ClassLibrary.ConsoleInterface {
             {10, "0"},
             {11, " "},
             {12, "!"},
+            {13,"x"},
             {20, "S"},
             {21, "C"},
             {22, "T"},
@@ -26,209 +34,81 @@ namespace ClassLibrary.ConsoleInterface {
             {203, "•"}
         };
 
-        // private int interfaceMultiplier = 2; //should be retrieved from settings
-        private readonly ConsoleColor _secondTextColor = ConsoleColor.DarkCyan;
         private readonly int _topHeight = 2;
-        private readonly int _bottomHeight = 3;
         private Level _currLevel;
         public void NewDraw(Func<Level> getLevel) {
             _currLevel = getLevel();
             var origRow = _topHeight;
             for (var i = 0; i < _currLevel.Width; i++)
             for (var j = 0; j < _currLevel.Height; j++) {
-                var tmp = _currLevel[i, j].EntityType;
+                var tmp = _currLevel[i, j].EntityEnumType;
                 Console.SetCursorPosition(2 * j, 2 * i + origRow);
                 Console.Write(" ");
                 Console.Write(" ");
                 Console.SetCursorPosition(2 * j, 2 * i + origRow);
-                DrawSprite(tmp);
-                DrawSprite(tmp);
+                DrawSpriteDefault(tmp);
+                DrawSpriteDefault(tmp);
 
                 Console.SetCursorPosition(2 * j, 2 * i + origRow + 1);
                 Console.Write(" ");
                 Console.Write(" ");
                 Console.SetCursorPosition(2 * j, 2 * i + origRow + 1);
-                DrawSprite(tmp);
-                DrawSprite(tmp);
-            }
-        }
-        private void DrawSprite(int item) {
-            switch (_currLevel.LevelType) {
-                case "default":
-                    DrawSpriteDefault(item);
-                    break;
-                case "red":
-                    DrawSpriteRed(item);
-                    break;
-                case "blue":
-                    DrawSpriteBlue(item);
-                    break;
+                DrawSpriteDefault(tmp);
+                DrawSpriteDefault(tmp);
             }
         }
 
-        private void DrawSpriteDefault(int item) {
+        private void DrawSpriteDefault(GameEntitiesEnum item) {
             switch (item) {
-                case 0:
+                case GameEntitiesEnum.Player:
                     WriteColorBack(_sprites[0], ConsoleColor.Magenta);
                     break;
-                case 1:
+                case GameEntitiesEnum.EmptySpace:
                     WriteColorBack(_sprites[1]);
                     break;
-                case 2:
+                case GameEntitiesEnum.Sand:
                     WriteColorBack(_sprites[2], ConsoleColor.DarkYellow, ConsoleColor.Yellow);
                     break;
-                case 3:
+                case GameEntitiesEnum.Rock:
                     WriteColorBack(_sprites[3], ConsoleColor.Gray, ConsoleColor.DarkGray);
                     break;
-                case 4:
+                case GameEntitiesEnum.Diamond:
                     WriteColorBack(_sprites[4], ConsoleColor.Cyan);
                     break;
-                case 5:
+                case GameEntitiesEnum.Wall:
                     WriteColorBack(_sprites[5], primaryTextColor, ConsoleColor.Gray);
                     break;
-                case 6:
+                case GameEntitiesEnum.EnemyWalker:
                     WriteColorBack(_sprites[6], ConsoleColor.Black, ConsoleColor.DarkRed);
                     break;
-                case 7:
+                case GameEntitiesEnum.LuckyBox:
                     WriteColorBack(_sprites[7], primaryTextColor, ConsoleColor.DarkYellow);
                     break;
-                case 8:
+                case GameEntitiesEnum.SandTranslucent:
                     WriteColorBack(_sprites[8], ConsoleColor.DarkGray);
                     break;
-                case 9:
-                    WriteColorBack(_sprites[9], ConsoleColor.Gray, ConsoleColor.DarkGray);
-                    break;
-                case 10:
+                case GameEntitiesEnum.Converter:
                     WriteColorBack(_sprites[10], ConsoleColor.Cyan, ConsoleColor.Magenta);
                     break;
-                case 11:
+                case GameEntitiesEnum.Acid:
                     WriteColorBack(_sprites[11], ConsoleColor.Green, ConsoleColor.Green);
                     break;
-                case 12:
+                case GameEntitiesEnum.Barrel:
                     WriteColorBack(_sprites[12], ConsoleColor.Green, ConsoleColor.DarkYellow);
                     break;
-                case 20:
+                case GameEntitiesEnum.EnemyDigger:
+                    WriteColorBack(_sprites[13], ConsoleColor.Red, ConsoleColor.White);
+                    break;
+                case GameEntitiesEnum.SwordTile:
                     WriteColorBack(_sprites[20], ConsoleColor.Magenta);
                     break;
-                case 21:
+                case GameEntitiesEnum.ConverterTile:
                     WriteColorBack(_sprites[21], ConsoleColor.Magenta);
                     break;
-                case 22:
+                case GameEntitiesEnum.DynamiteTile:
                     WriteColorBack(_sprites[22], ConsoleColor.Magenta);
                     break;
-                case 23:
-                    WriteColorBack(_sprites[23], ConsoleColor.Magenta);
-                    break;
-            }
-        }
-
-        private void DrawSpriteRed(int item) {
-            switch (item) {
-                case 0:
-                    WriteColorBack(_sprites[0], ConsoleColor.Magenta);
-                    break;
-                case 1:
-                    WriteColorBack(_sprites[1]);
-                    break;
-                case 2:
-                    WriteColorBack(_sprites[2], ConsoleColor.Yellow, ConsoleColor.Red);
-                    break;
-                case 3:
-                    WriteColorBack(_sprites[203], ConsoleColor.DarkRed, ConsoleColor.Yellow);
-                    break;
-                case 4:
-                    WriteColorBack(_sprites[4], ConsoleColor.White);
-                    break;
-                case 5:
-                    WriteColorBack(_sprites[5], ConsoleColor.Black, ConsoleColor.White);
-                    break;
-                case 6:
-                    WriteColorBack(_sprites[6], ConsoleColor.White, ConsoleColor.DarkRed);
-                    break;
-                case 7:
-                    WriteColorBack(_sprites[7], ConsoleColor.Black, ConsoleColor.DarkYellow);
-                    break;
-                case 8:
-                    WriteColorBack(_sprites[8], ConsoleColor.DarkYellow);
-                    break;
-                case 9:
-                    WriteColorBack(_sprites[9], ConsoleColor.DarkRed, ConsoleColor.Yellow);
-                    break;
-                case 10:
-                    WriteColorBack(_sprites[10], ConsoleColor.White, ConsoleColor.Magenta);
-                    break;
-                case 11:
-                    WriteColorBack(_sprites[11], ConsoleColor.Green, ConsoleColor.Green);
-                    break;
-                case 12:
-                    WriteColorBack(_sprites[12], ConsoleColor.Green, ConsoleColor.DarkYellow);
-                    break;
-                case 20:
-                    WriteColorBack(_sprites[20], ConsoleColor.Magenta);
-                    break;
-                case 21:
-                    WriteColorBack(_sprites[21], ConsoleColor.Magenta);
-                    break;
-                case 22:
-                    WriteColorBack(_sprites[22], ConsoleColor.Magenta);
-                    break;
-                case 23:
-                    WriteColorBack(_sprites[23], ConsoleColor.Magenta);
-                    break;
-            }
-        }
-
-        private void DrawSpriteBlue(int item) {
-            switch (item) {
-                case 0:
-                    WriteColorBack(_sprites[0], ConsoleColor.Magenta, ConsoleColor.Gray);
-                    break;
-                case 1:
-                    WriteColorBack(_sprites[1], primaryTextColor, ConsoleColor.Gray);
-                    break;
-                case 2:
-                    WriteColorBack(_sprites[2], ConsoleColor.DarkBlue, ConsoleColor.Blue);
-                    break;
-                case 3:
-                    WriteColorBack(_sprites[3], ConsoleColor.DarkCyan, ConsoleColor.Cyan);
-                    break;
-                case 4:
-                    WriteColorBack(_sprites[4], ConsoleColor.Red, ConsoleColor.Gray);
-                    break;
-                case 5:
-                    WriteColorBack(_sprites[5], ConsoleColor.Blue, ConsoleColor.Black);
-                    break;
-                case 6:
-                    WriteColorBack(_sprites[6], ConsoleColor.White, ConsoleColor.DarkRed);
-                    break;
-                case 7:
-                    WriteColorBack(_sprites[7], ConsoleColor.Blue, ConsoleColor.DarkYellow);
-                    break;
-                case 8:
-                    WriteColorBack(_sprites[8], ConsoleColor.Black, ConsoleColor.Gray);
-                    break;
-                case 9:
-                    WriteColorBack(_sprites[9], ConsoleColor.DarkCyan, ConsoleColor.Cyan);
-                    break;
-                case 10:
-                    WriteColorBack(_sprites[10], ConsoleColor.Red, ConsoleColor.Magenta);
-                    break;
-                case 11:
-                    WriteColorBack(_sprites[11], ConsoleColor.Green, ConsoleColor.Green);
-                    break;
-                case 12:
-                    WriteColorBack(_sprites[12], ConsoleColor.Green, ConsoleColor.DarkYellow);
-                    break;
-                case 20:
-                    WriteColorBack(_sprites[20], ConsoleColor.Magenta);
-                    break;
-                case 21:
-                    WriteColorBack(_sprites[21], ConsoleColor.Magenta);
-                    break;
-                case 22:
-                    WriteColorBack(_sprites[22], ConsoleColor.Magenta);
-                    break;
-                case 23:
+                case GameEntitiesEnum.ArmorTile:
                     WriteColorBack(_sprites[23], ConsoleColor.Magenta);
                     break;
             }
@@ -260,7 +140,7 @@ namespace ClassLibrary.ConsoleInterface {
             Console.Write("Items: ");
             WriteForeground(
                 $"S: {playerInventory.SwordLevel} A: {playerInventory.ArmorLevel} C: {playerInventory.StoneInDiamondsConverterQuantity}" +
-                $" T: {playerInventory.TntQuantity}",ConsoleColor.Green, _secondTextColor);
+                $" T: {playerInventory.TntQuantity}", ConsoleColor.Green, _secondTextColor);
             ChangeForegroundColor(primaryTextColor);
         }
 

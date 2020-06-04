@@ -8,13 +8,13 @@ namespace ClassLibrary {
         public static int GetRandomFromList(List<int> list) {
             return list[Rand.Next(list.Count)];
         }
-        
+
         public static string GetRandomFromList(List<string> list) {
             return list[Rand.Next(list.Count)];
         }
 
         public static int Random() {
-            return Rand.Next();
+            return Rand.Next(100);
         }
 
         public static int Random(int upper) {

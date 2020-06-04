@@ -11,6 +11,7 @@
 10 -stoneInDiamondConverter - cant move;
 11 - acid;
 12 - barrel with substance;
+13 - enemy digger;
 
 
 Items:

@@ -1,13 +1,20 @@
-﻿namespace ClassLibrary.Entities.Collectable {
+﻿using System;
+using ClassLibrary.SoundPlayer;
+
+namespace ClassLibrary.Entities.Collectable {
     public abstract class ItemCollectible : GameEntity {
-        protected static readonly int PickUpValue=1;
+        private readonly Action<SoundFilesEnum> _playSound;
+        protected readonly int PickUpValue = 1;
 
-        protected ItemCollectible(int i, int j):base(i, j) {
-            
+        protected ItemCollectible(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j) {
+            _playSound = playSound;
         }
 
-        public virtual void  Collect() {
+        protected virtual void Collect(Player.Player player) { }
+
+        public override void BreakAction(Player.Player player) {
+            Collect(player);
+            _playSound(SoundFilesEnum.PickupSound);
         }
-        
     }
 }

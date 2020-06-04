@@ -1,13 +1,11 @@
 ﻿using System;
 using ClassLibrary;
-
-
 namespace BoulderDashGame {
     class Program {
         static void Main(string[] args) {
             try {
-                GameEngine gameEngine = new GameEngine();
-                gameEngine.Start();
+                //GameEngineConsole gameEngine = new GameEngineConsole();
+               // gameEngine.Start();
             }
             catch(Exception e) {
                 Console.Clear();
@@ -22,3 +20,5 @@ namespace BoulderDashGame {
         }
     }
 }
+
+

@@ -8,6 +8,14 @@ using System.Text;
 
 namespace ClassLibrary.ConsoleInterface {
     public abstract class UserInterface {
+        private readonly ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
+        private readonly int consoleHeight = 50;
+
+        //Fields
+        private readonly int consoleWidth = 140;
+        private protected ConsoleColor primaryTextColor = ConsoleColor.White;
+
+        private protected ConsoleColor SecondTextColor = ConsoleColor.DarkGray;
         //Constructor
         protected UserInterface() {
             SetBackground(ConsoleBackgroundColor);
@@ -18,14 +26,6 @@ namespace ClassLibrary.ConsoleInterface {
             Console.SetBufferSize(consoleWidth,
                 consoleHeight); //interesting effect: without it, console is constantly twitches
         }
-
-        //Fields
-        private int consoleWidth = 131;
-        private int consoleHeight = 45;
-
-        private ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
-        private protected ConsoleColor primaryTextColor = ConsoleColor.White;
-        private protected ConsoleColor SecondTextColor = ConsoleColor.DarkGray;
 
         //Private methods
         private void SetBackground(ConsoleColor color) {
@@ -69,9 +69,7 @@ namespace ClassLibrary.ConsoleInterface {
         }
 
         protected void DrawLine() {
-            for (int i = 0; i < consoleWidth; i++) {
-                Console.Write("─");
-            }
+            for (var i = 0; i < consoleWidth; i++) Console.Write("─");
         }
 
         protected void SkipLine() {
@@ -79,9 +77,7 @@ namespace ClassLibrary.ConsoleInterface {
         }
 
         protected void SkipLine(int i) {
-            for (int j = 0; j < i; j++) {
-                Console.WriteLine("\n");
-            }
+            for (var j = 0; j < i; j++) Console.WriteLine("\n");
         }
 
         protected void ChangeForegroundColor(ConsoleColor color) {
@@ -91,7 +87,7 @@ namespace ClassLibrary.ConsoleInterface {
         protected void ChangeBackgroundColor(ConsoleColor color) {
             Console.BackgroundColor = color;
         }
-        
+
         public void Draw() { }
     }
 }

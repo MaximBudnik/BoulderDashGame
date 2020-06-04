@@ -1,0 +1,106 @@
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using BoulderDashForms.FormsDrawers;
+using BoulderDashForms.InputProcessors;
+using ClassLibrary;
+
+namespace BoulderDashForms {
+    public partial class Form1 : Form {
+        private readonly GameDrawer _gameDrawer;
+        private readonly GameInputProcessor _gameInputProcessor = new GameInputProcessor();
+        private readonly MenuDrawer _menuDrawer;
+        private readonly MenuInputProcessor _menuInputProcessor = new MenuInputProcessor();
+        private readonly ResultScreenDrawer _resultScreenDrawer;
+        private readonly ResultsInputProcessor _resultsInputProcessor = new ResultsInputProcessor();
+        private GameEngine _gameEngine;
+        public Form1() {
+            InitializeComponent();
+            try {
+                Cursor = new Cursor(Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\cursor.ico"));
+                _menuDrawer = new MenuDrawer();
+                _gameDrawer = new GameDrawer();
+                _resultScreenDrawer = new ResultScreenDrawer();
+                KeyDown += KeyDownProcessor;
+                KeyUp += KeyUpProcessor;
+                InitEngine();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Data);
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.StackTrace);
+            }
+        }
+
+        private void InitEngine() {
+            _gameEngine = new GameEngine(ReDraw);
+            var engineStart = new Task(() => { _gameEngine.Start(); });
+            engineStart.Start();
+        }
+        private void KeyDownProcessor(object sender, KeyEventArgs e) {
+            if (_gameEngine.GameStatus == GameStatusEnum.Game)
+                _gameInputProcessor.ProcessKeyDown(e.KeyCode, () => _gameEngine.GameLogic.Player,
+                    _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound);
+            else if (_gameEngine.GameStatus == 0)
+                _menuInputProcessor.ProcessKeyDown(e.KeyCode,
+                    _gameEngine.ChangeCurrentMenuAction,
+                    _gameEngine.PerformCurrentMenuAction,
+                    _menuDrawer.NullRightBlockWidth,
+                    _gameEngine.ChangeIsActionActive,
+                    _gameEngine.IsActionActive,
+                    _gameEngine.ChangeCurrentSubAction,
+                    _gameEngine.PerformSubAction,
+                    _gameEngine.IsNameEntered,
+                    _gameEngine.ChangeIsNameEntered,
+                    s => {
+                        if (s == Keys.Back.ToString()) {
+                            _gameEngine.NewGameSave.Name =
+                                _gameEngine.NewGameSave.Name.Substring(0, _gameEngine.NewGameSave.Name.Length - 1);
+                            return;
+                        }
+                        _gameEngine.NewGameSave.Name += s;
+                    },
+                    _gameEngine.ChangeVolume,
+                    _gameEngine.PlaySound
+                );
+            else if (_gameEngine.GameStatus == GameStatusEnum.WinScreen ||
+                     _gameEngine.GameStatus == GameStatusEnum.LoseScreen)
+                _resultsInputProcessor.ProcessKeyDown(
+                    e.KeyCode, _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound,
+                    _gameEngine.PerformSubAction);
+        }
+        private void KeyUpProcessor(object sender, KeyEventArgs e) {
+            if (_gameEngine.GameStatus == GameStatusEnum.Game)
+                _gameInputProcessor.ProcessKeyUp(e.KeyCode, () => _gameEngine.GameLogic.Player);
+        }
+
+        private void OnPaint(object sender, PaintEventArgs e) {
+            var graphics = e.Graphics;
+            if (_gameEngine == null) return;
+            switch (_gameEngine.GameStatus) {
+                case GameStatusEnum.Menu:
+                    _menuDrawer.DrawMenu(graphics, _gameEngine);
+                    break;
+                case GameStatusEnum.Game: {
+                    var currentLevel = _gameEngine.GameLogic.CurrentLevel;
+                    var player = _gameEngine.GameLogic.Player;
+                    _gameDrawer.DrawGame(graphics, currentLevel, player);
+                    break;
+                }
+                case GameStatusEnum.WinScreen:
+                case GameStatusEnum.LoseScreen:
+                    _resultScreenDrawer.DrawResults(graphics, _gameEngine.GameStatus, _gameEngine.GetPlayerName(),
+                        _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores());
+                    break;
+                default:
+                    throw new Exception($"Unhandled game status, can be 0-3, is {_gameEngine.GameStatus}");
+            }
+        }
+
+        private void ReDraw() {
+            Invalidate();
+        }
+    }
+}

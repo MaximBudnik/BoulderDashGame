@@ -8,39 +8,48 @@ namespace ClassLibrary.
         public void ProcessInput(
             ConsoleKey key,
             Func<Player> getPlayer,
-            Action<int> changeGameStatus
+            Action<GameStatusEnum> changeGameStatus
         ) {
-            Player player = getPlayer();
+            var player = getPlayer();
             switch (key) {
                 case ConsoleKey.W:
-                    player.Move("vertical", -1);
+                    player.Move(MoveDirectionEnum.Vertical, -1);
+                    player.Keyboard.W = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.S:
-                    player.Move("vertical", 1);
+                    player.Move(MoveDirectionEnum.Vertical, 1);
+                    player.Keyboard.S = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.A:
-                    player.Move("horizontal", -1);
+                    player.Move(MoveDirectionEnum.Horizontal, -1);
+                    player.Keyboard.A = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.D:
-                    player.Move("horizontal", 1);
+                    player.Move(MoveDirectionEnum.Horizontal, 1);
+                    player.Keyboard.D = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.T:
                     player.Teleport();
+                    player.Keyboard.T = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.Spacebar:
-                    player.HpInEnergy();
+                    player.UseEnergyConverter();
+                    player.Keyboard.Space = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.Q:
                     player.ConvertNearStonesInDiamonds();
+                    player.Keyboard.Q = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.E:
-                    player.UseTnt();
+                    player.UseDynamite();
+                    player.Keyboard.E = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.R:
                     player.Attack();
+                    player.Keyboard.R = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.Escape:
-                    changeGameStatus(0);
+                    changeGameStatus(GameStatusEnum.Menu);
                     break;
             }
         }

@@ -1,0 +1,97 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+        <LangVersion>8</LangVersion>
+        <OutputType>WinExe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Sprites\mainSprites.png" />
+      <EmbeddedResource Include="Sprites\cursor.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <Content Include="Sprites\mainSprites.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\secondarySprites.png" />
+      <Content Include="Sprites\secondarySprites.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\Tileset.png" />
+      <Content Include="Sprites\Tileset.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\icons.png" />
+      <Content Include="Sprites\icons.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\full spritesheet.png" />
+      <None Remove="Sprites\full tilemap.png" />
+      <None Remove="Sprites\attack.png" />
+      <Content Include="Sprites\attack.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\fx.png" />
+      <Content Include="Sprites\fx.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\teleport.png" />
+      <None Remove="Sprites\Crystal.png" />
+      <None Remove="Sprites\Health Bar Asset Pack 2 by Adwit Rahman\Darkupdate.png" />
+      <None Remove="Sprites\Health Bar Asset Pack 2 by Adwit Rahman\Health Bar Asset Pack 2.2 by Adwit Rahman.psd" />
+      <None Remove="Sprites\bars.png" />
+      <None Remove="Sprites\barsEmpty.png" />
+      <None Remove="Sprites\heart.png" />
+      <Content Include="Sprites\heart.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\heart_empty.png" />
+      <Content Include="Sprites\heart_empty.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\shield.png" />
+      <Content Include="Sprites\shield.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\sword.png" />
+      <Content Include="Sprites\sword.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\orb_blue.png" />
+      <Content Include="Sprites\energy.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\keyboard.png" />
+      <Content Include="Sprites\keyboard.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sprites\adrenaline.png" />
+      <Content Include="Sprites\adrenaline.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Fonts\monogram.ttf" />
+      <EmbeddedResource Include="Fonts\monogram.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Fonts\m5x7.ttf" />
+      <EmbeddedResource Include="Fonts\m5x7.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Fonts\ThaleahFat.ttf" />
+      <EmbeddedResource Include="Fonts\ThaleahFat.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Sprites\cursor.ico" />
+      <None Remove="Sprites\cursor.png" />
+    </ItemGroup>
+
+</Project>
