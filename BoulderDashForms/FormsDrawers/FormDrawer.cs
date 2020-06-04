@@ -5,6 +5,9 @@ using System.IO;
 
 namespace BoulderDashForms.FormsDrawers {
     public class FormDrawer {
+        private readonly string _adrenalinePath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\adrenaline.png");
+
         private readonly string _attackPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\attack.png");
 
@@ -12,9 +15,6 @@ namespace BoulderDashForms.FormsDrawers {
 
         private readonly string _energyPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\energy.png");
-        
-        private readonly string _adrenalinePath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\adrenaline.png");
 
         private readonly string _hpEmptyPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\heart_empty.png");
@@ -39,11 +39,12 @@ namespace BoulderDashForms.FormsDrawers {
         private readonly string _tilesetPath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, @"Sprites\Tileset.png");
 
+        protected readonly Image Adrenaline;
+
         protected readonly Image Attack;
         protected readonly SolidBrush DarkBrush = new SolidBrush(Color.FromArgb(255, 34, 29, 35));
         protected readonly Image Effects;
         protected readonly Image Energy;
-        protected readonly Image Adrenaline;
         protected readonly Brush GuiBrush;
 
         protected readonly Image HpEmpty;

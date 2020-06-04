@@ -5,9 +5,9 @@ using ClassLibrary.Matrix;
 namespace ClassLibrary.Entities.Enemies {
     public abstract class Enemy : Movable {
         private readonly Action<int> _changePlayerHp;
+        private readonly Pathfinder _pathfinder;
         private readonly Func<int> GetPlayerPosX;
         private readonly Func<int> GetPlayerPosY;
-        private readonly Pathfinder _pathfinder;
         protected Func<Level, Point, bool> ConditionToMove;
         protected int Damage;
         public int ScoreForKill = 20;
@@ -36,7 +36,6 @@ namespace ClassLibrary.Entities.Enemies {
             _changePlayerHp = changePlayerHp;
             CanMove = false;
         }
-        
 
         protected void EnemyDamageNearTitles() {
             var playerPosX = GetPlayerPosX();

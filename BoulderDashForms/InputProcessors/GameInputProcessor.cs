@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using ClassLibrary;
+using ClassLibrary.Entities;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.InputProcessors;
 using ClassLibrary.SoundPlayer;
@@ -14,20 +15,20 @@ namespace BoulderDashForms.InputProcessors {
             var player = getPlayer();
             switch (key) {
                 case Keys.W:
-                    player.Move("vertical", -1);
+                    player.Move(MoveDirectionEnum.Vertical, -1);
                     player.Keyboard.W = KeyboardEnum.Enabled;
                     break;
                 case Keys.S:
-                    player.Move("vertical", 1);
+                    player.Move(MoveDirectionEnum.Vertical, 1);
                     player.Keyboard.S = KeyboardEnum.Enabled;
                     break;
                 case Keys.A:
-                    player.Move("horizontal", -1);
+                    player.Move(MoveDirectionEnum.Horizontal, -1);
                     player.PlayerAnimator.Reverse = -1;
                     player.Keyboard.A = KeyboardEnum.Enabled;
                     break;
                 case Keys.D:
-                    player.Move("horizontal", 1);
+                    player.Move(MoveDirectionEnum.Horizontal, 1);
                     player.PlayerAnimator.Reverse = 1;
                     player.Keyboard.D = KeyboardEnum.Enabled;
                     break;
@@ -58,7 +59,6 @@ namespace BoulderDashForms.InputProcessors {
                     changeVolume(-0.1f);
                     break;
                 case Keys.Escape:
-                    playSound(SoundFilesEnum.MenuAcceptSound);
                     changeGameStatus(GameStatusEnum.Menu);
                     break;
             }

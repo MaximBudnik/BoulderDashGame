@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Basic;
@@ -11,7 +10,7 @@ using ClassLibrary.Entities.Generation;
 using ClassLibrary.Entities.Player;
 
 namespace ClassLibrary.Matrix {
-public partial class Level {
+    public partial class Level {
         private void DiggerAlgorithm() {
             //in general generation depends on:
             //    _roomChanceGrow
@@ -189,8 +188,8 @@ public partial class Level {
                     randomX = rand.Next(0, Width);
                     randomY = rand.Next(0, Height);
                 }
-                Pathfinder pathfinder = new Pathfinder();
-                List<Point> path = pathfinder.FindPath(diggerPosX,diggerPosY,randomX,randomY,this,(l,p)=>true);
+                var pathfinder = new Pathfinder();
+                var path = pathfinder.FindPath(diggerPosX, diggerPosY, randomX, randomY, this, (l, p) => true);
 
                 //9) digger starts moving
 
@@ -245,7 +244,8 @@ public partial class Level {
                 matrix[i, j] = FillOneTitle(i, j, GameEntitiesEnum.FutureRooms);
             _createRoomChance = 0;
         }
-        private void StraightDig(bool isMoveHorizontal, ref int diggerPosX, ref int diggerPosY, int randomX, int randomY) {
+        private void StraightDig(bool isMoveHorizontal, ref int diggerPosX, ref int diggerPosY, int randomX,
+            int randomY) {
             if (isMoveHorizontal) {
                 if (randomX > diggerPosX)
                     diggerPosX++;
@@ -288,23 +288,24 @@ public partial class Level {
                 case GameEntitiesEnum.Rock:
                     return FillOneTitle(i, j, _getLevel, _substractPlayerHp, entityType);
                 case GameEntitiesEnum.Diamond:
-                    return new Diamond(i, j);
+                    return new Diamond(i, j, _playSound);
                 case GameEntitiesEnum.Wall:
                     return new Wall(i, j);
                 case GameEntitiesEnum.LuckyBox:
-                    return new LuckyBox(i, j);
+                    return new LuckyBox(i, j, _playSound);
                 case GameEntitiesEnum.SandTranslucent:
                     return new SandTranclucent(i, j);
                 case GameEntitiesEnum.Barrel:
-                    return new BarrelWithSubstance(i, j, _acidGameLoopAction, _getLevel, _substractPlayerHp);
+                    return new BarrelWithSubstance(i, j, _acidGameLoopAction, _getLevel, _substractPlayerHp,
+                        _playSound);
                 case GameEntitiesEnum.SwordTile:
-                    return new SwordTile(i, j);
+                    return new SwordTile(i, j, _playSound);
                 case GameEntitiesEnum.ConverterTile:
-                    return new ConverterTile(i, j);
+                    return new ConverterTile(i, j, _playSound);
                 case GameEntitiesEnum.DynamiteTile:
-                    return new DynamiteTile(i, j);
+                    return new DynamiteTile(i, j, _playSound);
                 case GameEntitiesEnum.ArmorTile:
-                    return new ArmorTile(i, j);
+                    return new ArmorTile(i, j, _playSound);
                 case GameEntitiesEnum.DedicatedEmptySpace:
                     return new DedicatedEmptySpace(i, j);
                 case GameEntitiesEnum.FutureCorridors:

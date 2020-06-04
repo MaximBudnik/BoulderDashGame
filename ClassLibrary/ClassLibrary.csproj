@@ -7,7 +7,6 @@
 
     <ItemGroup>
       <None Remove="Files\menuTheme.wav" />
-      <None Remove="ConsoleInterface\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -89,11 +88,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="ConsoleInterface\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="ConsoleInterface\**" />
+      <None Include="ConsoleInterface\AfterLevelScreen.cs" />
     </ItemGroup>
 
 </Project>

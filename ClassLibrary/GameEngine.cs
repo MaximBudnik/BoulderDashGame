@@ -42,6 +42,7 @@ namespace ClassLibrary {
 
         public void ChangeGameStatus(GameStatusEnum status) {
             GameStatus = status;
+            _musicPlayer.PlaySound(SoundFilesEnum.MenuAcceptSound);
         }
 
         private void GraphicsThread() {

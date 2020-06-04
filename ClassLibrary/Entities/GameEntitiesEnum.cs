@@ -22,7 +22,6 @@
         DedicatedEmptySpace = 101,
         FutureWallsAndSand = 102,
         FutureRooms = 103,
-        FutureCorridors = 104,
-        
+        FutureCorridors = 104
     }
 }

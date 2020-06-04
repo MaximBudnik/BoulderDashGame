@@ -9,10 +9,10 @@ using System.Text;
 namespace ClassLibrary.ConsoleInterface {
     public abstract class UserInterface {
         private readonly ConsoleColor ConsoleBackgroundColor = ConsoleColor.Black;
-        private readonly int consoleHeight = 45;
+        private readonly int consoleHeight = 50;
 
         //Fields
-        private readonly int consoleWidth = 131;
+        private readonly int consoleWidth = 140;
         private protected ConsoleColor primaryTextColor = ConsoleColor.White;
 
         private protected ConsoleColor SecondTextColor = ConsoleColor.DarkGray;

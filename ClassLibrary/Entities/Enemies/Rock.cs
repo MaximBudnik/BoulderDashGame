@@ -1,4 +1,5 @@
 ﻿using System;
+using ClassLibrary.Entities.Basic;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
@@ -13,32 +14,30 @@ namespace ClassLibrary.Entities.Enemies {
             Hp = 1000;
         }
         public override void GameLoopAction() {
-            ProcessRock();
+            RockFall();
             RockDamage();
         }
 
-        private void ProcessRock() {
+        private void RockFall() {
             var currentLevel = GetLevel();
             _isFalling = false;
 
             if (RightX >= currentLevel.Width ||
                 currentLevel[RightX, PositionY].EntityEnumType != GameEntitiesEnum.EmptySpace ||
                 _isFalling) return;
-            Move("horizontal", 1, PositionX, PositionY);
+            Move(MoveDirectionEnum.Vertical, 1);
             _isFalling = true;
         }
-        public void PushRock(int posX, int posY, string direction, int value) {
+
+        public override void BreakAction(Player.Player player) {
             var currentLevel = GetLevel();
-            bool b = posX + value <= currentLevel.Height && posX + value >= 0 &&
-                     currentLevel[posX, posY + value].EntityEnumType == GameEntitiesEnum.EmptySpace;
-            if (b) {
-                Move(direction, value, posX, posY);
-            }
+            if (player.PositionY < PositionY && currentLevel[PositionX, PositionY + 1] is EmptySpace)
+                Move(MoveDirectionEnum.Horizontal, 1);
+            else if (currentLevel[PositionX, PositionY - 1] is EmptySpace) Move(MoveDirectionEnum.Horizontal, -1);
         }
 
         private void RockDamage() {
-            //not to overflow matrix
-            if (RightX == GetLevel().Width) return;
+            if (PositionX + 1 == GetLevel().Width) return;
             if (_isFalling && GetLevel()[RightX, PositionY].EntityEnumType == GameEntitiesEnum.Player) DealDamage();
         }
     }

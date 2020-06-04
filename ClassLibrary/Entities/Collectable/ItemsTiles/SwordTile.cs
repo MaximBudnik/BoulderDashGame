@@ -1,12 +1,12 @@
 ﻿using System;
-using ClassLibrary.Entities.Player;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Collectable.ItemsTiles {
     public class SwordTile : ItemCollectible {
-        public SwordTile(int i, int j) : base(i, j) {
+        public SwordTile(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j, playSound) {
             EntityEnumType = GameEntitiesEnum.SwordTile;
         }
-        public override void BreakAction(Player.Player player) {
+        protected override void Collect(Player.Player player) {
             player.Inventory.SwordLevel++;
         }
     }

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Collectable {
     public class LuckyBox : ItemCollectible {
         private new readonly int PickUpValue = 3;
-        public LuckyBox(int i, int j) : base(i, j ) {
+        public LuckyBox(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j, playSound) {
             EntityEnumType = GameEntitiesEnum.LuckyBox;
         }
 
-        public override void BreakAction(Player.Player player) {
+        protected override void Collect(Player.Player player) {
             //TODO: write text in forms on pickup 
             player.AllScores["Collected lucky boxes"][0] += 1;
             player.AllScores["Collected lucky boxes"][1] += player.GetScoreToAdd(PickUpValue);

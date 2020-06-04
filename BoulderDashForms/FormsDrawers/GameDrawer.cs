@@ -202,7 +202,7 @@ namespace BoulderDashForms.FormsDrawers {
                             break;
                         case GameEntitiesEnum.EnemyWalker:
                             DrawFloorTile();
-                            srcRect = GetWalkerAnimation((EnemyWalker) currentLevel[i, j]);
+                            srcRect = GetWalkerAnimation(currentLevel[i, j] as EnemyWalker);
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
                         case GameEntitiesEnum.LuckyBox:

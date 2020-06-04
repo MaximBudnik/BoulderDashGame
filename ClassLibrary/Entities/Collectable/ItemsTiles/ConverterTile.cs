@@ -1,12 +1,12 @@
 ﻿using System;
-using ClassLibrary.Entities.Player;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Collectable.ItemsTiles {
     public class ConverterTile : ItemCollectible {
-        public ConverterTile(int i, int j) : base(i, j) {
+        public ConverterTile(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j, playSound) {
             EntityEnumType = GameEntitiesEnum.ConverterTile;
         }
-        public override void BreakAction(Player.Player player) {
+        protected override void Collect(Player.Player player) {
             player.Inventory.StoneInDiamondsConverterQuantity++;
         }
     }

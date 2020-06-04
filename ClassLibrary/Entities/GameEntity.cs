@@ -2,6 +2,7 @@
     public abstract class GameEntity {
         public static readonly int FormsSize = 14;
         public bool CanMove = true;
+        public int MoveWeight = 100;
         public int CurrentFrame = 0;
         public int IdleFrames = 4;
         public bool PathFinderMove = false;
@@ -19,14 +20,10 @@
 
         public virtual void GameLoopAction() { }
 
-        public virtual void BreakAction(Player.Player player) {
-            
-        }
-        
-        public virtual void BreakAction() {
-            
-        }
-        
+        public virtual void BreakAction(Player.Player player) { }
+
+        public virtual void BreakAction() { }
+
         public static bool IsLevelCellValid(int x, int y, int width, int height) {
             return x >= 0 && x < width && y >= 0 && y < height;
         }

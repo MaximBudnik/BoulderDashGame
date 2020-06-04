@@ -7,7 +7,6 @@ using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
 using ClassLibrary.SoundPlayer;
-using NAudio.Wave;
 
 namespace ClassLibrary {
     public class GameLogic {

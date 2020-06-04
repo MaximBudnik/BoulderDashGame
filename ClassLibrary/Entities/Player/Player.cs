@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Entities.Collectable;
-using ClassLibrary.Entities.Collectable.ItemsTiles;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
@@ -12,24 +11,24 @@ using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Player {
     public class Player : Movable {
+        private readonly int _adrenalineOnCombo = 100;
+        private readonly int _adrenalineTickReduction = 5;
         private readonly int _attackEnergyCost = 9;
-        private readonly Action _lose;
         private readonly int _diamondsTowWin;
+        private readonly Action _lose;
         private readonly int _moveEnergyCost = 1;
         private readonly int _moveRockEnergyCost = 5;
         private readonly Action<SoundFilesEnum> _playSound;
+        private readonly Action<Player> _setPlayer;
         private readonly int _teleportRange = 20;
         private readonly Action _win;
-        private readonly Action<Player> _setPlayer;
         public readonly Dictionary<string, int[]> AllScores;
+        private readonly int DefaultArmorCellHp = 10;
         private readonly double DynamiteTileDamage = 0.3;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
-        private readonly int MaxEnergy = 20;
+        public readonly int MaxEnergy = 20;
         public readonly string Name;
-        private readonly int _adrenalineOnCombo = 100;
-        private readonly int _adrenalineTickReduction = 5;
-        private readonly int DefaultArmorCellHp = 10;
 
         public Player(
             int i,
@@ -69,7 +68,7 @@ namespace ClassLibrary.Entities.Player {
         public int MaxHp { get; set; } = 10;
         public int Energy { get; private set; } = 20;
 
-        public int Adrenaline { get; private set; } = 0;
+        public int Adrenaline { get; private set; }
         public int CollectedDiamonds { get; set; }
         public int EnergyRestoreTick { get; set; } = 1;
         public int ScoreMultiplier { get; set; } = 10;
@@ -112,44 +111,48 @@ namespace ClassLibrary.Entities.Player {
             SetAnimation(animationEnum);
         }
 
-        public void Move(string direction, int value) {
+        public override void Move(MoveDirectionEnum direction, int value) {
             if (!EnoughEnergy()) return;
             SetAnimation(PlayerAnimationsEnum.Move);
-            var willMove = false;
             var level = GetLevel();
-            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+            var willMove = false;
             switch (direction) {
-                case "vertical":
-                    PositionX += value;
-                    if (!IsNewPositionSuitable(level))
-                        PositionX -= value;
-                    else
+                case MoveDirectionEnum.Vertical:
+                    var newPositionX = PositionX + value;
+                    if (IsNewPositionSuitable(level, newPositionX, PositionY)) {
+                        MakePreviousPositionEmpty(level);
+                        PositionX = newPositionX;
                         willMove = true;
-                    break;
-                case "horizontal":
-                    PositionY += value;
-                    if (IsLevelCellValid(PositionX, PositionY, level.Width, level.Height) &&
-                        level[PositionX, PositionY].EntityEnumType == GameEntitiesEnum.Rock && EnoughEnergyForRock()) {
-                        ((Rock) level[PositionX, PositionY]).PushRock(PositionX, PositionY, "horizontal", value);
-                        Energy -= _moveRockEnergyCost;
                     }
-                    if (!IsNewPositionSuitable(level)) PositionY -= value;
-                    else willMove = true;
                     break;
-                default:
-                    throw new Exception("Unknown move direction in Player.cs");
+                case MoveDirectionEnum.Horizontal:
+                    var newPositionY = PositionY + value;
+
+                    if (level[PositionX, newPositionY] is Rock && Energy > _moveRockEnergyCost) {
+                        Energy -= _moveRockEnergyCost;
+                        level[PositionX, newPositionY].BreakAction(this);
+                    }
+
+                    if (IsNewPositionSuitable(level, PositionX, newPositionY)) {
+                        MakePreviousPositionEmpty(level);
+                        PositionY = newPositionY;
+                        willMove = true;
+                    }
+                    break;
             }
-            if (willMove) {
-                _playSound(SoundFilesEnum.WalkSound);
-                Energy -= _moveEnergyCost;
-                level[PositionX, PositionY].BreakAction(this);
-                _playSound(SoundFilesEnum.PickupSound);
-            }
+            if (!willMove) return;
+            _playSound(SoundFilesEnum.WalkSound);
+            Energy -= _moveEnergyCost;
+            level[PositionX, PositionY].BreakAction(this);
             level[PositionX, PositionY] = this;
         }
-        private bool IsNewPositionSuitable(Level level) {
-            return IsLevelCellValid(PositionX, PositionY, level.Width, level.Height) &&
-                   level[PositionX, PositionY].CanMove;
+        private void MakePreviousPositionEmpty(Level level) {
+            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+        }
+
+        private bool IsNewPositionSuitable(Level level, int posX, int posY) {
+            return IsLevelCellValid(posX, posY, level.Width, level.Height) &&
+                   level[posX, posY].CanMove;
         }
         private bool EnoughEnergyForRock() {
             return Energy >= _moveRockEnergyCost;
@@ -204,8 +207,9 @@ namespace ClassLibrary.Entities.Player {
                 if (x == 0 || y == 0) {
                     var posX = x + PositionX;
                     var posY = y + PositionY;
-                    if (level[posX, posY].EntityEnumType == GameEntitiesEnum.Rock) {
-                        var tmp = new StoneInDiamondConverter(posX, posY, GetLevel);
+                    if (IsLevelCellValid(posX, posY, level.Width, level.Height) &&
+                        level[posX, posY].EntityEnumType == GameEntitiesEnum.Rock) {
+                        var tmp = new StoneInDiamondConverter(posX, posY, GetLevel, _playSound);
                         level[posX, posY] = tmp;
                     }
                 }
@@ -225,7 +229,7 @@ namespace ClassLibrary.Entities.Player {
                     var tmp = (Enemy) level[posX, posY];
                     tmp.Hp -= Inventory.SwordLevel;
                     if (tmp.Hp <= 0) {
-                        level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY);
+                        level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY, _playSound);
                         Adrenaline += tmp.ScoreForKill;
                         AddScore(tmp.ScoreForKill);
                         AllScores["Killed enemies"][0] += 1;

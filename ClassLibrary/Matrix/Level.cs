@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using ClassLibrary.Entities;
-using ClassLibrary.Entities.Basic;
-using ClassLibrary.Entities.Collectable;
-using ClassLibrary.Entities.Collectable.ItemsTiles;
-using ClassLibrary.Entities.Enemies;
-using ClassLibrary.Entities.Generation;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Matrix {
     public partial class Level : Matrix {
+        private readonly Action _acidGameLoopAction;
         private readonly Func<Level> _getLevel;
         private readonly Func<int> _getPlayerPositionX;
         private readonly Func<int> _getPlayerPositionY;
@@ -20,7 +16,6 @@ namespace ClassLibrary.Matrix {
         private readonly Action<Player> _setPlayer;
         private readonly Action<int> _substractPlayerHp;
         private readonly Action _win;
-        private readonly Action _acidGameLoopAction;
         private int _createRoomChance;
         private int _createRoomMaxSizeX = 10;
         private int _createRoomMaxSizeY = 10;
@@ -68,6 +63,4 @@ namespace ClassLibrary.Matrix {
             DiamondsQuantityToWin = difficulty * 2;
         }
     }
-
-    
 }

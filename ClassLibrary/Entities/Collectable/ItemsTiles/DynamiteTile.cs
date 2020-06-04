@@ -1,12 +1,12 @@
 ﻿using System;
-using ClassLibrary.Entities.Player;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Collectable.ItemsTiles {
     public class DynamiteTile : ItemCollectible {
-        public DynamiteTile(int i, int j) : base(i, j) {
+        public DynamiteTile(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j, playSound) {
             EntityEnumType = GameEntitiesEnum.DynamiteTile;
         }
-        public override void BreakAction(Player.Player player) {
+        protected override void Collect(Player.Player player) {
             player.Inventory.TntQuantity++;
         }
     }
