@@ -1,59 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Drawing;
+using ClassLibrary.Entities.Basic;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary.Entities.Enemies {
     public class EnemyWalker : Enemy {
-        public new void GameLoopAction() {
-            EnemyMovement();
-            EnemyDamageNearTitles();
-        }
-
         public EnemyWalker(int i, int j,
             Func<Level> getLevel,
             Func<int> getPlayerPosX, Func<int> getPlayerPosY,
             Action<int> changePlayerHp
         )
             : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
-            EntityType = 6;
+            EntityEnumType = GameEntitiesEnum.EnemyWalker;
             Damage = 5;
             Hp = 10;
+            ScoreForKill = 40;
+            CurrentFrame = Randomizer.Random(0, 3);
+            ConditionToMove = (level, point) =>
+                level[point.X, point.Y].CanMove || level[point.X, point.Y].PathFinderMove;
         }
 
-        private void EnemyMovement() {
-            var level = GetLevel();
-            var playerPosX = GetPlayerPosX();
-            var playerPosY = GetPlayerPosY();
-            var moves = new List<string>();
+        public override void GameLoopAction() {
+            EnemyDamageNearTitles();
+            Move();
+        }
 
-            if (playerPosX < PositionX && Left < level.Width &&
-                level[Left, PositionY].CanMove)
-                moves.Add("left");
-            if (playerPosX > PositionX && Right >= 0 && level[Right, PositionY].CanMove)
-                moves.Add("right");
-            if (playerPosY > PositionY && Bot < level.Height &&
-                level[PositionX, Bot].CanMove)
-                moves.Add("down");
-            if (playerPosY < PositionY && Top >= 0 && level[PositionX, Top].CanMove)
-                moves.Add("up");
-            moves.Add("hold");
-            var action = Randomizer.GetRandomFromList(moves);
-            switch (action) {
-                case "hold":
-                    return;
-                case "up":
-                    Move("vertical", -1, PositionX, PositionY);
-                    break;
-                case "down":
-                    Move("vertical", 1, PositionX, PositionY);
-                    break;
-                case "right":
-                    Move("horizontal", 1, PositionX, PositionY);
-                    break;
-                case "left":
-                    Move("horizontal", -1, PositionX, PositionY);
-                    break;
+        private void Move() {
+            var level = GetLevel();
+            Point dest;
+            try {
+                dest = GetNextPosition(level);
+            }
+            catch (Exception) {
+                return;
+            }
+            if (level[dest.X, dest.Y].CanMove) {
+                level[dest.X, dest.Y] = this;
+                level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
+                PositionX = dest.X;
+                PositionY = dest.Y;
             }
         }
     }

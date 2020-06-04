@@ -1,23 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using ClassLibrary.DataLayer;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary {
     public class GameLogic {
-        public Level CurrentLevel { get; private set; }
-        public Player Player { get; private set; }
+        private readonly Action<GameStatusEnum> _changeGameStatus;
+        private readonly Func<DataInterlayer> _getDataLayer;
+        private readonly Action _refreshEngineSaves;
+
+        private int _chanceToDeleteAcidBlock;
+
+        private int _chanceToSpawnWalker;
+        private int _difficulty;
         public Save CurrentSave = null;
 
-        private Action<int> _changeGameStatus;
-        private Func<DataInterlayer> _getDataLayer;
-        private int _chanceToDeleteAcidBlock = 0;
-        
+        public GameLogic(Action<GameStatusEnum> changeGameStatus,
+            Func<DataInterlayer> getDataLayer,
+            Action refreshEngineSaves) {
+            _changeGameStatus = changeGameStatus;
+            _getDataLayer = getDataLayer;
+            _refreshEngineSaves = refreshEngineSaves;
+        }
+        public Level CurrentLevel { get; private set; }
+        public Player Player { get; private set; }
+
         private void SetPlayer(Player pl) {
             Player = pl;
         }
@@ -26,91 +38,85 @@ namespace ClassLibrary {
             Player.SubstractPlayerHp(i);
         }
 
-        public void CreateLevel(int levelName, string playerName, Action<int> changeGameStatus,
-            Func<DataInterlayer> getDataLayer) {
-            _changeGameStatus = changeGameStatus;
-            _getDataLayer = getDataLayer;
+        public void CreateLevel(int levelName, string playerName, int sizeX, int sizeY, int difficulty,
+            Action<SoundFilesEnum> playSound
+        ) {
             CurrentLevel = new Level(
                 levelName, playerName,
-                () => CurrentLevel,
+                //() => CurrentLevel,
                 Win,
                 Lose,
                 () => Player.PositionX,
                 () => Player.PositionY,
                 SubstractPlayerHp,
-                SetPlayer
+                SetPlayer,
+                sizeX,
+                sizeY,
+                difficulty,
+                playSound,
+                () => {
+                    _chanceToDeleteAcidBlock += 1;
+                    CheckIfDeleteAllAcidBlocks();
+                }
             );
+            _difficulty = difficulty;
         }
 
         public void GameLoop() {
-            List<GameEntity> used = new List<GameEntity>();
-            for (int i = 0; i < CurrentLevel.Width; i++) {
-                for (int j = 0; j < CurrentLevel.Height; j++) {
+            try {
+                var used = new List<GameEntity>();
+                for (var i = 0; i < CurrentLevel.Width; i++)
+                for (var j = 0; j < CurrentLevel.Height; j++) {
                     if (used.Contains(CurrentLevel[i, j])) continue;
-                    if (CurrentLevel[i, j] is Player ) {
-                        var tmp = (Player) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                        Player = (Player) CurrentLevel[i, j];
-                    }
-                    if (CurrentLevel[i, j] is EnemyWalker ) {
-                        var tmp = (EnemyWalker) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                    }
-                    if (CurrentLevel[i, j] is Rock ) {
-                        var tmp = (Rock) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                    }
-                    if (CurrentLevel[i, j] is StoneInDiamondConverter) {
-                        var tmp = (StoneInDiamondConverter) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                    }
-                    if (CurrentLevel[i, j] is Acid) { //player instantly breaks created block
-                        var tmp = (Acid) CurrentLevel[i, j];
-                        tmp.GameLoopAction();
-                        used.Add(tmp);
-                        _chanceToDeleteAcidBlock+=1;
-                        CheckIfDeleteAllAcidBlocks();
-                    }
+                    var tmp = CurrentLevel[i, j];
+                    tmp.GameLoopAction();
+                    used.Add(tmp);
                 }
+
+                SpawnEnemies();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
             }
         }
+        private void SpawnEnemies() {
+            _chanceToSpawnWalker += _difficulty;
+            var randomX = Randomizer.Random(CurrentLevel.Width);
+            var randomY = Randomizer.Random(CurrentLevel.Height);
+            if (CurrentLevel[randomX, randomY].EntityEnumType == GameEntitiesEnum.EmptySpace &&
+                _chanceToSpawnWalker >= Randomizer.Random(100))
+                CurrentLevel[randomX, randomY] =
+                    new EnemyWalker(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
+                        () => Player.PositionY, SubstractPlayerHp);
+        }
+
         private void CheckIfDeleteAllAcidBlocks() {
             if (_chanceToDeleteAcidBlock >= 50) {
-                for (int i = 0; i < CurrentLevel.Width; i++) {
-                    for (int j = 0; j < CurrentLevel.Height; j++) {
-                        if (CurrentLevel[i, j] is Acid) {
-                            ((Acid)CurrentLevel[i, j]).TurnIntoRock();
-                        }
-                    }
-                }
+                for (var i = 0; i < CurrentLevel.Width; i++)
+                for (var j = 0; j < CurrentLevel.Height; j++)
+                    if (CurrentLevel[i, j] is Acid)
+                        ((Acid) CurrentLevel[i, j]).TurnIntoRock();
                 _chanceToDeleteAcidBlock = 0;
             }
         }
 
         private void Win() {
-            _changeGameStatus(2);
-            Thread.Sleep(1000);
-            DataInterlayer dataInterlayer = _getDataLayer();
+            _changeGameStatus(GameStatusEnum.WinScreen);
+            var dataInterlayer = _getDataLayer();
             CurrentSave.LevelName = CurrentLevel.LevelName;
             CurrentSave.Score = Player.Score;
             CurrentSave.LevelName += 1;
             dataInterlayer.ChangeGameSave(CurrentSave);
-            _changeGameStatus(0);
-            Console.ReadLine();
+            _refreshEngineSaves();
         }
 
         private void Lose() {
-            _changeGameStatus(3);
-            Thread.Sleep(1000);
-            DataInterlayer dataInterlayer = _getDataLayer();
+            _changeGameStatus(GameStatusEnum.LoseScreen);
+            var dataInterlayer = _getDataLayer();
             dataInterlayer.AddBestScore(Player.Name, Player.Score);
             dataInterlayer.DeleteGameSave(CurrentSave);
-            _changeGameStatus(0);
-            Console.ReadLine();
+            _refreshEngineSaves();
         }
     }
 }

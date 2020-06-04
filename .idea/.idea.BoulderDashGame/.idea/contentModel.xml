@@ -1,15 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\PC\.Rider2019.3\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\PC\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_BoulderDashGame.983593268.00" t="ExcludeRecursive" />
+    <e p="C:\Users\PC\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\PC\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_BoulderDashGame.983593268.00" t="ExcludeRecursive" />
     <e p="D:\Projects\c#\OOP\BoulderDashGame" t="IncludeFlat">
+      <e p="BoulderDashForms" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BoulderDashForms.csproj" t="IncludeRecursive" />
+        <e p="Fonts" t="Include">
+          <e p="m5x7.ttf" t="Include" />
+          <e p="monogram.ttf" t="Include" />
+          <e p="ThaleahFat.ttf" t="Include" />
+        </e>
+        <e p="Form1.cs" t="Include" />
+        <e p="Form1.Designer.cs" t="Include" />
+        <e p="Form1.resx" t="Include" />
+        <e p="FormsDrawers" t="Include">
+          <e p="FormDrawer.cs" t="Include" />
+          <e p="GameDrawer.cs" t="Include" />
+          <e p="MenuDrawer.cs" t="Include" />
+          <e p="ResultScreenDrawer.cs" t="Include" />
+        </e>
+        <e p="InputProcessors" t="Include">
+          <e p="GameInputProcessor.cs" t="Include" />
+          <e p="MenuInputProcessor.cs" t="Include" />
+          <e p="ResultsInputProcessor.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Release" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="BoulderDashForms.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="PublishProfiles" t="Include">
+            <e p="FolderProfile.pubxml" t="Include" />
+          </e>
+        </e>
+        <e p="Sprites" t="Include">
+          <e p="adrenaline.png" t="Include" />
+          <e p="attack.png" t="Include" />
+          <e p="cursor.ico" t="Include" />
+          <e p="energy.png" t="Include" />
+          <e p="fx.png" t="Include" />
+          <e p="heart.png" t="Include" />
+          <e p="heart_empty.png" t="Include" />
+          <e p="icons.png" t="Include" />
+          <e p="keyboard.png" t="Include" />
+          <e p="mainSprites.png" t="Include" />
+          <e p="secondarySprites.png" t="Include" />
+          <e p="shield.png" t="Include" />
+          <e p="sword.png" t="Include" />
+          <e p="Tileset.png" t="Include" />
+        </e>
+      </e>
       <e p="BoulderDashGame" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="BoulderDashGame.csproj" t="IncludeRecursive" />
         <e p="Game.txt" t="Include" />
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="BoulderDashGame.AssemblyInfo.cs" t="Include" />
             </e>
@@ -32,15 +84,15 @@
           <e p="DataInterlayer.cs" t="Include" />
           <e p="Save.cs" t="Include" />
           <e p="Score.cs" t="Include" />
+          <e p="Settings.cs" t="Include" />
+          <e p="SettingsController.cs" t="Include" />
         </e>
         <e p="Entities" t="Include">
           <e p="basic" t="Include">
-            <e p="DedicatedEmptySpace.cs" t="Include" />
             <e p="EmptySpace.cs" t="Include" />
             <e p="Sand.cs" t="Include" />
             <e p="SandTranclucent.cs" t="Include" />
             <e p="Wall.cs" t="Include" />
-            <e p="Wood.cs" t="Include" />
           </e>
           <e p="Collectable" t="Include">
             <e p="BarrelWithSubstance.cs" t="Include" />
@@ -49,14 +101,17 @@
             <e p="ItemsTiles" t="Include">
               <e p="ArmorTile.cs" t="Include" />
               <e p="ConverterTile.cs" t="Include" />
+              <e p="DynamiteTile.cs" t="Include" />
               <e p="SwordTile.cs" t="Include" />
-              <e p="TntTile.cs" t="Include" />
             </e>
             <e p="LuckyBox.cs" t="Include" />
           </e>
           <e p="Enemies" t="Include">
             <e p="Enemy.cs" t="Include" />
+            <e p="EnemyDigger.cs" t="Include" />
             <e p="EnemyWalker.cs" t="Include" />
+            <e p="NewFile1.txt" t="Include" />
+            <e p="PathFinder.cs" t="Include" />
             <e p="Rock.cs" t="Include" />
           </e>
           <e p="Expanding" t="Include">
@@ -64,42 +119,76 @@
             <e p="Expandable.cs" t="Include" />
             <e p="StoneInDiamondConverter.cs" t="Include" />
           </e>
+          <e p="GameEntitiesEnum.cs" t="Include" />
           <e p="GameEntity.cs" t="Include" />
+          <e p="Generation" t="Include">
+            <e p="DedicatedEmptySpace.cs" t="Include" />
+            <e p="FutureCorridors.cs" t="Include" />
+            <e p="FutureRooms.cs" t="Include" />
+            <e p="FutureWallsAndSand.cs" t="Include" />
+          </e>
           <e p="Movable.cs" t="Include" />
+          <e p="MoveDirectionEnum.cs" t="Include" />
           <e p="Player" t="Include">
             <e p="Inventory.cs" t="Include" />
+            <e p="Keyboard.cs" t="Include" />
+            <e p="KeyboardEnum.cs" t="Include" />
             <e p="Player.cs" t="Include" />
+            <e p="PlayerAnimationsEnum.cs" t="Include" />
+            <e p="PlayerAnimator.cs" t="Include" />
           </e>
         </e>
         <e p="GameEngine.cs" t="Include" />
+        <e p="GameEngineConsole.cs" t="Include" />
         <e p="gameFiles" t="Include">
           <e p="BestScores.db" t="Include" />
           <e p="Saves.db" t="Include" />
           <e p="saves.txt" t="Include" />
           <e p="scores.txt" t="Include" />
           <e p="Settings.db" t="Include" />
+          <e p="settings.json" t="Include" />
         </e>
         <e p="GameLogic.cs" t="Include" />
+        <e p="GamestatusEnum.cs" t="Include" />
         <e p="InputProcessors" t="Include">
           <e p="GameInputProcessor.cs" t="Include" />
           <e p="InputProcessor.cs" t="Include" />
           <e p="MenuInputProcessor.cs" t="Include" />
         </e>
         <e p="Matrix" t="Include">
+          <e p="Generation.cs" t="Include" />
           <e p="Level.cs" t="Include" />
           <e p="Matrix.cs" t="Include" />
+          <e p="NewFile1.txt" t="Include" />
         </e>
+        <e p="Menu.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="ClassLibrary.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
         <e p="Randomizer.cs" t="Include" />
-        <e p="SoundPlayer.cs" t="Include" />
+        <e p="SoundPlayer" t="Include">
+          <e p="SoundFilesEnum.cs" t="Include" />
+          <e p="SoundPlayer.cs" t="Include" />
+        </e>
         <e p="Sounds" t="Include">
-          <e p="menuTheme.mp3" t="Include" />
+          <e p="bullet.mp3" t="Include" />
+          <e p="jw.mp3" t="Include" />
+          <e p="sfx" t="Include">
+            <e p="attack.wav" t="Include" />
+            <e p="bomb.wav" t="Include" />
+            <e p="converter.wav" t="Include" />
+            <e p="hit.wav" t="Include" />
+            <e p="menuAccept.wav" t="Include" />
+            <e p="menuClick.wav" t="Include" />
+            <e p="pickup.wav" t="Include" />
+            <e p="teleport.wav" t="Include" />
+            <e p="walk.wav" t="Include" />
+          </e>
+          <e p="trigger.mp3" t="Include" />
         </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />

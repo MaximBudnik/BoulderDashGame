@@ -14,14 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Text\NetCoreAudio\NetCoreAudio\NetCoreAudio.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Remove="Sounds\menuTheme.mp3" />
-      <Content Include="Sounds\menuTheme.mp3">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="gameFiles\saves.json" />
       <None Remove="gameFiles\scores.json" />
       <None Remove="gameFiles\NewFile1.txt" />
@@ -33,10 +26,69 @@
       <Content Include="gameFiles\saves.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="gameFiles\settings.json" />
+      <Content Include="gameFiles\settings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\melt.mp3" />
+      <None Remove="Sounds\silverBullet.mp3" />
+      <None Remove="Sounds\trigger.mp3" />
+      <Content Include="Sounds\trigger.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\bullet.mp3" />
+      <Content Include="Sounds\bullet.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\menuAccept.wav" />
+      <Content Include="Sounds\sfx\menuAccept.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\menuClick.wav" />
+      <Content Include="Sounds\sfx\menuClick.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\attack.wav" />
+      <Content Include="Sounds\sfx\attack.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\bomb.wav" />
+      <Content Include="Sounds\sfx\bomb.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\converter.wav" />
+      <Content Include="Sounds\sfx\converter.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\hit.wav" />
+      <Content Include="Sounds\sfx\hit.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\pickup.wav" />
+      <Content Include="Sounds\sfx\pickup.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\teleport.wav" />
+      <Content Include="Sounds\sfx\teleport.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\sfx\walk.wav" />
+      <Content Include="Sounds\sfx\walk.wav">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Sounds\Deconsecrated.mp3" />
+      <Content Include="Sounds\jw.mp3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="LiteDB" Version="5.0.7" />
+      <PackageReference Include="NAudio" Version="1.10.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="ConsoleInterface\AfterLevelScreen.cs" />
     </ItemGroup>
 
 </Project>

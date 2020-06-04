@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoulderDashGame", "BoulderD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{56FCF9DA-A5B0-4B1B-A860-71608F4C8A2C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoulderDashForms", "BoulderDashForms\BoulderDashForms.csproj", "{B423E602-190A-4929-9794-60E1C493E1E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{56FCF9DA-A5B0-4B1B-A860-71608F4C8A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56FCF9DA-A5B0-4B1B-A860-71608F4C8A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56FCF9DA-A5B0-4B1B-A860-71608F4C8A2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B423E602-190A-4929-9794-60E1C493E1E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B423E602-190A-4929-9794-60E1C493E1E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B423E602-190A-4929-9794-60E1C493E1E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B423E602-190A-4929-9794-60E1C493E1E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

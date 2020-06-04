@@ -5,7 +5,7 @@ namespace ClassLibrary.InputProcessors {
         public void ProcessInput(
             ConsoleKey key,
             Action exit,
-            Action<int> changeGameStatus,
+            Action<GameStatusEnum> changeGameStatus,
             Action<int> changeMenuAction,
             Func<int> getOperation,
             Action createNewGame,
@@ -29,7 +29,7 @@ namespace ClassLibrary.InputProcessors {
                             break;
                         case 1:
                             createNewGame();
-                            changeGameStatus(1);
+                            changeGameStatus(GameStatusEnum.Game);
                             break;
                         case 2:
                             drawSettings();
@@ -46,7 +46,7 @@ namespace ClassLibrary.InputProcessors {
                     }
                     break;
                 case ConsoleKey.Escape:
-                    changeGameStatus(1);
+                    changeGameStatus(GameStatusEnum.Game);
                     break;
             }
         }

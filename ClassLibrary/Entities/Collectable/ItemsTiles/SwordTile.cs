@@ -1,16 +1,13 @@
 ﻿using System;
-using ClassLibrary.Entities.Player;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Collectable.ItemsTiles {
     public class SwordTile : ItemCollectible {
-        public SwordTile(int i, int j) :base(i, j){
-            EntityType = 20;
+        public SwordTile(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j, playSound) {
+            EntityEnumType = GameEntitiesEnum.SwordTile;
         }
-        public static void Collect(Func<Inventory> getPlayerInventory) {
-            getPlayerInventory().SwordLevel++;
-        }
-        
-        public override void GameLoopAction() {
+        protected override void Collect(Player.Player player) {
+            player.Inventory.SwordLevel++;
         }
     }
 }

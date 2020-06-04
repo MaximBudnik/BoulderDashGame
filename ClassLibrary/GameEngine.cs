@@ -1,154 +1,116 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ClassLibrary.ConsoleInterface;
 using ClassLibrary.DataLayer;
-using ClassLibrary.InputProcessors;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary {
-    public class GameEngine {
-        private const int
-            GameLogicTickRate = 1; //TODO: carry it out in settings.
+    public partial class GameEngine {
+        //menu 
+        private readonly MusicPlayer _musicPlayer = new MusicPlayer();
+        private readonly Action _reDraw;
+        public readonly DataInterlayer DataInterlayer = new DataInterlayer();
+        public readonly GameLogic GameLogic;
+        public GameEngine(Action reDraw) {
+            _reDraw = reDraw;
+            GameLogic = new GameLogic(ChangeGameStatus, () => DataInterlayer, RefreshSaves);
+        }
+        public GameStatusEnum GameStatus { get; private set; }
+        public List<Save> Saves { get; private set; }
 
-        private int _gameStatus; // 0 - menu; 1 - game; 2 - win screen; 3 - lose screen
+        //TODO: settings validation
+        public Save NewGameSave { get; private set; } = new Save();
 
-        private int _currentMenuAction;
-        private readonly int MenuItems = 6;
-
-        private void ChangeGameStatus(int i) {
-            if (i >= 0 && i < 4)
-                _gameStatus = i;
-            else
-                throw new Exception("Unknown game status");
+        public void ChangeVolume(float val) {
+            _musicPlayer.ChangeVolume(val);
         }
 
-        private void ChangeCurrentMenuAction(int i) {
-            if (_currentMenuAction < MenuItems && _currentMenuAction >= 0) {
-                _currentMenuAction += i;
-                if (_currentMenuAction == MenuItems)
-                    _currentMenuAction = 0;
-                else if (_currentMenuAction == -1) _currentMenuAction = MenuItems - 1;
-            }
+        public void PlaySound(SoundFilesEnum name) {
+            _musicPlayer.PlaySound(name);
         }
 
-        private readonly Menu _menu = new Menu();
-        private readonly GameLogic _gameLogic = new GameLogic();
-        private readonly DataInterlayer _dataInterlayer = new DataInterlayer();
-        private readonly MenuInputProcessor _menuInputProcessor = new MenuInputProcessor();
-        private readonly GameInterface _gameInterface = new GameInterface();
-        private readonly AfterLevelScreen _afterLevelScreen = new AfterLevelScreen();
-        private readonly GameInputProcessor _gameInputProcessor = new GameInputProcessor();
+        public int GetScores() {
+            return GameLogic.Player.Score;
+        }
+        public string GetPlayerName() {
+            return GameLogic.Player.Name;
+        }
+        public Dictionary<string, int[]> GetAllPlayerScores() {
+            return GameLogic.Player.AllScores;
+        }
+
+        public void ChangeGameStatus(GameStatusEnum status) {
+            GameStatus = status;
+            _musicPlayer.PlaySound(SoundFilesEnum.MenuAcceptSound);
+        }
 
         private void GraphicsThread() {
-            var currentLevel = _gameLogic.CurrentLevel;
-            var player = _gameLogic.Player;
-            while (_gameStatus == 1) {
-                _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
-                _gameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantity, player.CollectedDiamonds,
-                    player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name, player.Inventory);
-                _gameInterface.NewDraw(() => currentLevel);
+            while (GameStatus == GameStatusEnum.Game) {
+                Thread.Sleep(1000 / DataInterlayer.Settings.Fps);
+                _reDraw();
             }
-            if (_gameStatus == 2) _afterLevelScreen.DrawGameWin(player.Score, player.AllScores);
-            else if (_gameStatus == 3) _afterLevelScreen.DrawGameLose();
+        }
+        private void MenuGraphicsThread() {
+            while (GameStatus == GameStatusEnum.Menu) {
+                Thread.Sleep(1000 / (DataInterlayer.Settings.Fps * 2));
+                _reDraw();
+            }
+        }
+
+        private void ResultsGraphicsThread() {
+            while (GameStatus == GameStatusEnum.WinScreen || GameStatus == GameStatusEnum.LoseScreen) {
+                Thread.Sleep(1000 / DataInterlayer.Settings.Fps);
+                _reDraw();
+            }
         }
 
         private void GameLogicThread() {
-            while (_gameStatus == 1) {
-                Console.CursorVisible = false;
-                Thread.Sleep(1000 / GameLogicTickRate);
-                _gameLogic.GameLoop();
+            while (GameStatus == GameStatusEnum.Game) {
+                Thread.Sleep(1000 / DataInterlayer.Settings.TickRate);
+                GameLogic.GameLoop();
             }
         }
-
-        private void InputThread() {
-            while (_gameStatus == 1) {
-                var c = Console.ReadKey(true);
-                _gameInputProcessor.ProcessInput(c.Key, () => _gameLogic.Player, ChangeGameStatus);
-            }
+        private void RefreshSaves() {
+            Saves = DataInterlayer.GetAllGameSaves();
         }
-
         public void Start() {
-            Task musicPlayer = new Task(() => {
-                SoundPlayer soundPlayer = new SoundPlayer();
-                soundPlayer.playMusic();
-            });
-            // musicPlayer.Start(); //TODO: dont forget to enable music on build!
-
-            _menu.DrawMenu(_currentMenuAction);
+            RefreshSaves();
             MenuGameCycle();
 
             void MenuGameCycle() {
-                _menu.DrawMenu(_currentMenuAction);
-                while (_gameStatus == 0) CreateMenu();
-                if (_gameStatus == 1) {
-                    Console.Clear();
-                    Parallel.Invoke(GraphicsThread, GameLogicThread, InputThread);
+                try {
+                    if (GameStatus == GameStatusEnum.Menu) {
+                        _musicPlayer.PlayTheme(SoundFilesEnum.MenuTheme);
+                        Parallel.Invoke(MenuGraphicsThread);
+                    }
+                    else if (GameStatus == GameStatusEnum.Game) {
+                        _musicPlayer.PlayTheme(SoundFilesEnum.GameTheme);
+                        Parallel.Invoke(GraphicsThread,
+                            GameLogicThread);
+                    }
+                    else if (GameStatus == GameStatusEnum.WinScreen || GameStatus == GameStatusEnum.LoseScreen) {
+                        _musicPlayer.PlayTheme(SoundFilesEnum.ResultsTheme);
+                        Parallel.Invoke(ResultsGraphicsThread);
+                    }
+                    else {
+                        throw new Exception("Unknown game status");
+                    }
+                    MenuGameCycle();
                 }
-                MenuGameCycle();
+                catch (Exception e) {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
         }
-
-        private void CreateMenu() {
-            var c = Console.ReadKey(true);
-            _menuInputProcessor.ProcessInput(
-                c.Key,
-                () => { Environment.Exit(0); },
-                ChangeGameStatus,
-                i => {
-                    ChangeCurrentMenuAction(i);
-                    _menu.DrawMenu(_currentMenuAction);
-                },
-                () => _currentMenuAction,
-                () => {
-                    _menu.DrawNewGame();
-                    var name = Console.ReadLine();
-                    _dataInterlayer.AddGameSave(name);
-                    var currentSave = _dataInterlayer.GetGameSaveByName(name);
-                    _gameLogic.CreateLevel(currentSave.LevelName, currentSave.Name, ChangeGameStatus,
-                        () => _dataInterlayer);
-                    _gameLogic.CurrentSave = currentSave;
-                },
-                () => {
-                    _menu.DrawHelp();
-                    Console.ReadKey();
-                    _menu.DrawMenu(
-                        4); //3 is "Help" index in _menuActions, so new  menu will be with this element current
-                },
-                () => {
-                    _menu.DrawSettings();
-                    Console.ReadKey();
-                    _menu.DrawMenu(
-                        2); //2 is "Settings" index in _menuActions, so new  menu will be with this element current
-                },
-                () => {
-                    var results = _dataInterlayer.GetBestScores();
-                    _menu.DrawScores(results);
-                    try {
-                        Console.ReadKey();
-                        _menu.DrawMenu(
-                            3); //2 is "Settings" index in _menuActions, so new  menu will be with this element current
-                    }
-                    catch (Exception e) {
-                        Console.WriteLine("Unable to read file with best scores");
-                        Console.WriteLine(e.Message);
-                    }
-                },
-                () => {
-                    var saves = _dataInterlayer.GetAllGameSaves();
-                    _menu.DrawSaves(saves);
-                    var name = Console.ReadLine();
-                    foreach (var save in saves)
-                        if (save.Name == name) {
-                            ResumeGame(save);
-                            ChangeGameStatus(1);
-                        }
-                }
-            );
-        }
-        private void ResumeGame(Save save) {
-            _gameLogic.CreateLevel(save.LevelName, save.Name, ChangeGameStatus, () => _dataInterlayer);
-            _gameLogic.Player.Score = save.Score;
-            _gameLogic.CurrentSave = save;
+        private void LaunchGame(Save save) {
+            GameLogic.CreateLevel(save.LevelName, save.Name, DataInterlayer.Settings.SizeX,
+                DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty, PlaySound);
+            GameLogic.Player.Score = save.Score;
+            GameLogic.Player.Hero = save.Hero;
+            GameLogic.CurrentSave = save;
+            GameStatus = GameStatusEnum.Game;
         }
     }
 }
