@@ -11,10 +11,10 @@ namespace ClassLibrary {
         private readonly MusicPlayer _musicPlayer = new MusicPlayer();
         private readonly Action _reDraw;
         public readonly DataInterlayer DataInterlayer = new DataInterlayer();
-        public readonly GameLogic GameLogic;
+        public  GameLogic GameLogic;
         public GameEngine(Action reDraw) {
             _reDraw = reDraw;
-            GameLogic = new GameLogic(ChangeGameStatus, () => DataInterlayer, RefreshSaves);
+            GameLogic = new GameLogic(ChangeGameStatus, () => DataInterlayer, RefreshSaves, _musicPlayer.PlaySound);
         }
         public GameStatusEnum GameStatus { get; private set; }
         public List<Save> Saves { get; private set; }
@@ -105,12 +105,21 @@ namespace ClassLibrary {
             }
         }
         private void LaunchGame(Save save) {
-            GameLogic.CreateLevel(save.LevelName, save.Name, DataInterlayer.Settings.SizeX,
-                DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty, PlaySound);
-            GameLogic.Player.Score = save.Score;
-            GameLogic.Player.Hero = save.Hero;
-            GameLogic.CurrentSave = save;
+            if (save.GameLogic != null) GameLogic = save.GameLogic;
+            else {
+                GameLogic.CreateLevel(save.LevelName, save.Name, DataInterlayer.Settings.SizeX,
+                    DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty, PlaySound);
+                GameLogic.Player.Score = save.Score;
+                GameLogic.Player.Hero = save.Hero;
+                GameLogic.CurrentSave = save;
+            }
             GameStatus = GameStatusEnum.Game;
         }
+
+        private void SaveGame() {
+            
+        }
+        
+        
     }
 }

@@ -6,13 +6,17 @@
         Rock = 3,
         Diamond = 4,
         Wall = 5,
-        EnemyWalker = 6,
+        SmartSkeleton = 6,
         LuckyBox = 7,
         SandTranslucent = 8,
         Converter = 10,
         Acid = 11,
         Barrel = 12,
         EnemyDigger = 13,
+        EnemyWalker = 14,
+        SmartPeaceful = 15,
+        SmartDevil = 16,
+        
 
         SwordTile = 20,
         ConverterTile = 21,

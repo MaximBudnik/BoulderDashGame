@@ -78,7 +78,7 @@ namespace ClassLibrary.ConsoleInterface {
                 case GameEntitiesEnum.Wall:
                     WriteColorBack(_sprites[5], primaryTextColor, ConsoleColor.Gray);
                     break;
-                case GameEntitiesEnum.EnemyWalker:
+                case GameEntitiesEnum.SmartSkeleton:
                     WriteColorBack(_sprites[6], ConsoleColor.Black, ConsoleColor.DarkRed);
                     break;
                 case GameEntitiesEnum.LuckyBox:

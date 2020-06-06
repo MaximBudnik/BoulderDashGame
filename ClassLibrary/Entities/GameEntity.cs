@@ -1,4 +1,6 @@
-﻿namespace ClassLibrary.Entities {
+﻿using ClassLibrary.Entities.Enemies.SmartEnemies;
+
+namespace ClassLibrary.Entities {
     public abstract class GameEntity {
         public static readonly int FormsSize = 14;
         public bool CanMove = true;
@@ -14,10 +16,11 @@
         }
         public GameEntitiesEnum EntityEnumType { get; protected set; }
 
-
         public virtual void GameLoopAction() { }
 
         public virtual void BreakAction(Player.Player player) { }
+
+        public virtual void BreakAction(SmartEnemy enemy) { }
 
         public virtual void BreakAction() { }
 

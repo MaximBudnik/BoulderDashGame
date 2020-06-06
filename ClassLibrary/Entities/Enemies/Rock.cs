@@ -1,6 +1,7 @@
 ﻿using System;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Matrix;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Enemies {
     public class Rock : Enemy {

@@ -1,4 +1,5 @@
 ﻿using System;
+using ClassLibrary.Entities.Enemies.SmartEnemies;
 using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
 using ClassLibrary.SoundPlayer;
@@ -24,6 +25,9 @@ namespace ClassLibrary.Entities.Collectable {
         private bool WillReplace => 33 >= Randomizer.Random(100);
 
         protected override void Collect(Player.Player player) {
+            CreateAcid();
+        }
+        private void CreateAcid() {
             var level = _getLevel();
             for (var x = -1; x < 2; x++)
             for (var y = -1; y < 2; y++)
@@ -33,6 +37,9 @@ namespace ClassLibrary.Entities.Collectable {
                     if (IsLevelCellValid(posX, posY, level.Width, level.Height) && WillReplace)
                         level[posX, posY] = new Acid(posX, posY, _getLevel, _changePlayerHp, _acidGameLoopAction);
                 }
+        }
+        protected override void Collect(SmartEnemy player) {
+            CreateAcid();
         }
     }
 }

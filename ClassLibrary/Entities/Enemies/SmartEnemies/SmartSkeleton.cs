@@ -2,17 +2,19 @@
 using System.Drawing;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Matrix;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Enemies.SmartEnemies {
-    public class EnemyWalker : SmartEnemy {
-        public EnemyWalker(int i, int j,
+    public class SmartSkeleton : SmartEnemy {
+        public SmartSkeleton(int i, int j,
             Func<Level> getLevel,
             Func<int> getPlayerPosX, Func<int> getPlayerPosY,
-            Action<int> changePlayerHp, Func<Player.Player> getOutdatedPlayer
+            Action<int> changePlayerHp, Func<Player.Player> getOutdatedPlayer,
+            Action<SoundFilesEnum> playSound
         )
-            : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp, getOutdatedPlayer) {
-            EntityEnumType = GameEntitiesEnum.EnemyWalker;
-            Damage = 5;
+            : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp, getOutdatedPlayer,playSound) {
+            EntityEnumType = GameEntitiesEnum.SmartSkeleton;
+            Damage = 4;
             MaxHp = 10;
             Hp = 10;
             ScoreForKill = 40;
@@ -25,6 +27,7 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             // EnemyDamageNearTitles();
             // Move();
             MakeDecision();
+            
         }
         
     }

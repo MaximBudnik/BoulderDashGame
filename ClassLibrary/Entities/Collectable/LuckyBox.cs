@@ -7,6 +7,7 @@ namespace ClassLibrary.Entities.Collectable {
         private new readonly int PickUpValue = 3;
         public LuckyBox(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j, playSound) {
             EntityEnumType = GameEntitiesEnum.LuckyBox;
+            MoveWeight = 40;
         }
 
         protected override void Collect(Player.Player player) {

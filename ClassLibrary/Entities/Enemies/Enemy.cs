@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using ClassLibrary.Matrix;
+using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Enemies {
-    public abstract class Enemy : Movable {
+    public abstract class Enemy : AdvancedLogic {
         protected readonly Action<int> _changePlayerHp;
         protected readonly Pathfinder _pathfinder;
         protected readonly Func<int> GetPlayerPosX;
@@ -18,8 +19,7 @@ namespace ClassLibrary.Entities.Enemies {
             Func<Level> getLevel,
             Func<int> getPlayerPosX,
             Func<int> getPlayerPosY,
-            Action<int> changePlayerHp
-        ) : base(getLevel, i, j) {
+            Action<int> changePlayerHp) : base(getLevel, i, j) {
             GetPlayerPosX = getPlayerPosX;
             GetPlayerPosY = getPlayerPosY;
             _changePlayerHp = changePlayerHp;
@@ -31,10 +31,13 @@ namespace ClassLibrary.Entities.Enemies {
             int i,
             int j,
             Func<Level> getLevel,
-            Action<int> changePlayerHp
-        ) : base(getLevel, i, j) {
+            Action<int> changePlayerHp) : base(getLevel, i, j) {
             _changePlayerHp = changePlayerHp;
             CanMove = false;
+        }
+        
+        public virtual void SubstractEnemyHp(int value) {
+            Hp -= value;
         }
 
         protected void EnemyDamageNearTitles() {
@@ -49,10 +52,9 @@ namespace ClassLibrary.Entities.Enemies {
             _changePlayerHp(Damage);
         }
 
-        protected Point GetNextPosition(Level level) {
-            var playerPosX = GetPlayerPosX();
-            var playerPosY = GetPlayerPosY();
-            var path = _pathfinder.FindPath(PositionX, PositionY, playerPosX, playerPosY, level, ConditionToMove) ??
+        protected Point GetNextPosition(Level level, int targetX, int targetY) {
+
+            var path = _pathfinder.FindPath(PositionX, PositionY, targetX, targetY, level, ConditionToMove) ??
                        throw new ArgumentNullException(
                            "level");
             return path[1];

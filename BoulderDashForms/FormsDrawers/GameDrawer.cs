@@ -12,6 +12,8 @@ namespace BoulderDashForms.FormsDrawers {
     public class GameDrawer : FormDrawer {
         private readonly int kf = 6; //parameter to beautify hero sprite
         private List<Action> _defferedFx;
+        protected readonly SolidBrush ShieldBrush = new SolidBrush(Color.FromArgb(80, 220, 200, 100));
+
         private void DrawPlayerAnimation(Player player, Graphics graphics, int i, int j) {
             var hero = DetectHeroSprite(player);
             var height = 28 - kf;
@@ -129,7 +131,7 @@ namespace BoulderDashForms.FormsDrawers {
             if (player.CurrentFrame == player.PlayerAnimator.FramesLimit - 1) player.SetAnimation(0);
         }
 
-        private Rectangle GetWalkerAnimation(EnemyWalker enemy) {
+        private Rectangle GetWalkerAnimation(SmartSkeleton enemy) {
             var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 5 * 16), new Size(16, 16));
             if (enemy.CurrentFrame < enemy.IdleFrames - 1)
                 enemy.CurrentFrame++;
@@ -201,13 +203,14 @@ namespace BoulderDashForms.FormsDrawers {
                             srcRect = new Rectangle(new Point(1 * 16, 1 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
-                        case GameEntitiesEnum.EnemyWalker:
+                        case GameEntitiesEnum.SmartSkeleton:
                             DrawFloorTile();
-                            var enemyWalker = currentLevel[i, j] as EnemyWalker;
+                            var enemyWalker = currentLevel[i, j] as SmartSkeleton;
                             srcRect = GetWalkerAnimation(enemyWalker);
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             //drawing hp
                             DrawEnemyHp(graphics, j, i, enemyWalker);
+                            DrawEnemyShield(graphics, enemyWalker, destRect);
                             break;
                         case GameEntitiesEnum.LuckyBox:
                             DrawFloorTile();
@@ -272,6 +275,12 @@ namespace BoulderDashForms.FormsDrawers {
             DrawInterface(graphics, currentLevel, player);
             DrawKeys(graphics, player);
         }
+        private void DrawEnemyShield(Graphics graphics, SmartEnemy enemy, Rectangle destRect) {
+            if (enemy != null && enemy.IsShieldActive) {
+                graphics.FillEllipse(ShieldBrush, destRect);
+            }
+        }
+
         private void DrawEnemyHp(Graphics graphics, int j, int i, Enemy enemyWalker) {
             var enemyWalkerHp = enemyWalker.Hp;
             if (enemyWalkerHp < enemyWalker.MaxHp) {

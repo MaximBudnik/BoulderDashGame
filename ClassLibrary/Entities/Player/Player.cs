@@ -10,10 +10,10 @@ using ClassLibrary.Matrix;
 using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Player {
-    public class Player : Movable {
+    public class Player : AdvancedLogic {
         private readonly int _adrenalineOnCombo = 100;
         private readonly int _adrenalineTickReduction = 5;
-        private readonly int _attackEnergyCost = 9;
+        private readonly int _attackEnergyCost = 5;
         private readonly int _diamondsTowWin;
         private readonly Action _lose;
         private readonly int _moveEnergyCost = 1;
@@ -24,7 +24,6 @@ namespace ClassLibrary.Entities.Player {
         private readonly Action _win;
         public readonly Dictionary<string, int[]> AllScores;
         private readonly int DefaultArmorCellHp = 10;
-        private readonly double DynamiteTileDamage = 0.3;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
         private readonly int MaxEnergy = 20;
@@ -154,9 +153,6 @@ namespace ClassLibrary.Entities.Player {
             return IsLevelCellValid(posX, posY, level.Width, level.Height) &&
                    level[posX, posY].CanMove;
         }
-        private bool EnoughEnergyForRock() {
-            return Energy >= _moveRockEnergyCost;
-        }
         private bool EnoughEnergy() {
             return Energy >= _moveEnergyCost;
         }
@@ -182,12 +178,11 @@ namespace ClassLibrary.Entities.Player {
             var pathfinder = new Pathfinder();
             var path = pathfinder.FindPath(PositionX, PositionY, posX, posY, level, (l, p) => true);
             var task = new Task(() => {
-                GameEntity temp;
                 foreach (var point in path) {
                     SetAnimation(PlayerAnimationsEnum.Teleport);
                     PositionX = point.X;
                     PositionY = point.Y;
-                    temp = level[PositionX, PositionY];
+                    var temp = level[PositionX, PositionY];
                     level[PositionX, PositionY] = this;
                     Thread.Sleep(50);
                     level[PositionX, PositionY] = temp;
@@ -213,7 +208,7 @@ namespace ClassLibrary.Entities.Player {
                         level[posX, posY] = tmp;
                     }
                 }
-            Energy = Energy / 2;
+            Energy /= 2;
         }
         public void Attack() {
             if (Energy < _attackEnergyCost) return;
@@ -227,7 +222,7 @@ namespace ClassLibrary.Entities.Player {
                 var posY = y + PositionY;
                 if (IsLevelCellValid(posX, posY, level.Width, level.Height) && level[posX, posY] is Enemy) {
                     var tmp = (Enemy) level[posX, posY];
-                    tmp.Hp -= Inventory.SwordLevel;
+                    tmp.SubstractEnemyHp(Inventory.SwordLevel);
                     if (tmp.Hp <= 0) {
                         level[tmp.PositionX, tmp.PositionY] = new Diamond(PositionX, PositionY, _playSound);
                         Adrenaline += tmp.ScoreForKill;
@@ -251,7 +246,7 @@ namespace ClassLibrary.Entities.Player {
                 var posX = x + PositionX;
                 var posY = y + PositionY;
                 if (!IsLevelCellValid(posX, posY, level.Width, level.Height)) continue;
-                if (level[posX, posY] is Enemy enemy) enemy.Hp -= Convert.ToInt32(dmg);
+                if (level[posX, posY] is Enemy enemy) enemy.SubstractEnemyHp(Convert.ToInt32(dmg));
                 else {
                     level[posX, posY] = new EmptySpace(posX, posY);
                 }

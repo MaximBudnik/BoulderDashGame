@@ -100,8 +100,8 @@ namespace ClassLibrary.Matrix {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
                 if (matrix[posX, posY].EntityEnumType == GameEntitiesEnum.FutureRooms) {
-                    var enemy = new EnemyWalker(posX, posY, _getLevel, _getPlayerPositionX,
-                        _getPlayerPositionY, _substractPlayerHp,_getOutdatedPlayer);
+                    var enemy = new SmartSkeleton(posX, posY, _getLevel, _getPlayerPositionX,
+                        _getPlayerPositionY, _substractPlayerHp,_getOutdatedPlayer, _playSound);
                     matrix[posX, posY] = enemy;
                     WalkersCount--;
                 }

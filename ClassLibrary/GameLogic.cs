@@ -12,6 +12,7 @@ using ClassLibrary.SoundPlayer;
 namespace ClassLibrary {
     public class GameLogic {
         private readonly Action<GameStatusEnum> _changeGameStatus;
+        private readonly Action<SoundFilesEnum> _playSound;
         private readonly Func<DataInterlayer> _getDataLayer;
         private readonly Action _refreshEngineSaves;
 
@@ -23,10 +24,11 @@ namespace ClassLibrary {
 
         public GameLogic(Action<GameStatusEnum> changeGameStatus,
             Func<DataInterlayer> getDataLayer,
-            Action refreshEngineSaves) {
+            Action refreshEngineSaves, Action<SoundFilesEnum> playSound) {
             _changeGameStatus = changeGameStatus;
             _getDataLayer = getDataLayer;
             _refreshEngineSaves = refreshEngineSaves;
+            _playSound = playSound;
         }
         public Level CurrentLevel { get; private set; }
         public Player Player { get; private set; }
@@ -89,8 +91,8 @@ namespace ClassLibrary {
             if (CurrentLevel[randomX, randomY].EntityEnumType == GameEntitiesEnum.EmptySpace &&
                 _chanceToSpawnWalker >= Randomizer.Random(100))
                 CurrentLevel[randomX, randomY] =
-                    new EnemyWalker(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
-                        () => Player.PositionY, SubstractPlayerHp,()=>Player);
+                    new SmartSkeleton(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
+                        () => Player.PositionY, SubstractPlayerHp,()=>Player,_playSound);
         }
 
         private void CheckIfDeleteAllAcidBlocks() {
@@ -109,6 +111,7 @@ namespace ClassLibrary {
             CurrentSave.LevelName = CurrentLevel.LevelName;
             CurrentSave.Score = Player.Score;
             CurrentSave.LevelName += 1;
+            CurrentSave.GameLogic = this;
             dataInterlayer.ChangeGameSave(CurrentSave);
             _refreshEngineSaves();
         }

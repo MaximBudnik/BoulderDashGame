@@ -113,10 +113,10 @@
             <e p="PathFinder.cs" t="Include" />
             <e p="Rock.cs" t="Include" />
             <e p="SmartEnemies" t="Include">
-              <e p="EnemyWalker.cs" t="Include" />
               <e p="SmartAction.cs" t="Include" />
               <e p="SmartEnemy.cs" t="Include" />
               <e p="SmartEnemyMethods.cs" t="Include" />
+              <e p="SmartSkeleton.cs" t="Include" />
             </e>
           </e>
           <e p="Expanding" t="Include">
