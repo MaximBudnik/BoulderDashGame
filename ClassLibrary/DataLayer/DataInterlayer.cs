@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using LiteDB;
 
 namespace ClassLibrary.DataLayer {
@@ -25,12 +26,10 @@ namespace ClassLibrary.DataLayer {
         }
 
         public List<Save> GetAllGameSaves() {
-            var result = new List<Save>();
             using var db = new LiteDatabase(_savesDatabase);
             var col = db.GetCollection<Save>("saves");
             var searchResult = col.FindAll();
-            foreach (var save in searchResult) result.Add(save);
-            return result;
+            return searchResult.ToList();
         }
 
         public void AddGameSave(Save save) {

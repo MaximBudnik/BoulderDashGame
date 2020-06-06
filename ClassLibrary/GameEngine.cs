@@ -11,7 +11,7 @@ namespace ClassLibrary {
         private readonly MusicPlayer _musicPlayer = new MusicPlayer();
         private readonly Action _reDraw;
         public readonly DataInterlayer DataInterlayer = new DataInterlayer();
-        public  GameLogic GameLogic;
+        public readonly GameLogic GameLogic;
         public GameEngine(Action reDraw) {
             _reDraw = reDraw;
             GameLogic = new GameLogic(ChangeGameStatus, () => DataInterlayer, RefreshSaves, _musicPlayer.PlaySound);
@@ -80,21 +80,23 @@ namespace ClassLibrary {
 
             void MenuGameCycle() {
                 try {
-                    if (GameStatus == GameStatusEnum.Menu) {
-                        _musicPlayer.PlayTheme(SoundFilesEnum.MenuTheme);
-                        Parallel.Invoke(MenuGraphicsThread);
-                    }
-                    else if (GameStatus == GameStatusEnum.Game) {
-                        _musicPlayer.PlayTheme(SoundFilesEnum.GameTheme);
-                        Parallel.Invoke(GraphicsThread,
-                            GameLogicThread);
-                    }
-                    else if (GameStatus == GameStatusEnum.WinScreen || GameStatus == GameStatusEnum.LoseScreen) {
-                        _musicPlayer.PlayTheme(SoundFilesEnum.ResultsTheme);
-                        Parallel.Invoke(ResultsGraphicsThread);
-                    }
-                    else {
-                        throw new Exception("Unknown game status");
+                    switch (GameStatus) {
+                        case GameStatusEnum.Menu:
+                            _musicPlayer.PlayTheme(SoundFilesEnum.MenuTheme);
+                            Parallel.Invoke(MenuGraphicsThread);
+                            break;
+                        case GameStatusEnum.Game:
+                            _musicPlayer.PlayTheme(SoundFilesEnum.GameTheme);
+                            Parallel.Invoke(GraphicsThread,
+                                GameLogicThread);
+                            break;
+                        case GameStatusEnum.WinScreen:
+                        case GameStatusEnum.LoseScreen:
+                            _musicPlayer.PlayTheme(SoundFilesEnum.ResultsTheme);
+                            Parallel.Invoke(ResultsGraphicsThread);
+                            break;
+                        default:
+                            throw new Exception("Unknown game status");
                     }
                     MenuGameCycle();
                 }
@@ -105,21 +107,12 @@ namespace ClassLibrary {
             }
         }
         private void LaunchGame(Save save) {
-            if (save.GameLogic != null) GameLogic = save.GameLogic;
-            else {
-                GameLogic.CreateLevel(save.LevelName, save.Name, DataInterlayer.Settings.SizeX,
-                    DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty, PlaySound);
-                GameLogic.Player.Score = save.Score;
-                GameLogic.Player.Hero = save.Hero;
-                GameLogic.CurrentSave = save;
-            }
+            GameLogic.CreateLevel(save.LevelName, save.Name, DataInterlayer.Settings.SizeX,
+                DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty, PlaySound);
+            GameLogic.Player.Score = save.Score;
+            GameLogic.Player.Hero = save.Hero;
+            GameLogic.CurrentSave = save;
             GameStatus = GameStatusEnum.Game;
         }
-
-        private void SaveGame() {
-            
-        }
-        
-        
     }
 }

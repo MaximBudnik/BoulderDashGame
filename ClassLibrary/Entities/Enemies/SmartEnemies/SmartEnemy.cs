@@ -13,15 +13,15 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             : base(i, j, getLevel, getPlayerPosX, getPlayerPosY, changePlayerHp) {
             _getOutdatedPlayer = getOutdatedPlayer;
             _playSound = playSound;
-            PlayerDetectionRange = 20;
             Agression = Randomizer.Random(1, 11);
         }
         private readonly Action<SoundFilesEnum> _playSound;
         private readonly Func<Player.Player> _getOutdatedPlayer;
-        protected readonly int PlayerDetectionRange;
-        protected readonly int Agression;
+        protected int PlayerDetectionRange = 20;
+        protected int Agression;
         protected readonly int TeleportRange = 20;
-        private int _energy;
+        protected int _energy;
+        protected int EnergyRestoreIdle = 5;
         public bool IsShieldActive { get; private set; }
         private readonly List<SmartAction> _actionList = new List<SmartAction>();
         protected int IdleWeight = 20;

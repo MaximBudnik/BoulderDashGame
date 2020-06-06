@@ -13,8 +13,12 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             _energy += value;
         }
         protected void IdleAction() {
-            _energy += 5;
+            var energyRestoreIdle = EnergyRestoreIdle;
+            _energy += energyRestoreIdle;
         }
+
+
+
         protected void ChasePlayer() {
             var level = GetLevel();
             Point dest;

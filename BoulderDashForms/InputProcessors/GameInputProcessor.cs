@@ -8,9 +8,8 @@ using ClassLibrary.SoundPlayer;
 
 namespace BoulderDashForms.InputProcessors {
     public class GameInputProcessor : InputProcessor {
-        public void ProcessKeyDown(Keys key, Func<Player> getPlayer, Action<GameStatusEnum> changeGameStatus,
-            Action<float> changeVolume,
-            Action<SoundFilesEnum> playSound
+        public void ProcessKeyDown(Keys key, Func<Player> getPlayer,
+            Action<float> changeVolume
         ) {
             var player = getPlayer();
             switch (key) {
@@ -59,12 +58,11 @@ namespace BoulderDashForms.InputProcessors {
                     changeVolume(-0.1f);
                     break;
                 case Keys.Escape:
-                    changeGameStatus(GameStatusEnum.Menu);
                     break;
             }
         }
 
-        public void ProcessKeyUp(Keys key, Func<Player> getPlayer) {
+        public void ProcessKeyUp(Keys key, Func<Player> getPlayer, Action<GameStatusEnum> changeGameStatus) {
             var player = getPlayer();
             switch (key) {
                 case Keys.W:
@@ -100,6 +98,7 @@ namespace BoulderDashForms.InputProcessors {
                     player.Keyboard.R = KeyboardEnum.Disabled;
                     break;
                 case Keys.Escape:
+                    changeGameStatus(GameStatusEnum.Menu);
                     break;
             }
         }

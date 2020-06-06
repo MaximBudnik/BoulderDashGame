@@ -33,7 +33,7 @@ namespace ClassLibrary.Matrix {
             Action<int> substractPlayerHp, Action<Player> setPlayer,
             int sizeX, int sizeY, int difficulty, Action<SoundFilesEnum> playSound, Action acidGameLoopAction,
             Func<Entities.Player.Player> getOutdatedPlayer
-            ) {
+        ) {
             width = sizeX; //20 for console
             height = sizeY; //65 for console
             LevelName = levelName;
@@ -57,15 +57,33 @@ namespace ClassLibrary.Matrix {
         public int DiamondsQuantityToWin { get; private set; }
         public int LevelName { get; }
         public string Aim { get; } = "Collect diamonds";
-        private int WalkersCount { get; set; }
+
+        private int SmartDevilCount { get; set; }
+        private int SmartSkeletonsCount { get; set; }
+        private int SmartPeacefulCount { get; set; }
         private int DiggersCount { get; set; }
+        private int WalkersCount { get; set; }
+
+        private readonly int _chanceToSpawnSmartDevil = 10;
+        private readonly int _chanceToSpawnSmartSkeleton = 30;
+        private readonly int _chanceToSpawnSmartPeaceful = 50;
+        private readonly int _chanceToSpawnSmartDigger = 65;
+        private readonly int _chanceToSpawnWalker = 100;
 
         //fields for creating level
         private void SetDifficulty(int difficulty) {
+            DiamondsQuantityToWin = difficulty * 3;
             _difficulty = difficulty;
-            WalkersCount = difficulty;
-            DiggersCount = difficulty / 2;
-            DiamondsQuantityToWin = difficulty * 2;
+
+            while (difficulty > 0) {
+                var chanceToSpawn = Randomizer.Random(101);
+                if (_chanceToSpawnSmartDevil > chanceToSpawn) SmartDevilCount++;
+                else if (_chanceToSpawnSmartSkeleton > chanceToSpawn) SmartSkeletonsCount++;
+                else if (_chanceToSpawnSmartPeaceful > chanceToSpawn) SmartPeacefulCount++;
+                else if (_chanceToSpawnSmartDigger > chanceToSpawn) DiggersCount++;
+                else if (_chanceToSpawnWalker > chanceToSpawn) WalkersCount++;
+                difficulty--;
+            }
         }
     }
 }

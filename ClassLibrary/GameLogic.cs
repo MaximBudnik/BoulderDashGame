@@ -111,7 +111,6 @@ namespace ClassLibrary {
             CurrentSave.LevelName = CurrentLevel.LevelName;
             CurrentSave.Score = Player.Score;
             CurrentSave.LevelName += 1;
-            CurrentSave.GameLogic = this;
             dataInterlayer.ChangeGameSave(CurrentSave);
             _refreshEngineSaves();
         }

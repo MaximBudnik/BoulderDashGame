@@ -9,9 +9,11 @@ namespace ClassLibrary.Entities.Enemies {
         protected readonly Pathfinder _pathfinder;
         protected readonly Func<int> GetPlayerPosX;
         protected readonly Func<int> GetPlayerPosY;
-        protected Func<Level, Point, bool> ConditionToMove;
         protected int Damage;
         public int ScoreForKill = 20;
+
+        protected Func<Level, Point, bool> ConditionToMove = (level, point) =>
+            level[point.X, point.Y].CanMove || level[point.X, point.Y].PathFinderMove;
 
         protected Enemy(
             int i,
@@ -35,7 +37,7 @@ namespace ClassLibrary.Entities.Enemies {
             _changePlayerHp = changePlayerHp;
             CanMove = false;
         }
-        
+
         public virtual void SubstractEnemyHp(int value) {
             Hp -= value;
         }
@@ -53,7 +55,6 @@ namespace ClassLibrary.Entities.Enemies {
         }
 
         protected Point GetNextPosition(Level level, int targetX, int targetY) {
-
             var path = _pathfinder.FindPath(PositionX, PositionY, targetX, targetY, level, ConditionToMove) ??
                        throw new ArgumentNullException(
                            "level");

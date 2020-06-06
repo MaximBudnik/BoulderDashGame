@@ -96,29 +96,51 @@ namespace ClassLibrary.Matrix {
                 }
         }
         private void CreateEnemies(Random rand) {
+            while (SmartSkeletonsCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
+                matrix[posX, posY] = new SmartSkeleton(posX, posY, _getLevel, _getPlayerPositionX,
+                    _getPlayerPositionY, _substractPlayerHp,_getOutdatedPlayer, _playSound);
+                SmartSkeletonsCount--;
+            }
+            
+            while (DiggersCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
+                matrix[posX, posY] = new EnemyDigger(posX, posY, _getLevel, _getPlayerPositionX,
+                    _getPlayerPositionY, _substractPlayerHp);
+                DiggersCount--;
+            }
+            
             while (WalkersCount > 0) {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
-                if (matrix[posX, posY].EntityEnumType == GameEntitiesEnum.FutureRooms) {
-                    var enemy = new SmartSkeleton(posX, posY, _getLevel, _getPlayerPositionX,
-                        _getPlayerPositionY, _substractPlayerHp,_getOutdatedPlayer, _playSound);
-                    matrix[posX, posY] = enemy;
-                    WalkersCount--;
-                }
+                if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
+                matrix[posX, posY] = new EnemyWalker(posX, posY, _getLevel, _getPlayerPositionX,
+                    _getPlayerPositionY, _substractPlayerHp);
+                WalkersCount--;
             }
             
-            //TODO: not forget enable this
-
-            // while (DiggersCount > 0) {
-            //     var posX = rand.Next(width);
-            //     var posY = rand.Next(height);
-            //     if (matrix[posX, posY].EntityEnumType == GameEntitiesEnum.FutureRooms) {
-            //         var enemy = new EnemyDigger(posX, posY, _getLevel, _getPlayerPositionX,
-            //             _getPlayerPositionY, _substractPlayerHp);
-            //         matrix[posX, posY] = enemy;
-            //         DiggersCount--;
-            //     }
-            // }
+            while (SmartPeacefulCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
+                matrix[posX, posY] = new SmartPeaceful(posX, posY, _getLevel, _getPlayerPositionX,
+                    _getPlayerPositionY, _substractPlayerHp,_getOutdatedPlayer, _playSound);
+                SmartPeacefulCount--;
+            }
+            
+            while (SmartDevilCount > 0) {
+                var posX = rand.Next(width);
+                var posY = rand.Next(height);
+                if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
+                matrix[posX, posY] = new SmartDevil(posX, posY, _getLevel, _getPlayerPositionX,
+                    _getPlayerPositionY, _substractPlayerHp,_getOutdatedPlayer, _playSound);
+                SmartDevilCount--;
+            }
+            
         }
         private void SetWalls() {
             for (var i = 0; i < width; i++)

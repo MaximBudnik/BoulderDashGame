@@ -131,22 +131,39 @@ namespace BoulderDashForms.FormsDrawers {
             if (player.CurrentFrame == player.PlayerAnimator.FramesLimit - 1) player.SetAnimation(0);
         }
 
-        private Rectangle GetWalkerAnimation(SmartSkeleton enemy) {
+        private Rectangle GetSmartSkeletonAnimation(SmartSkeleton enemy) {
             var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 5 * 16), new Size(16, 16));
-            if (enemy.CurrentFrame < enemy.IdleFrames - 1)
-                enemy.CurrentFrame++;
-            else
-                enemy.CurrentFrame = 0;
+            ChangeEnemyAnimation(enemy);
+            return res;
+        }
+        
+        private Rectangle GetSmartPeacefulAnimation(SmartPeaceful enemy) {
+            var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 1 * 16), new Size(16, 16));
+            ChangeEnemyAnimation(enemy);
+            return res;
+        }
+        private Rectangle GetSmartDevilAnimation(SmartDevil enemy) {
+            var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 21 * 16), new Size(16, 16));
+            ChangeEnemyAnimation(enemy);
+            return res;
+        }
+
+        private Rectangle GetEnemyWalkerAnimation(EnemyWalker enemy) {
+            var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 11 * 16), new Size(16, 16));
+            ChangeEnemyAnimation(enemy);
             return res;
         }
 
         private Rectangle GetDiggerAnimation(EnemyDigger enemy) {
             var res = new Rectangle(new Point(27 * 16 + enemy.CurrentFrame * 16, 7 * 16), new Size(16, 16));
+            ChangeEnemyAnimation(enemy);
+            return res;
+        }
+        private static void ChangeEnemyAnimation(Enemy enemy) {
             if (enemy.CurrentFrame < enemy.IdleFrames - 1)
                 enemy.CurrentFrame++;
             else
                 enemy.CurrentFrame = 0;
-            return res;
         }
 
         private Rectangle GetDiamondAnimation(Diamond diamond) {
@@ -181,89 +198,130 @@ namespace BoulderDashForms.FormsDrawers {
                             DrawFloorTile();
                             DrawPlayerAnimation(player, graphics, i, j);
                             break;
+
                         case GameEntitiesEnum.EmptySpace:
                             srcRect = new Rectangle(new Point(2 * 16, 5 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.Sand:
                             srcRect = new Rectangle(new Point(9 * 16, 13 * 16), new Size(16, 16));
                             graphics.DrawImage(TileSet, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.Rock:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(7 * 16, 4 * 16), new Size(16, 16));
                             graphics.DrawImage(TileSet, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.Diamond:
                             DrawFloorTile();
                             srcRect = GetDiamondAnimation((Diamond) currentLevel[i, j]);
                             graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.Wall:
                             srcRect = new Rectangle(new Point(1 * 16, 1 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.SmartSkeleton:
                             DrawFloorTile();
-                            var enemyWalker = currentLevel[i, j] as SmartSkeleton;
-                            srcRect = GetWalkerAnimation(enemyWalker);
+                            var smartSkeleton = currentLevel[i, j] as SmartSkeleton;
+                            srcRect = GetSmartSkeletonAnimation(smartSkeleton);
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
-                            //drawing hp
-                            DrawEnemyHp(graphics, j, i, enemyWalker);
-                            DrawEnemyShield(graphics, enemyWalker, destRect);
+                            DrawEnemyHp(graphics, j, i, smartSkeleton);
+                            DrawEnemyShield(graphics, smartSkeleton, destRect);
                             break;
+
                         case GameEntitiesEnum.LuckyBox:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(15 * 16, 13 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.SandTranslucent:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(7 * 16, 10 * 16), new Size(16, 16));
                             graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.Converter:
                             srcRect = new Rectangle(new Point(2 * 16, 3 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.Acid:
                             srcRect = new Rectangle(new Point(4 * 16, 5 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.Barrel:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(14 * 16, 13 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.EnemyDigger:
                             DrawFloorTile();
-                            if (currentLevel[i, j] is EnemyDigger) {
-                                var enemyDigger = currentLevel[i, j] as EnemyDigger;
-                                srcRect = GetDiggerAnimation(enemyDigger);
-                                graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
-                                DrawEnemyHp(graphics, j, i, enemyDigger);
-                            }
+                            var enemyDigger = currentLevel[i, j] as EnemyDigger;
+                            srcRect = GetDiggerAnimation(enemyDigger);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            DrawEnemyHp(graphics, j, i, enemyDigger);
                             break;
+
+                        case GameEntitiesEnum.EnemyWalker:
+                            DrawFloorTile();
+                            var enemyWalker = currentLevel[i, j] as EnemyWalker;
+                            srcRect = GetEnemyWalkerAnimation(enemyWalker);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            DrawEnemyHp(graphics, j, i, enemyWalker);
+                            break;
+                        
+                        case GameEntitiesEnum.SmartPeaceful:
+                            DrawFloorTile();
+                            var smartPeaceful = currentLevel[i, j] as SmartPeaceful;
+                            srcRect = GetSmartPeacefulAnimation(smartPeaceful);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            DrawEnemyHp(graphics, j, i, smartPeaceful);
+                            DrawEnemyShield(graphics, smartPeaceful, destRect);
+                            break;
+                        
+                        case GameEntitiesEnum.SmartDevil:
+                            DrawFloorTile();
+                            var smartDevil = currentLevel[i, j] as SmartDevil;
+                            srcRect = GetSmartDevilAnimation(smartDevil);
+                            graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
+                            DrawEnemyHp(graphics, j, i, smartDevil);
+                            DrawEnemyShield(graphics, smartDevil, destRect);
+                            break;
+                        
+
                         case GameEntitiesEnum.SwordTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(20 * 16, 2 * 12), new Size(16, 22));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.ConverterTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(12 * 16, 12 * 16), new Size(16, 16));
                             graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.DynamiteTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(15 * 16, 3 * 16), new Size(16, 16));
                             graphics.DrawImage(SecondarySprites, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         case GameEntitiesEnum.ArmorTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(6 * 16, 15 * 16), new Size(16, 16));
                             graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
+
                         default:
                             srcRect = new Rectangle(new Point(0 * 16, 0 * 16), new Size(16, 16));
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
@@ -286,7 +344,7 @@ namespace BoulderDashForms.FormsDrawers {
             if (enemyWalkerHp < enemyWalker.MaxHp) {
                 var hpRectangle =
                     new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2 - 4),
-                        new Size(GameEntity.FormsSize * 2*enemyWalkerHp/enemyWalker.MaxHp, 4));
+                        new Size(GameEntity.FormsSize * 2 * enemyWalkerHp / enemyWalker.MaxHp, 4));
                 graphics.FillRectangle(RedBrushHalfTransparent, hpRectangle);
             }
         }

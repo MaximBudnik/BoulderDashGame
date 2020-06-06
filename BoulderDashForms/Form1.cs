@@ -42,7 +42,7 @@ namespace BoulderDashForms {
         private void KeyDownProcessor(object sender, KeyEventArgs e) {
             if (_gameEngine.GameStatus == GameStatusEnum.Game)
                 _gameInputProcessor.ProcessKeyDown(e.KeyCode, () => _gameEngine.GameLogic.Player,
-                    _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound);
+                     _gameEngine.ChangeVolume);
             else if (_gameEngine.GameStatus == 0)
                 _menuInputProcessor.ProcessKeyDown(e.KeyCode,
                     _gameEngine.ChangeCurrentMenuAction,
@@ -73,7 +73,7 @@ namespace BoulderDashForms {
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
             if (_gameEngine.GameStatus == GameStatusEnum.Game)
-                _gameInputProcessor.ProcessKeyUp(e.KeyCode, () => _gameEngine.GameLogic.Player);
+                _gameInputProcessor.ProcessKeyUp(e.KeyCode, () => _gameEngine.GameLogic.Player,_gameEngine.ChangeGameStatus);
         }
 
         private void OnPaint(object sender, PaintEventArgs e) {

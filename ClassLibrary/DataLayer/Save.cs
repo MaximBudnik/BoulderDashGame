@@ -7,6 +7,6 @@ namespace ClassLibrary.DataLayer {
         public int LevelName { get; set; } = 0;
         public int Score { get; set; } = 0;
         public int Hero { get; set; } = 1;
-        public GameLogic GameLogic { get; set; }
+        public GameLogic GameLogic { get; set; } = null;
     }
 }
