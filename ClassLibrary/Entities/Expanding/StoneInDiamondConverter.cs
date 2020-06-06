@@ -5,8 +5,8 @@ using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Expanding {
     public class StoneInDiamondConverter : Expandable {
-        private int _actionsCounter;
         private readonly Action<SoundFilesEnum> _playSound;
+        private int _actionsCounter;
 
         public StoneInDiamondConverter(int i, int j, Func<Level> getLevel, Action<SoundFilesEnum> playSound) : base(i,
             j, getLevel) {

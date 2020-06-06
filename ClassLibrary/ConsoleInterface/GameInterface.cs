@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary.Entities;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.Matrix;
-using ClassLibrary.Entities;
-using ClassLibrary.Entities.Collectable.ItemsTiles;
 
 namespace ClassLibrary.ConsoleInterface {
     public class GameInterface : UserInterface {
@@ -19,14 +18,17 @@ namespace ClassLibrary.ConsoleInterface {
             {3, "○"},
             {4, "×"},
             {5, "│"},
-            {6, "*"},
+            {6, "4"},
             {7, "?"},
             {8, "·"},
             {9, "/"},
             {10, "0"},
             {11, " "},
             {12, "!"},
-            {13,"x"},
+            {13, "1"},
+            {14, "2"},
+            {15, "3"},
+            {16, "5"},
             {20, "S"},
             {21, "C"},
             {22, "T"},
@@ -61,56 +63,87 @@ namespace ClassLibrary.ConsoleInterface {
         private void DrawSpriteDefault(GameEntitiesEnum item) {
             switch (item) {
                 case GameEntitiesEnum.Player:
-                    WriteColorBack(_sprites[0], ConsoleColor.Magenta);
+                    WriteColorBack(_sprites[0], ConsoleColor.White, ConsoleColor.Green);
                     break;
+
                 case GameEntitiesEnum.EmptySpace:
                     WriteColorBack(_sprites[1]);
                     break;
+
                 case GameEntitiesEnum.Sand:
                     WriteColorBack(_sprites[2], ConsoleColor.DarkYellow, ConsoleColor.Yellow);
                     break;
+
                 case GameEntitiesEnum.Rock:
                     WriteColorBack(_sprites[3], ConsoleColor.Gray, ConsoleColor.DarkGray);
                     break;
+
                 case GameEntitiesEnum.Diamond:
                     WriteColorBack(_sprites[4], ConsoleColor.Cyan);
                     break;
+
                 case GameEntitiesEnum.Wall:
                     WriteColorBack(_sprites[5], primaryTextColor, ConsoleColor.Gray);
                     break;
+
                 case GameEntitiesEnum.SmartSkeleton:
-                    WriteColorBack(_sprites[6], ConsoleColor.Black, ConsoleColor.DarkRed);
+                    WriteColorBack(_sprites[6], ConsoleColor.White, ConsoleColor.Red);
                     break;
+
                 case GameEntitiesEnum.LuckyBox:
                     WriteColorBack(_sprites[7], primaryTextColor, ConsoleColor.DarkYellow);
                     break;
+
                 case GameEntitiesEnum.SandTranslucent:
                     WriteColorBack(_sprites[8], ConsoleColor.DarkGray);
                     break;
+
                 case GameEntitiesEnum.Converter:
                     WriteColorBack(_sprites[10], ConsoleColor.Cyan, ConsoleColor.Magenta);
                     break;
+
                 case GameEntitiesEnum.Acid:
                     WriteColorBack(_sprites[11], ConsoleColor.Green, ConsoleColor.Green);
                     break;
+
                 case GameEntitiesEnum.Barrel:
                     WriteColorBack(_sprites[12], ConsoleColor.Green, ConsoleColor.DarkYellow);
                     break;
+
                 case GameEntitiesEnum.EnemyDigger:
-                    WriteColorBack(_sprites[13], ConsoleColor.Red, ConsoleColor.White);
+                    WriteColorBack(_sprites[13], ConsoleColor.Black, ConsoleColor.Red);
                     break;
+
+                case GameEntitiesEnum.EnemyWalker:
+                    WriteColorBack(_sprites[14], ConsoleColor.Black, ConsoleColor.Red);
+                    break;
+
+                case GameEntitiesEnum.SmartPeaceful:
+                    WriteColorBack(_sprites[15], ConsoleColor.White, ConsoleColor.Red);
+                    break;
+
+                case GameEntitiesEnum.SmartDevil:
+                    WriteColorBack(_sprites[16], ConsoleColor.White, ConsoleColor.Red);
+                    break;
+
                 case GameEntitiesEnum.SwordTile:
                     WriteColorBack(_sprites[20], ConsoleColor.Magenta);
                     break;
+
                 case GameEntitiesEnum.ConverterTile:
                     WriteColorBack(_sprites[21], ConsoleColor.Magenta);
                     break;
+
                 case GameEntitiesEnum.DynamiteTile:
                     WriteColorBack(_sprites[22], ConsoleColor.Magenta);
                     break;
+
                 case GameEntitiesEnum.ArmorTile:
                     WriteColorBack(_sprites[23], ConsoleColor.Magenta);
                     break;
+
+                default:
+                    throw new Exception("Unknown game sprite in console interface");
             }
         }
 

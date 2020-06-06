@@ -87,6 +87,10 @@ namespace ClassLibrary.Entities.Enemies {
             return result;
         }
 
+        private int GetHeuristicPathLength(int selfX, int selfY, int targetX, int targetY) {
+            return Math.Abs(selfX - targetX) + Math.Abs(selfY - targetY);
+        }
+
         public class Node {
             public int PositionX { get; set; }
             public int PositionY { get; set; }
@@ -94,10 +98,6 @@ namespace ClassLibrary.Entities.Enemies {
             public Node Parent { get; set; }
             public int HeuristicLength { get; set; }
             public int FullPathLength => LengthFromStart + HeuristicLength;
-        }
-
-        private int GetHeuristicPathLength(int selfX, int selfY, int targetX, int targetY) {
-            return Math.Abs(selfX - targetX) + Math.Abs(selfY - targetY);
         }
     }
 }

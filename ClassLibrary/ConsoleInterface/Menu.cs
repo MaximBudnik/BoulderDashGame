@@ -41,7 +41,7 @@ namespace ClassLibrary.ConsoleInterface {
                 }
             Console.CursorTop = Console.WindowTop + Console.WindowHeight - 3;
             Console.WriteLine("To choose actions press W, S and Enter");
-            Console.WriteLine("Version: 0.6.2 Console edition");
+            Console.WriteLine("Version: 0.9.8 Console edition");
         }
 
         public void DrawHelp() {

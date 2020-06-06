@@ -2,7 +2,6 @@
 using System.Drawing;
 using ClassLibrary.Entities.Basic;
 using ClassLibrary.Matrix;
-using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Enemies {
     public class EnemyDigger : Enemy {
@@ -29,7 +28,7 @@ namespace ClassLibrary.Entities.Enemies {
             var level = GetLevel();
             Point dest;
             try {
-                dest = GetNextPosition(level, GetPlayerPosX(),GetPlayerPosY());
+                dest = GetNextPosition(level, GetPlayerPosX(), GetPlayerPosY());
             }
             catch (Exception) {
                 return;

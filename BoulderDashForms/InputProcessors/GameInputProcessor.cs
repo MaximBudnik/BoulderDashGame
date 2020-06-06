@@ -4,7 +4,6 @@ using ClassLibrary;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Player;
 using ClassLibrary.InputProcessors;
-using ClassLibrary.SoundPlayer;
 
 namespace BoulderDashForms.InputProcessors {
     public class GameInputProcessor : InputProcessor {

@@ -26,7 +26,7 @@ namespace ClassLibrary.Entities.Player {
         private readonly int DefaultArmorCellHp = 10;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
-        private readonly int MaxEnergy = 20;
+        public readonly int MaxEnergy = 20;
         public readonly string Name;
 
         public Player(
@@ -247,9 +247,8 @@ namespace ClassLibrary.Entities.Player {
                 var posY = y + PositionY;
                 if (!IsLevelCellValid(posX, posY, level.Width, level.Height)) continue;
                 if (level[posX, posY] is Enemy enemy) enemy.SubstractEnemyHp(Convert.ToInt32(dmg));
-                else {
+                else
                     level[posX, posY] = new EmptySpace(posX, posY);
-                }
                 dmg += DynamiteTileDamage;
             }
             Energy = Energy / 2;
@@ -273,7 +272,7 @@ namespace ClassLibrary.Entities.Player {
                 if (Adrenaline > 75) RestoreEnergy();
                 if (Adrenaline > 100) {
                     Hp++;
-                    Adrenaline -= 20;
+                    Adrenaline -= 30;
                 }
                 RestoreEnergy();
                 Adrenaline -= _adrenalineTickReduction;

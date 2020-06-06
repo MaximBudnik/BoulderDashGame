@@ -2,8 +2,8 @@
 
 namespace ClassLibrary.Entities.Enemies.SmartEnemies {
     public class SmartAction {
-        public Action Effect;
-        public int BenefitPoints;
+        public readonly int BenefitPoints;
+        public readonly Action Effect;
 
         public SmartAction(int benefitPoints, Action effect) {
             BenefitPoints = benefitPoints;
@@ -13,6 +13,5 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
         public void InvokeAction() {
             Effect();
         }
-        
     }
 }

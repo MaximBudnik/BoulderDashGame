@@ -1,13 +1,14 @@
 ﻿using System;
 using ClassLibrary;
+
 namespace BoulderDashGame {
-    class Program {
-        static void Main(string[] args) {
+    internal class Program {
+        private static void Main(string[] args) {
             try {
-                //GameEngineConsole gameEngine = new GameEngineConsole();
-               // gameEngine.Start();
+                var gameEngine = new GameEngineConsole();
+                gameEngine.Start();
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("An error occured. Restart app and contact developer.");
@@ -20,5 +21,3 @@ namespace BoulderDashGame {
         }
     }
 }
-
-

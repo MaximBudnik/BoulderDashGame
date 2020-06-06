@@ -15,12 +15,11 @@ namespace ClassLibrary.Entities.Collectable {
         protected virtual void Collect(Player.Player player) { }
         protected virtual void Collect(SmartEnemy enemy) { }
 
-
         public override void BreakAction(Player.Player player) {
             Collect(player);
             _playSound(SoundFilesEnum.PickupSound);
         }
-        
+
         public override void BreakAction(SmartEnemy enemy) {
             enemy.AddEnergy(PickUpValue * 10);
             Collect(enemy);

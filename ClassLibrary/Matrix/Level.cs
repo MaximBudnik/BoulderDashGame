@@ -7,8 +7,14 @@ using ClassLibrary.SoundPlayer;
 namespace ClassLibrary.Matrix {
     public partial class Level : Matrix {
         private readonly Action _acidGameLoopAction;
-        private readonly Func<Player> _getOutdatedPlayer;
+
+        public readonly int _chanceToSpawnSmartDevil = 10;
+        public readonly int _chanceToSpawnSmartDigger = 65;
+        public readonly int _chanceToSpawnSmartPeaceful = 50;
+        public readonly int _chanceToSpawnSmartSkeleton = 30;
+        public readonly int _chanceToSpawnWalker = 100;
         private readonly Func<Level> _getLevel;
+        private readonly Func<Player> _getOutdatedPlayer;
         private readonly Func<int> _getPlayerPositionX;
         private readonly Func<int> _getPlayerPositionY;
         private readonly Action _lose;
@@ -32,7 +38,7 @@ namespace ClassLibrary.Matrix {
             Func<int> getPlayerPositionY,
             Action<int> substractPlayerHp, Action<Player> setPlayer,
             int sizeX, int sizeY, int difficulty, Action<SoundFilesEnum> playSound, Action acidGameLoopAction,
-            Func<Entities.Player.Player> getOutdatedPlayer
+            Func<Player> getOutdatedPlayer
         ) {
             width = sizeX; //20 for console
             height = sizeY; //65 for console
@@ -63,12 +69,6 @@ namespace ClassLibrary.Matrix {
         private int SmartPeacefulCount { get; set; }
         private int DiggersCount { get; set; }
         private int WalkersCount { get; set; }
-
-        private readonly int _chanceToSpawnSmartDevil = 10;
-        private readonly int _chanceToSpawnSmartSkeleton = 30;
-        private readonly int _chanceToSpawnSmartPeaceful = 50;
-        private readonly int _chanceToSpawnSmartDigger = 65;
-        private readonly int _chanceToSpawnWalker = 100;
 
         //fields for creating level
         private void SetDifficulty(int difficulty) {

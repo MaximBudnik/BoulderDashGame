@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using ClassLibrary.Entities.Basic;
 using ClassLibrary.Matrix;
 using ClassLibrary.SoundPlayer;
 

@@ -1,24 +1,21 @@
 ﻿using System;
 using ClassLibrary.Entities.Basic;
-using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Matrix;
-using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities {
     public class AdvancedLogic : GameEntity {
-        protected readonly Func<Level> GetLevel;
-        public int MaxHp { get; set; }
         protected readonly double DynamiteTileDamage = 0.3;
-
+        protected readonly Func<Level> GetLevel;
 
         protected AdvancedLogic(Func<Level> getLevel, int i, int j) : base(i, j) {
             GetLevel = getLevel;
         }
+        public int MaxHp { get; set; }
         public int Hp { get; set; }
         public override void GameLoopAction() { }
         public virtual void Move(MoveDirectionEnum direction, int value) {
             var level = GetLevel();
-            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY); 
+            level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
             switch (direction) {
                 case MoveDirectionEnum.Horizontal:
                     PositionY += value;
@@ -39,7 +36,5 @@ namespace ClassLibrary.Entities {
         private bool IsValid(Level level) {
             return IsLevelCellValid(PositionX, PositionY, level.Width, level.Height);
         }
-        
-        
     }
 }

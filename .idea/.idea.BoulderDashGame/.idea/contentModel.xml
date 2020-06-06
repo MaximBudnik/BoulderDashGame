@@ -110,7 +110,6 @@
             <e p="Enemy.cs" t="Include" />
             <e p="EnemyDigger.cs" t="Include" />
             <e p="EnemyWalker.cs" t="Include" />
-            <e p="NewFile1.txt" t="Include" />
             <e p="PathFinder.cs" t="Include" />
             <e p="Rock.cs" t="Include" />
             <e p="SmartEnemies" t="Include">

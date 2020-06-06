@@ -4,9 +4,9 @@ namespace ClassLibrary.Entities {
     public abstract class GameEntity {
         public static readonly int FormsSize = 14;
         public bool CanMove = true;
-        public int MoveWeight = 100;
         public int CurrentFrame = 0;
         public int IdleFrames = 4;
+        public int MoveWeight = 100;
         public bool PathFinderMove = false;
         public int PositionX;
         public int PositionY;

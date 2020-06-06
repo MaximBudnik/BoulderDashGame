@@ -24,7 +24,7 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             UseConverterWeight = 1;
             TeleportCost = 30;
             TeleportWeight = 3;
-            _energy = 120;    
+            _energy = 120;
             EnergyRestoreIdle = 5;
             PlayerDetectionRange = 30;
         }

@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Drawing;
 using ClassLibrary.Matrix;
-using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Enemies {
     public abstract class Enemy : AdvancedLogic {
-        protected readonly Action<int> _changePlayerHp;
-        protected readonly Pathfinder _pathfinder;
+        private readonly Action<int> _changePlayerHp;
+        private readonly Pathfinder _pathfinder;
         protected readonly Func<int> GetPlayerPosX;
         protected readonly Func<int> GetPlayerPosY;
-        protected int Damage;
-        public int ScoreForKill = 20;
 
         protected Func<Level, Point, bool> ConditionToMove = (level, point) =>
             level[point.X, point.Y].CanMove || level[point.X, point.Y].PathFinderMove;
+
+        protected int Damage;
+        public int ScoreForKill = 20;
 
         protected Enemy(
             int i,
@@ -57,7 +57,7 @@ namespace ClassLibrary.Entities.Enemies {
         protected Point GetNextPosition(Level level, int targetX, int targetY) {
             var path = _pathfinder.FindPath(PositionX, PositionY, targetX, targetY, level, ConditionToMove) ??
                        throw new ArgumentNullException(
-                           "level");
+                           nameof(level));
             return path[1];
         }
     }

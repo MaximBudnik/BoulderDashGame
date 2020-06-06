@@ -11,8 +11,8 @@ using ClassLibrary.Matrix;
 namespace BoulderDashForms.FormsDrawers {
     public class GameDrawer : FormDrawer {
         private readonly int kf = 6; //parameter to beautify hero sprite
-        private List<Action> _defferedFx;
         protected readonly SolidBrush ShieldBrush = new SolidBrush(Color.FromArgb(80, 220, 200, 100));
+        private List<Action> _defferedFx;
 
         private void DrawPlayerAnimation(Player player, Graphics graphics, int i, int j) {
             var hero = DetectHeroSprite(player);
@@ -132,29 +132,34 @@ namespace BoulderDashForms.FormsDrawers {
         }
 
         private Rectangle GetSmartSkeletonAnimation(SmartSkeleton enemy) {
+            if (enemy == null) return new Rectangle();
             var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 5 * 16), new Size(16, 16));
             ChangeEnemyAnimation(enemy);
             return res;
         }
-        
+
         private Rectangle GetSmartPeacefulAnimation(SmartPeaceful enemy) {
+            if (enemy == null) return new Rectangle();
             var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 1 * 16), new Size(16, 16));
             ChangeEnemyAnimation(enemy);
             return res;
         }
         private Rectangle GetSmartDevilAnimation(SmartDevil enemy) {
+            if (enemy == null) return new Rectangle();
             var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 21 * 16), new Size(16, 16));
             ChangeEnemyAnimation(enemy);
             return res;
         }
 
         private Rectangle GetEnemyWalkerAnimation(EnemyWalker enemy) {
+            if (enemy == null) return new Rectangle();
             var res = new Rectangle(new Point(23 * 16 + enemy.CurrentFrame * 16, 11 * 16), new Size(16, 16));
             ChangeEnemyAnimation(enemy);
             return res;
         }
 
         private Rectangle GetDiggerAnimation(EnemyDigger enemy) {
+            if (enemy == null) return new Rectangle();
             var res = new Rectangle(new Point(27 * 16 + enemy.CurrentFrame * 16, 7 * 16), new Size(16, 16));
             ChangeEnemyAnimation(enemy);
             return res;
@@ -278,7 +283,7 @@ namespace BoulderDashForms.FormsDrawers {
                             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                             DrawEnemyHp(graphics, j, i, enemyWalker);
                             break;
-                        
+
                         case GameEntitiesEnum.SmartPeaceful:
                             DrawFloorTile();
                             var smartPeaceful = currentLevel[i, j] as SmartPeaceful;
@@ -287,7 +292,7 @@ namespace BoulderDashForms.FormsDrawers {
                             DrawEnemyHp(graphics, j, i, smartPeaceful);
                             DrawEnemyShield(graphics, smartPeaceful, destRect);
                             break;
-                        
+
                         case GameEntitiesEnum.SmartDevil:
                             DrawFloorTile();
                             var smartDevil = currentLevel[i, j] as SmartDevil;
@@ -296,7 +301,6 @@ namespace BoulderDashForms.FormsDrawers {
                             DrawEnemyHp(graphics, j, i, smartDevil);
                             DrawEnemyShield(graphics, smartDevil, destRect);
                             break;
-                        
 
                         case GameEntitiesEnum.SwordTile:
                             DrawFloorTile();
@@ -334,9 +338,7 @@ namespace BoulderDashForms.FormsDrawers {
             DrawKeys(graphics, player);
         }
         private void DrawEnemyShield(Graphics graphics, SmartEnemy enemy, Rectangle destRect) {
-            if (enemy != null && enemy.IsShieldActive) {
-                graphics.FillEllipse(ShieldBrush, destRect);
-            }
+            if (enemy != null && enemy.IsShieldActive) graphics.FillEllipse(ShieldBrush, destRect);
         }
 
         private void DrawEnemyHp(Graphics graphics, int j, int i, Enemy enemyWalker) {

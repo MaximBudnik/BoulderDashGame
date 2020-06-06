@@ -12,13 +12,13 @@ using ClassLibrary.SoundPlayer;
 namespace ClassLibrary {
     public class GameLogic {
         private readonly Action<GameStatusEnum> _changeGameStatus;
-        private readonly Action<SoundFilesEnum> _playSound;
         private readonly Func<DataInterlayer> _getDataLayer;
+        private readonly Action<SoundFilesEnum> _playSound;
         private readonly Action _refreshEngineSaves;
 
         private int _chanceToDeleteAcidBlock;
 
-        private int _chanceToSpawnWalker;
+        private int _chanceToSpawnEnemy;
         private int _difficulty;
         public Save CurrentSave = null;
 
@@ -85,14 +85,44 @@ namespace ClassLibrary {
             }
         }
         private void SpawnEnemies() {
-            _chanceToSpawnWalker += _difficulty;
+            _chanceToSpawnEnemy += _difficulty;
             var randomX = Randomizer.Random(CurrentLevel.Width);
             var randomY = Randomizer.Random(CurrentLevel.Height);
-            if (CurrentLevel[randomX, randomY].EntityEnumType == GameEntitiesEnum.EmptySpace &&
-                _chanceToSpawnWalker >= Randomizer.Random(100))
+            if (CurrentLevel[randomX, randomY].EntityEnumType != GameEntitiesEnum.EmptySpace ||
+                _chanceToSpawnEnemy < Randomizer.Random(100)) return;
+
+            var chanceToSpawn = Randomizer.Random(101);
+            if (CurrentLevel._chanceToSpawnSmartDevil > chanceToSpawn) {
+                CurrentLevel[randomX, randomY] =
+                    new SmartDevil(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
+                        () => Player.PositionY, SubstractPlayerHp, () => Player, _playSound);
+                _chanceToSpawnEnemy = 0;
+            }
+
+            else if (CurrentLevel._chanceToSpawnSmartSkeleton > chanceToSpawn) {
                 CurrentLevel[randomX, randomY] =
                     new SmartSkeleton(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
-                        () => Player.PositionY, SubstractPlayerHp,()=>Player,_playSound);
+                        () => Player.PositionY, SubstractPlayerHp, () => Player, _playSound);
+                _chanceToSpawnEnemy = 0;
+            }
+            else if (CurrentLevel._chanceToSpawnSmartPeaceful > chanceToSpawn) {
+                CurrentLevel[randomX, randomY] =
+                    new SmartPeaceful(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
+                        () => Player.PositionY, SubstractPlayerHp, () => Player, _playSound);
+                _chanceToSpawnEnemy = 0;
+            }
+            else if (CurrentLevel._chanceToSpawnSmartDigger > chanceToSpawn) {
+                CurrentLevel[randomX, randomY] =
+                    new EnemyDigger(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
+                        () => Player.PositionY, SubstractPlayerHp);
+                _chanceToSpawnEnemy = 0;
+            }
+            else {
+                CurrentLevel[randomX, randomY] =
+                    new EnemyWalker(randomX, randomY, () => CurrentLevel, () => Player.PositionX,
+                        () => Player.PositionY, SubstractPlayerHp);
+                _chanceToSpawnEnemy = 0;
+            }
         }
 
         private void CheckIfDeleteAllAcidBlocks() {
