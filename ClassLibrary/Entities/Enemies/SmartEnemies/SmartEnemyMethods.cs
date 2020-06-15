@@ -10,10 +10,11 @@ using ClassLibrary.SoundPlayer;
 namespace ClassLibrary.Entities.Enemies.SmartEnemies {
     public partial class SmartEnemy {
         public void AddEnergy(int value) {
-            _energy += value;
+            Energy += value;
         }
         private void IdleAction() {
-            _energy += EnergyRestoreIdle;
+            Energy += EnergyRestoreIdle;
+            Log("Bot decided to stay idle");
         }
         private void ChasePlayer() {
             var level = GetLevel();
@@ -58,16 +59,18 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             Log("Bot decided to run from player");
         }
         private void RegenerateHp() {
-            _energy -= RegenerateHpCost;
+            Energy -= RegenerateHpCost;
             Hp++;
+            Log("Bot decided to regenerate hp");
         }
         private void UseShield() {
-            _energy -= UseShieldCost;
+            Energy -= UseShieldCost;
             IsShieldActive = true;
+            Log("Bot decided to use shield");
         }
         private void UseDynamite() {
             _playSound(SoundFilesEnum.BombSound);
-            _energy -= UseDynamiteCost;
+            Energy -= UseDynamiteCost;
             var level = GetLevel();
             double dmg = 0;
 
@@ -85,12 +88,13 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
                     level[posX, posY] = new EmptySpace(posX, posY);
                 dmg += DynamiteTileDamage;
             }
+            Log("Bot decided use dynamite");
         }
 
         private void UseConverter() {
             _playSound(SoundFilesEnum.ConverterSound);
 
-            _energy -= UseConverterCost;
+            Energy -= UseConverterCost;
             var level = GetLevel();
             for (var x = -1; x < 2; x++)
             for (var y = -1; y < 2; y++)
@@ -103,11 +107,12 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
                     var tmp = new StoneInDiamondConverter(posX, posY, GetLevel, _playSound);
                     level[posX, posY] = tmp;
                 }
+            Log("Bot decided to use converter");
         }
         private void Teleport() {
             _playSound(SoundFilesEnum.TeleportSound);
 
-            _energy -= TeleportCost;
+            Energy -= TeleportCost;
             var level = GetLevel();
             int posX;
             int posY;
@@ -131,6 +136,7 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
                 level[PositionX, PositionY] = this;
             });
             task.Start();
+            Log("Bot decided to use teleport");
         }
         private void Move(Level level, Point dest) {
             if (!level[dest.X, dest.Y].CanMove) return;

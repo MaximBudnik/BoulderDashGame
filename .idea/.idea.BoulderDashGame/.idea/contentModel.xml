@@ -73,6 +73,8 @@
       <e p="BoulderDashGame.sln" t="IncludeFlat" />
       <e p="ClassLibrary" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
+        <e p="ClassDiagram1.cd" t="Include" />
+        <e p="ClassDiagram2.cd" t="Include" />
         <e p="ClassLibrary.csproj" t="IncludeRecursive" />
         <e p="ConsoleInterface" t="Include">
           <e p="AfterLevelScreen.cs" t="Include" />
@@ -81,7 +83,7 @@
           <e p="UserInterface.cs" t="Include" />
         </e>
         <e p="DataLayer" t="Include">
-          <e p="DataInterlayer.cs" t="Include" />
+          <e p="DataLayer.cs" t="Include" />
           <e p="Save.cs" t="Include" />
           <e p="Score.cs" t="Include" />
           <e p="Settings.cs" t="Include" />

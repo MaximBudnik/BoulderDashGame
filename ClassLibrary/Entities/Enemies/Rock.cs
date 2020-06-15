@@ -9,7 +9,7 @@ namespace ClassLibrary.Entities.Enemies {
             Action<int> changePlayerHp
         ) : base(i, j, getLevel, changePlayerHp) {
             EntityEnumType = GameEntitiesEnum.Rock;
-            Damage = 3;
+            Damage = 4;
             CanMove = false;
             Hp = 1000;
             MoveWeight = 200;
@@ -26,15 +26,15 @@ namespace ClassLibrary.Entities.Enemies {
             if (PositionX + 1 >= currentLevel.Width ||
                 currentLevel[PositionX + 1, PositionY].EntityEnumType != GameEntitiesEnum.EmptySpace ||
                 _isFalling) return;
-            Move(MoveDirectionEnum.Vertical, 1);
+            Move(MoveDirectionEnum.Horizontal, 1);
             _isFalling = true;
         }
 
         public override void BreakAction(Player.Player player) {
             var currentLevel = GetLevel();
             if (player.PositionY < PositionY && currentLevel[PositionX, PositionY + 1] is EmptySpace)
-                Move(MoveDirectionEnum.Horizontal, 1);
-            else if (currentLevel[PositionX, PositionY - 1] is EmptySpace) Move(MoveDirectionEnum.Horizontal, -1);
+                Move(MoveDirectionEnum.Vertical, 1);
+            else if (currentLevel[PositionX, PositionY - 1] is EmptySpace) Move(MoveDirectionEnum.Vertical, -1);
         }
 
         private void RockDamage() {

@@ -116,7 +116,7 @@ namespace ClassLibrary.Entities.Player {
             var level = GetLevel();
             var willMove = false;
             switch (direction) {
-                case MoveDirectionEnum.Vertical:
+                case MoveDirectionEnum.Horizontal:
                     var newPositionX = PositionX + value;
                     if (IsNewPositionSuitable(level, newPositionX, PositionY)) {
                         MakePreviousPositionEmpty(level);
@@ -124,7 +124,7 @@ namespace ClassLibrary.Entities.Player {
                         willMove = true;
                     }
                     break;
-                case MoveDirectionEnum.Horizontal:
+                case MoveDirectionEnum.Vertical:
                     var newPositionY = PositionY + value;
 
                     if (level[PositionX, newPositionY] is Rock && Energy > _moveRockEnergyCost) {

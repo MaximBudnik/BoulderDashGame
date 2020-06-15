@@ -63,16 +63,21 @@ namespace ClassLibrary.ConsoleInterface {
             Console.WriteLine(" Press any key to continue...");
         }
 
-        public void DrawSettings() {
+        public void DrawSettings(Settings settings) {
             Console.Clear();
             SkipLine();
             LogCentered("█▀ █▀▀ ▀█▀ ▀█▀ █ █▄░█ █▀▀ █▀");
             LogCentered("▄█ ██▄ ░█░ ░█░ █ █░▀█ █▄█ ▄█");
             ChangeForegroundColor(primaryTextColor);
             SkipLine();
-            Console.WriteLine(" This feature is not implemented yet");
             SkipLine();
-            Console.WriteLine(" Press any key to continue...");
+
+            Console.WriteLine(" Current settings:");
+            Console.WriteLine($" Difficulty: {settings.Difficulty}");
+            Console.WriteLine($" TickRate: {settings.TickRate}");
+            Console.WriteLine($" SizeX: {settings.SizeX}");
+            Console.WriteLine($" SizeY: {settings.SizeY}");
+            Console.WriteLine(" Write new settings:");
         }
 
         public void DrawSaves(List<Save> saves) {

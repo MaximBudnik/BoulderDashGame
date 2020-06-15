@@ -5,7 +5,7 @@ using System.Linq;
 using LiteDB;
 
 namespace ClassLibrary.DataLayer {
-    public class DataInterlayer {
+    public class DataLayer {
         private readonly string _savesDatabase = Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "Saves.db");
 
         private readonly string _scoresDatabase =
@@ -14,7 +14,7 @@ namespace ClassLibrary.DataLayer {
         private readonly SettingsController _settingsController = new SettingsController();
         public Settings Settings;
 
-        public DataInterlayer() {
+        public DataLayer() {
             GetSettings();
         }
         private async void GetSettings() {

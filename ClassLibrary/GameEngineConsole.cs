@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.ConsoleInterface;
@@ -10,7 +9,7 @@ using ClassLibrary.SoundPlayer;
 namespace ClassLibrary {
     public class GameEngineConsole {
         private readonly AfterLevelScreen _afterLevelScreen = new AfterLevelScreen();
-        private readonly DataInterlayer _dataInterlayer = new DataInterlayer();
+        private readonly DataLayer.DataLayer _dataLayer = new DataLayer.DataLayer();
         private readonly GameInputProcessor _gameInputProcessor = new GameInputProcessor();
         private readonly GameInterface _gameInterface = new GameInterface();
         private readonly GameLogic _gameLogic;
@@ -21,7 +20,7 @@ namespace ClassLibrary {
         private int _currentMenuAction;
 
         public GameEngineConsole() {
-            _gameLogic = new GameLogic(ChangeGameStatus, () => _dataInterlayer, RefreshSaves,
+            _gameLogic = new GameLogic(ChangeGameStatus, () => _dataLayer, RefreshSaves,
                 soundFilesEnum => { simulateSound(); });
         }
 
@@ -43,16 +42,6 @@ namespace ClassLibrary {
 
         private void PlaySound(SoundFilesEnum name) { }
 
-        public int GetScores() {
-            return _gameLogic.Player.Score;
-        }
-        public string GetPlayerName() {
-            return _gameLogic.Player.Name;
-        }
-        public Dictionary<string, int[]> GetAllPlayerScores() {
-            return _gameLogic.Player.AllScores;
-        }
-
         private void ChangeGameStatus(GameStatusEnum status) {
             GameStatus = status;
         }
@@ -73,7 +62,7 @@ namespace ClassLibrary {
         private void GameLogicThread() {
             while (GameStatus == GameStatusEnum.Game) {
                 Console.CursorVisible = false;
-                Thread.Sleep(10000 / _dataInterlayer.Settings.TickRate);
+                Thread.Sleep(10000 / _dataLayer.Settings.TickRate);
                 _gameLogic.GameLoop();
             }
         }
@@ -86,7 +75,7 @@ namespace ClassLibrary {
         }
 
         private void RefreshSaves() {
-            _dataInterlayer.GetAllGameSaves();
+            _dataLayer.GetAllGameSaves();
         }
         public void Start() {
             RefreshSaves();
@@ -133,11 +122,11 @@ namespace ClassLibrary {
                 () => {
                     _menu.DrawNewGame();
                     var name = Console.ReadLine();
-                    _dataInterlayer.AddGameSave(new Save {Name = name});
-                    var currentSave = _dataInterlayer.GetAllGameSaves().Find(e => e.Name == name);
+                    _dataLayer.AddGameSave(new Save {Name = name});
+                    var currentSave = _dataLayer.GetAllGameSaves().Find(e => e.Name == name);
                     if (currentSave == null) throw new Exception("Wrong save name!");
-                    _gameLogic.CreateLevel(currentSave.LevelName, currentSave.Name, _dataInterlayer.Settings.SizeX,
-                        _dataInterlayer.Settings.SizeY, _dataInterlayer.Settings.Difficulty, PlaySound);
+                    _gameLogic.CreateLevel(currentSave.LevelName, currentSave.Name, _dataLayer.Settings.SizeX,
+                        _dataLayer.Settings.SizeY, _dataLayer.Settings.Difficulty, PlaySound);
                     _gameLogic.CurrentSave = currentSave;
                 },
                 () => {
@@ -147,13 +136,28 @@ namespace ClassLibrary {
                         4); //3 is "Help" index in _menuActions, so new  menu will be with this element current
                 },
                 () => {
-                    _menu.DrawSettings();
+                    _menu.DrawSettings(_dataLayer.Settings);
+                    Console.WriteLine();
+                    Console.Write(" New Difficulty: ");
+                    _dataLayer.Settings.Difficulty = int.Parse(Console.ReadLine() ?? string.Empty);
+                    Console.WriteLine();
+                    Console.Write(" New TickRate: ");
+                    _dataLayer.Settings.TickRate = int.Parse(Console.ReadLine() ?? string.Empty);
+                    Console.WriteLine();
+                    Console.Write(" New SizeX: ");
+                    _dataLayer.Settings.SizeX = int.Parse(Console.ReadLine() ?? string.Empty);
+                    Console.WriteLine();
+                    Console.Write(" New SizeY: ");
+                    _dataLayer.Settings.SizeY = int.Parse(Console.ReadLine() ?? string.Empty);
+                    Console.WriteLine();
+                    Console.Write(" Press any key to quit settings");
                     Console.ReadKey();
+                    _dataLayer.SaveSettings();
                     _menu.DrawMenu(
                         2); //2 is "Settings" index in _menuActions, so new  menu will be with this element current
                 },
                 () => {
-                    var results = _dataInterlayer.GetBestScores();
+                    var results = _dataLayer.GetBestScores();
                     _menu.DrawScores(results);
                     try {
                         Console.ReadKey();
@@ -166,7 +170,7 @@ namespace ClassLibrary {
                     }
                 },
                 () => {
-                    var saves = _dataInterlayer.GetAllGameSaves();
+                    var saves = _dataLayer.GetAllGameSaves();
                     _menu.DrawSaves(saves);
                     var name = Console.ReadLine();
                     foreach (var save in saves)
@@ -179,8 +183,8 @@ namespace ClassLibrary {
         }
 
         private void LaunchGame(Save save) {
-            _gameLogic.CreateLevel(save.LevelName, save.Name, _dataInterlayer.Settings.SizeX,
-                _dataInterlayer.Settings.SizeY, _dataInterlayer.Settings.Difficulty, PlaySound);
+            _gameLogic.CreateLevel(save.LevelName, save.Name, _dataLayer.Settings.SizeX,
+                _dataLayer.Settings.SizeY, _dataLayer.Settings.Difficulty, PlaySound);
             _gameLogic.Player.Score = save.Score;
             _gameLogic.Player.Hero = save.Hero;
             _gameLogic.CurrentSave = save;

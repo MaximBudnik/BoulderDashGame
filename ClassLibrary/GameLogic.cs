@@ -12,7 +12,7 @@ using ClassLibrary.SoundPlayer;
 namespace ClassLibrary {
     public class GameLogic {
         private readonly Action<GameStatusEnum> _changeGameStatus;
-        private readonly Func<DataInterlayer> _getDataLayer;
+        private readonly Func<DataLayer.DataLayer> _getDataLayer;
         private readonly Action<SoundFilesEnum> _playSound;
         private readonly Action _refreshEngineSaves;
 
@@ -23,7 +23,7 @@ namespace ClassLibrary {
         public Save CurrentSave = null;
 
         public GameLogic(Action<GameStatusEnum> changeGameStatus,
-            Func<DataInterlayer> getDataLayer,
+            Func<DataLayer.DataLayer> getDataLayer,
             Action refreshEngineSaves, Action<SoundFilesEnum> playSound) {
             _changeGameStatus = changeGameStatus;
             _getDataLayer = getDataLayer;

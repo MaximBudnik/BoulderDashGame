@@ -259,28 +259,29 @@ namespace BoulderDashForms.FormsDrawers {
             graphics.FillRectangle(semiTransBrush, rect);
         }
         private void DrawBestScores(Graphics graphics, GameEngine gameEngine) {
-            _results ??= gameEngine.DataInterlayer.GetBestScores();
+            _results ??= gameEngine.DataLayer.GetBestScores();
             var counter = 1;
             var keyValuePairs = _results.Reverse();
             foreach (var result in keyValuePairs) {
                 graphics.DrawString($"{counter}. {result.Value}: {result.Key}",
                     MainFont, WhiteBrush, 520, 180 + 30 * counter);
                 counter++;
+                if (counter == 18) break;
             }
         }
         private void DrawSettings(Graphics graphics, GameEngine gameEngine) {
             var selected = new Rectangle(520, 210 + gameEngine.CurrentSubAction * 40, 940, 40);
             graphics.FillRectangle(DarkBrush,
                 selected);
-            graphics.DrawString($"Difficulty: {gameEngine.DataInterlayer.Settings.Difficulty}",
+            graphics.DrawString($"Difficulty: {gameEngine.DataLayer.Settings.Difficulty}",
                 MainFont, WhiteBrush, 520, 210);
-            graphics.DrawString($"Size X: {gameEngine.DataInterlayer.Settings.SizeX}",
+            graphics.DrawString($"Size X: {gameEngine.DataLayer.Settings.SizeX}",
                 MainFont, WhiteBrush, 520, 250);
-            graphics.DrawString($"Size Y: {gameEngine.DataInterlayer.Settings.SizeY}",
+            graphics.DrawString($"Size Y: {gameEngine.DataLayer.Settings.SizeY}",
                 MainFont, WhiteBrush, 520, 290);
-            graphics.DrawString($"Fps: {gameEngine.DataInterlayer.Settings.Fps}",
+            graphics.DrawString($"Fps: {gameEngine.DataLayer.Settings.Fps}",
                 MainFont, WhiteBrush, 520, 330);
-            graphics.DrawString($"Tick Rate: {gameEngine.DataInterlayer.Settings.TickRate}",
+            graphics.DrawString($"Tick Rate: {gameEngine.DataLayer.Settings.TickRate}",
                 MainFont, WhiteBrush, 520, 370);
             graphics.DrawString("Use A and S to change parameters, press ENTER to save",
                 MainFont, WhiteBrush, 520, 700);

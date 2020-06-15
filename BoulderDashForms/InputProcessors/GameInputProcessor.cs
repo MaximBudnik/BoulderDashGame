@@ -13,20 +13,20 @@ namespace BoulderDashForms.InputProcessors {
             var player = getPlayer();
             switch (key) {
                 case Keys.W:
-                    player.Move(MoveDirectionEnum.Vertical, -1);
+                    player.Move(MoveDirectionEnum.Horizontal, -1);
                     player.Keyboard.W = KeyboardEnum.Enabled;
                     break;
                 case Keys.S:
-                    player.Move(MoveDirectionEnum.Vertical, 1);
+                    player.Move(MoveDirectionEnum.Horizontal, 1);
                     player.Keyboard.S = KeyboardEnum.Enabled;
                     break;
                 case Keys.A:
-                    player.Move(MoveDirectionEnum.Horizontal, -1);
+                    player.Move(MoveDirectionEnum.Vertical, -1);
                     player.PlayerAnimator.Reverse = -1;
                     player.Keyboard.A = KeyboardEnum.Enabled;
                     break;
                 case Keys.D:
-                    player.Move(MoveDirectionEnum.Horizontal, 1);
+                    player.Move(MoveDirectionEnum.Vertical, 1);
                     player.PlayerAnimator.Reverse = 1;
                     player.Keyboard.D = KeyboardEnum.Enabled;
                     break;

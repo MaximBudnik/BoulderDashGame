@@ -7,14 +7,13 @@ using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary {
     public partial class GameEngine {
-        //menu 
         private readonly MusicPlayer _musicPlayer = new MusicPlayer();
         private readonly Action _reDraw;
-        public readonly DataInterlayer DataInterlayer = new DataInterlayer();
+        public readonly DataLayer.DataLayer DataLayer = new DataLayer.DataLayer();
         public readonly GameLogic GameLogic;
         public GameEngine(Action reDraw) {
             _reDraw = reDraw;
-            GameLogic = new GameLogic(ChangeGameStatus, () => DataInterlayer, RefreshSaves, _musicPlayer.PlaySound);
+            GameLogic = new GameLogic(ChangeGameStatus, () => DataLayer, RefreshSaves, _musicPlayer.PlaySound);
         }
         public GameStatusEnum GameStatus { get; private set; }
         public List<Save> Saves { get; private set; }
@@ -47,32 +46,32 @@ namespace ClassLibrary {
 
         private void GraphicsThread() {
             while (GameStatus == GameStatusEnum.Game) {
-                Thread.Sleep(1000 / DataInterlayer.Settings.Fps);
+                Thread.Sleep(1000 / DataLayer.Settings.Fps);
                 _reDraw();
             }
         }
         private void MenuGraphicsThread() {
             while (GameStatus == GameStatusEnum.Menu) {
-                Thread.Sleep(1000 / (DataInterlayer.Settings.Fps * 2));
+                Thread.Sleep(1000 / (DataLayer.Settings.Fps * 2));
                 _reDraw();
             }
         }
 
         private void ResultsGraphicsThread() {
             while (GameStatus == GameStatusEnum.WinScreen || GameStatus == GameStatusEnum.LoseScreen) {
-                Thread.Sleep(1000 / DataInterlayer.Settings.Fps);
+                Thread.Sleep(1000 / DataLayer.Settings.Fps);
                 _reDraw();
             }
         }
 
         private void GameLogicThread() {
             while (GameStatus == GameStatusEnum.Game) {
-                Thread.Sleep(10000 / DataInterlayer.Settings.TickRate);
+                Thread.Sleep(10000 / DataLayer.Settings.TickRate);
                 GameLogic.GameLoop();
             }
         }
         private void RefreshSaves() {
-            Saves = DataInterlayer.GetAllGameSaves();
+            Saves = DataLayer.GetAllGameSaves();
         }
         public void Start() {
             RefreshSaves();
@@ -107,8 +106,8 @@ namespace ClassLibrary {
             }
         }
         private void LaunchGame(Save save) {
-            GameLogic.CreateLevel(save.LevelName, save.Name, DataInterlayer.Settings.SizeX,
-                DataInterlayer.Settings.SizeY, DataInterlayer.Settings.Difficulty, PlaySound);
+            GameLogic.CreateLevel(save.LevelName, save.Name, DataLayer.Settings.SizeX,
+                DataLayer.Settings.SizeY, DataLayer.Settings.Difficulty, PlaySound);
             GameLogic.Player.Score = save.Score;
             GameLogic.Player.Hero = save.Hero;
             GameLogic.CurrentSave = save;

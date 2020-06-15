@@ -54,37 +54,37 @@ namespace ClassLibrary {
                             ChangeIsNameEntered();
                             break;
                         case 2:
-                            DataInterlayer.AddGameSave(NewGameSave);
+                            DataLayer.AddGameSave(NewGameSave);
                             LaunchGame(NewGameSave);
                             break;
                     }
                     break;
                 case 2:
                     if (i == 0) {
-                        DataInterlayer.SaveSettings();
+                        DataLayer.SaveSettings();
                         IsActionActive = false;
                         return;
                     }
                     switch (CurrentSubAction) {
                         case 0:
-                            DataInterlayer.Settings.Difficulty += i;
-                            if (DataInterlayer.Settings.Difficulty < 0) DataInterlayer.Settings.Difficulty = 0;
+                            DataLayer.Settings.Difficulty += i;
+                            if (DataLayer.Settings.Difficulty < 0) DataLayer.Settings.Difficulty = 0;
                             break;
                         case 1:
-                            DataInterlayer.Settings.SizeX += i;
-                            if (DataInterlayer.Settings.SizeX < 10) DataInterlayer.Settings.SizeX = 10;
+                            DataLayer.Settings.SizeX += i;
+                            if (DataLayer.Settings.SizeX < 10) DataLayer.Settings.SizeX = 10;
                             break;
                         case 2:
-                            DataInterlayer.Settings.SizeY += i;
-                            if (DataInterlayer.Settings.SizeY < 10) DataInterlayer.Settings.SizeY = 10;
+                            DataLayer.Settings.SizeY += i;
+                            if (DataLayer.Settings.SizeY < 10) DataLayer.Settings.SizeY = 10;
                             break;
                         case 3:
-                            DataInterlayer.Settings.Fps += i;
-                            if (DataInterlayer.Settings.Fps < 5) DataInterlayer.Settings.Fps = 5;
+                            DataLayer.Settings.Fps += i;
+                            if (DataLayer.Settings.Fps < 5) DataLayer.Settings.Fps = 5;
                             break;
                         case 4:
-                            DataInterlayer.Settings.TickRate += i;
-                            if (DataInterlayer.Settings.TickRate < 1) DataInterlayer.Settings.TickRate = 1;
+                            DataLayer.Settings.TickRate += i;
+                            if (DataLayer.Settings.TickRate < 1) DataLayer.Settings.TickRate = 1;
                             break;
                     }
                     break;

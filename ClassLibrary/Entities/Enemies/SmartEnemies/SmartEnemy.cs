@@ -6,13 +6,15 @@ using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Enemies.SmartEnemies {
     public partial class SmartEnemy : Enemy {
+        //Need to be disabled in console
+        private static readonly bool UseDebugger = true;
         private readonly List<SmartAction> _actionList = new List<SmartAction>();
         private readonly Func<Player.Player> _getOutdatedPlayer;
         private readonly Action<SoundFilesEnum> _playSound;
         private readonly int TeleportRange = 20;
-        protected int _energy;
         protected int Agression;
         protected int ChasePlayerWeight = 30;
+        protected int Energy;
         protected int EnergyRestoreIdle = 5;
         protected int IdleWeight = 20;
         protected int PlayerDetectionRange = 20;
@@ -40,7 +42,7 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
         public bool IsShieldActive { get; private set; }
 
         protected void MakeDecision() {
-            Log($"Enemy position: {PositionX}:{PositionY} Agression: {Agression} Energy: {_energy}");
+            Log($"Enemy position: {PositionX}:{PositionY} Agression: {Agression} Energy: {Energy}");
             _actionList.Clear();
             var level = GetLevel();
             var player = _getOutdatedPlayer();
@@ -48,14 +50,14 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             var playerPosY = GetPlayerPosY();
             var distanceToPlayer = GetDistanceToPlayer(playerPosX, playerPosY);
 
-            GetChasePlayerBenefit(distanceToPlayer);
-            GetRunFromPlayerBenefit(player.Inventory.SwordLevel, player.Hp, distanceToPlayer);
-            GetRegenerateHpBenefit();
-            GetIdleBenefit();
-            GetUseShieldBenefit();
-            GetUseConverterBenefit(level);
-            GetTeleportBenefit(distanceToPlayer);
-            GetUseDynamiteBenefit(distanceToPlayer);
+            CalculateChasePlayerBenefit(distanceToPlayer);
+            CalculateRunFromPlayerBenefit(player.Inventory.SwordLevel, player.Hp, distanceToPlayer);
+            CalculateRegenerateHpBenefit();
+            CalculateIdleBenefit();
+            CalculateUseShieldBenefit();
+            CalculateUseConverterBenefit(level);
+            CalculateTeleportBenefit(distanceToPlayer);
+            CalculateUseDynamiteBenefit(distanceToPlayer);
 
             InvokeBestAction();
             Log("----------------------------------------------------");
@@ -63,7 +65,7 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
         private void InvokeBestAction() {
             _actionList.OrderBy(e => e.BenefitPoints).Reverse().First().InvokeAction();
         }
-        private void GetIdleBenefit() {
+        private void CalculateIdleBenefit() {
             var result = IdleWeight / Agression;
             Log($"IdleBenefit: {result}");
             _actionList.Add(new SmartAction(result, IdleAction));
@@ -75,8 +77,7 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             }
             base.SubstractEnemyHp(value);
         }
-        private void GetChasePlayerBenefit(int distanceToPlayer) {
-            //TODO: Important, even if enemy cant reach player, priority is big
+        private void CalculateChasePlayerBenefit(int distanceToPlayer) {
             int result;
             if (PlayerDetectionRange < distanceToPlayer) result = 0;
             else if (distanceToPlayer <= 1) result = 0;
@@ -84,39 +85,39 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             Log($"ChasePlayerBenefit: {result}");
             _actionList.Add(new SmartAction(result, ChasePlayer));
         }
-        private void GetRunFromPlayerBenefit(int playerSwordLevel, int playerHp, int distanceToPlayer) {
+        private void CalculateRunFromPlayerBenefit(int playerSwordLevel, int playerHp, int distanceToPlayer) {
             var result = (playerSwordLevel + playerHp / 2 - Hp - Agression) * RunFromPlayerWeight / distanceToPlayer;
             Log($"RunFromPlayerBenefit: {result}");
             _actionList.Add(new SmartAction(result, RunFromPlayer));
         }
-        private void GetRegenerateHpBenefit() {
+        private void CalculateRegenerateHpBenefit() {
             if (MaxHp == Hp) {
                 Log("Enemy has full hp");
                 return;
             }
-            if (_energy < RegenerateHpCost) {
-                Log("Enemy dont have energy for hp regenration");
+            if (Energy < RegenerateHpCost) {
+                Log("Enemy dont have energy for hp regeneration");
                 return;
             }
             var result = RegenerateHpWeight / (MaxHp - Hp);
             Log($"RegenerateHpBenefit: {result}");
             _actionList.Add(new SmartAction(result, RegenerateHp));
         }
-        private void GetUseShieldBenefit() {
+        private void CalculateUseShieldBenefit() {
             if (IsShieldActive) {
                 Log("Shield is already active");
                 return;
             }
-            if (_energy < UseShieldCost) {
+            if (Energy < UseShieldCost) {
                 Log("Not enought energy for shield");
                 return;
             }
-            var result = (_energy - Agression) * UseShieldWeight;
+            var result = (Energy - Agression) * UseShieldWeight;
             Log($"UseShieldBenefit: {result}");
             _actionList.Add(new SmartAction(result, UseShield));
         }
-        private void GetUseDynamiteBenefit(int distanceToPlayer) {
-            if (_energy < UseDynamiteCost) {
+        private void CalculateUseDynamiteBenefit(int distanceToPlayer) {
+            if (Energy < UseDynamiteCost) {
                 Log("Not enough energy for using dynamite");
                 return;
             }
@@ -126,8 +127,8 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             Log($"UseDynamiteBenefit: {result}");
             _actionList.Add(new SmartAction(result, UseDynamite));
         }
-        private void GetUseConverterBenefit(Level level) {
-            if (_energy < UseConverterCost) {
+        private void CalculateUseConverterBenefit(Level level) {
+            if (Energy < UseConverterCost) {
                 Log("Not enough energy for using converter");
                 return;
             }
@@ -145,8 +146,8 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
             Log($"UseConverterBenefit: {result}");
             _actionList.Add(new SmartAction(result, UseConverter));
         }
-        private void GetTeleportBenefit(int distanceToPlayer) {
-            if (_energy < TeleportCost) {
+        private void CalculateTeleportBenefit(int distanceToPlayer) {
+            if (Energy < TeleportCost) {
                 Log("Not enough energy for teleport");
                 return;
             }
@@ -162,10 +163,8 @@ namespace ClassLibrary.Entities.Enemies.SmartEnemies {
         private int GetDistanceToPlayer(int playerX, int playerY) {
             return GetDistanceToPlayer(PositionX, PositionY, playerX, playerY);
         }
-
         private static void Log(string s) {
-            //Need to be disabled in console
-            //  Console.WriteLine(s);
+            if (UseDebugger) Console.WriteLine(s);
         }
     }
 }

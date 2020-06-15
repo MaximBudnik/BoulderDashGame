@@ -13,19 +13,19 @@ namespace ClassLibrary.
             var player = getPlayer();
             switch (key) {
                 case ConsoleKey.W:
-                    player.Move(MoveDirectionEnum.Vertical, -1);
+                    player.Move(MoveDirectionEnum.Horizontal, -1);
                     player.Keyboard.W = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.S:
-                    player.Move(MoveDirectionEnum.Vertical, 1);
+                    player.Move(MoveDirectionEnum.Horizontal, 1);
                     player.Keyboard.S = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.A:
-                    player.Move(MoveDirectionEnum.Horizontal, -1);
+                    player.Move(MoveDirectionEnum.Vertical, -1);
                     player.Keyboard.A = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.D:
-                    player.Move(MoveDirectionEnum.Horizontal, 1);
+                    player.Move(MoveDirectionEnum.Vertical, 1);
                     player.Keyboard.D = KeyboardEnum.Enabled;
                     break;
                 case ConsoleKey.T:

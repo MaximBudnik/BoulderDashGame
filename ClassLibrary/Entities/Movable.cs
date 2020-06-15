@@ -17,11 +17,11 @@ namespace ClassLibrary.Entities {
             var level = GetLevel();
             level[PositionX, PositionY] = new EmptySpace(PositionX, PositionY);
             switch (direction) {
-                case MoveDirectionEnum.Horizontal:
+                case MoveDirectionEnum.Vertical:
                     PositionY += value;
                     if (!IsValid(level)) PositionY -= value;
                     break;
-                case MoveDirectionEnum.Vertical:
+                case MoveDirectionEnum.Horizontal:
                     PositionX += value;
                     if (!IsValid(level)) PositionX -= value;
                     break;
