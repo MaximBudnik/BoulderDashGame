@@ -54,15 +54,19 @@ namespace ClassLibrary.Matrix {
             _playSound = playSound;
             _acidGameLoopAction = acidGameLoopAction;
             _getOutdatedPlayer = getOutdatedPlayer;
-
+            
+            SetGoal();
             SetDifficulty(difficulty);
-
             matrix = new GameEntity[width, height];
             DiggerAlgorithm();
         }
         public int DiamondsQuantityToWin { get; private set; }
+        public int KillEnemiesToWin { get; private set; }
+        public int GoldFishToWin { get; private set; }
+
+
         public int LevelName { get; }
-        public string Aim { get; } = "Collect diamonds";
+        public GameModesEnum GameMode { get; private set; } = GameModesEnum.CollectDiamonds;
 
         private int SmartDevilCount { get; set; }
         private int SmartSkeletonsCount { get; set; }
@@ -71,8 +75,17 @@ namespace ClassLibrary.Matrix {
         private int WalkersCount { get; set; }
 
         //fields for creating level
+
+        private void SetGoal() {
+            List<GameModesEnum> modesPool = new List<GameModesEnum>
+                {GameModesEnum.CollectDiamonds, GameModesEnum.KillEnemies, GameModesEnum.HuntGoldenFish,GameModesEnum.HuntGoldenFish};
+            GameMode = Randomizer.GetRandomFromList(modesPool);
+        }
+
         private void SetDifficulty(int difficulty) {
             DiamondsQuantityToWin = difficulty * 3;
+            KillEnemiesToWin = difficulty;
+            GoldFishToWin = 1;
             _difficulty = difficulty;
 
             while (difficulty > 0) {

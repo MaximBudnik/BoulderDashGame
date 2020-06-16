@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary.Matrix;
 
 namespace ClassLibrary {
     public static class Randomizer {
@@ -10,6 +11,10 @@ namespace ClassLibrary {
         }
 
         public static string GetRandomFromList(List<string> list) {
+            return list[Rand.Next(list.Count)];
+        }
+        
+        public static GameModesEnum GetRandomFromList(List<GameModesEnum> list) {
             return list[Rand.Next(list.Count)];
         }
 

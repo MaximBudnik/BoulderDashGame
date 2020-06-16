@@ -100,6 +100,7 @@
           <e p="Collectable" t="Include">
             <e p="BarrelWithSubstance.cs" t="Include" />
             <e p="Diamond.cs" t="Include" />
+            <e p="GoldenFish.cs" t="Include" />
             <e p="ItemCollectible.cs" t="Include" />
             <e p="ItemsTiles" t="Include">
               <e p="ArmorTile.cs" t="Include" />
@@ -171,6 +172,7 @@
           <e p="MenuInputProcessor.cs" t="Include" />
         </e>
         <e p="Matrix" t="Include">
+          <e p="GameModesEnum.cs" t="Include" />
           <e p="Generation.cs" t="Include" />
           <e p="Level.cs" t="Include" />
           <e p="Matrix.cs" t="Include" />

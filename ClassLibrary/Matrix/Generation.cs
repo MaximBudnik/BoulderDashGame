@@ -58,7 +58,8 @@ namespace ClassLibrary.Matrix {
             FillEmptySpace();
 
             var player = new Player(startPosX, startPosY, _playerName,
-                _getLevel, _win, _lose, _playSound, _setPlayer, DiamondsQuantityToWin) {ScoreMultiplier = _difficulty};
+                    _getLevel, _win, _lose, _playSound, _setPlayer, DiamondsQuantityToWin, GameMode, KillEnemiesToWin)
+                {ScoreMultiplier = _difficulty};
             matrix[startPosX, startPosY] = player;
             _setPlayer(player);
         }
@@ -139,6 +140,17 @@ namespace ClassLibrary.Matrix {
                 matrix[posX, posY] = new SmartDevil(posX, posY, _getLevel, _getPlayerPositionX,
                     _getPlayerPositionY, _substractPlayerHp, _getOutdatedPlayer, _playSound);
                 SmartDevilCount--;
+            }
+
+            if (GameMode == GameModesEnum.HuntGoldenFish) {
+                var goldFishCount = 1;
+                while (goldFishCount > 0) {
+                    var posX = rand.Next(width);
+                    var posY = rand.Next(height);
+                    if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
+                    matrix[posX, posY] = new GoldenFish(posX, posY, _playSound);
+                    goldFishCount--;
+                }
             }
         }
         private void SetWalls() {

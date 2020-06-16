@@ -8,7 +8,7 @@ namespace ClassLibrary.Entities.Player {
     public class Candy : Rock {
         public Candy(Func<Level> getLevel, int i, int j, MoveDirectionEnum direction, int value,
             Action<int> changePlayerHp) : base(i, j, getLevel, changePlayerHp) {
-            EntityEnumType = GameEntitiesEnum.Bullet;
+            EntityEnumType = GameEntitiesEnum.Candy;
             PerformAction(direction, value);
             CanMove = false;
             Damage = 2;

@@ -50,7 +50,7 @@ namespace ClassLibrary {
             var currentLevel = _gameLogic.CurrentLevel;
             var player = _gameLogic.Player;
             while (GameStatus == GameStatusEnum.Game) {
-                _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.Aim);
+                _gameInterface.DrawUpperInterface(currentLevel.LevelName, player.Score, currentLevel.GameMode.ToString());
                 _gameInterface.DrawPlayerInterface(currentLevel.DiamondsQuantityToWin, player.CollectedDiamonds,
                     player.MaxEnergy, player.Energy, player.MaxHp, player.Hp, player.Name, player.Inventory);
                 _gameInterface.NewDraw(() => currentLevel);

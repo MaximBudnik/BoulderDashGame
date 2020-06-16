@@ -16,7 +16,8 @@
         EnemyWalker = 14,
         SmartPeaceful = 15,
         SmartDevil = 16,
-        Bullet = 17,
+        Candy = 17,
+        GoldenFish = 18,
 
         SwordTile = 20,
         ConverterTile = 21,

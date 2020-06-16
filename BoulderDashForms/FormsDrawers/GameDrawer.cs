@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Collectable;
@@ -193,6 +194,19 @@ namespace BoulderDashForms.FormsDrawers {
             return res;
         }
 
+        private Rectangle GetFishAnimation(GoldenFish fish) {
+            var res = fish.CurrentFrame <= 16
+                ? new Rectangle(new Point(10 * 16, 7 * 16),
+                    new Size(16, 16))
+                : new Rectangle(new Point(12 * 16, 7 * 16),
+                    new Size(16, 16));
+            if (fish.CurrentFrame < fish.IdleFrames - 1)
+                fish.CurrentFrame++;
+            else
+                fish.CurrentFrame = 0;
+            return res;
+        }
+
         public void DrawGame(Graphics graphics, Level currentLevel, Player player, int width, int height, float scale) {
             this.scale = scale;
             DrawLevel(graphics, currentLevel, player);
@@ -319,9 +333,15 @@ namespace BoulderDashForms.FormsDrawers {
                             DrawEnemyShield(graphics, smartDevil, destRect);
                             break;
 
-                        case GameEntitiesEnum.Bullet:
+                        case GameEntitiesEnum.Candy:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(12 * 16, 4 * 16), new Size(16, 16));
+                            graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
+                            break;
+
+                        case GameEntitiesEnum.GoldenFish:
+                            DrawFloorTile();
+                            srcRect = GetFishAnimation((GoldenFish) currentLevel[i, j]);
                             graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
                             break;
 
@@ -372,6 +392,7 @@ namespace BoulderDashForms.FormsDrawers {
             else {
                 if (achievementsQueue.Count == 0) return;
                 var achievement = achievementsQueue.Dequeue();
+                player.AchievementsController.Achieved.Add(achievement);
                 switch (achievement) {
                     case AchievementsEnum.Armored:
                         _achievementTitle = "Armored";
@@ -386,7 +407,7 @@ namespace BoulderDashForms.FormsDrawers {
                         break;
 
                     case AchievementsEnum.Butcher:
-                        _achievementTitle = "Butcher";
+                        _achievementTitle = "Butcher of Blaviken";
                         _achievementSecondary = "Kill 3 enemies";
                         _achievementIcon = new Point(11 * 16, 18 * 16);
                         break;
@@ -450,18 +471,40 @@ namespace BoulderDashForms.FormsDrawers {
             DrawPlayerTnt(graphics, player);
             DrawPlayerConverters(graphics, player);
             DrawDiamondsLeftToWin(graphics, currentLevel, player, width);
-            graphics.DrawString($"{currentLevel.Aim}", MenuFont, GuiBrush, width - 500, 8);
+
+            var aim = currentLevel.GameMode switch {
+                GameModesEnum.CollectDiamonds => "Collect diamonds",
+                GameModesEnum.KillEnemies => "Kill enemies",
+                GameModesEnum.HuntGoldenFish => "Hunt fish",
+                _ => ""
+            };
+
+            graphics.DrawString(aim, MenuFont, GuiBrush, width - 500, 8);
             graphics.DrawString($"Level {currentLevel.LevelName}", BoldFont, GuiBrush, width - 300, 8);
             //graphics.DrawString($"{player.Name}", BoldFont, GuiBrush, width - 300, 30);
             graphics.DrawString($"Score x{player.ScoreMultiplier.ToString()}", BoldFont, GuiBrush, width - 170, 8);
             graphics.DrawString(player.Score.ToString(), BoldFont, GuiBrush, width - 170, 30);
         }
         private void DrawDiamondsLeftToWin(Graphics graphics, Level currentLevel, Player player, int width) {
-            for (var i = 0; i < currentLevel.DiamondsQuantityToWin - player.CollectedDiamonds; i++) {
+            var srcRect = player.GameMode switch {
+                GameModesEnum.CollectDiamonds => new Rectangle(new Point(1 * 16, 7 * 16), new Size(16, 16)),
+                GameModesEnum.KillEnemies => new Rectangle(new Point(23 * 16 + 1 * 16, 11 * 16), new Size(16, 16)),
+                GameModesEnum.HuntGoldenFish => new Rectangle(new Point(10 * 16, 7 * 16), new Size(16, 16)),
+                _ => new Rectangle()
+            };
+
+            var upper = player.GameMode switch {
+                GameModesEnum.CollectDiamonds => currentLevel.DiamondsQuantityToWin - player.CollectedDiamonds,
+                GameModesEnum.KillEnemies => currentLevel.KillEnemiesToWin - player.KilledEnemies+5,
+                GameModesEnum.HuntGoldenFish => 1,
+                _ => 0
+            };
+            
+            
+            for (var i = 0; i < upper; i++) {
                 var destRect =
                     new Rectangle(new Point(8 * i + width - 500, 32),
                         new Size(16, 16));
-                var srcRect = new Rectangle(new Point(1 * 16, 7 * 16), new Size(16, 16));
                 graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
             }
         }

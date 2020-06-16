@@ -4,7 +4,7 @@ using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary.Entities.Collectable {
     public abstract class ItemCollectible : GameEntity {
-        private readonly Action<SoundFilesEnum> _playSound;
+        protected readonly Action<SoundFilesEnum> _playSound;
         protected readonly int PickUpValue = 1;
 
         protected ItemCollectible(int i, int j, Action<SoundFilesEnum> playSound) : base(i, j) {

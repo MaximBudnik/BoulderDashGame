@@ -15,6 +15,8 @@ namespace ClassLibrary.Entities.Player {
         private readonly int _adrenalineTickReduction = 5;
         private readonly int _attackEnergyCost = 5;
         private readonly int _diamondsTowWin;
+        private readonly int _enemiesToKill;
+
         private readonly Action _lose;
         private readonly int _moveEnergyCost = 1;
         private readonly int _shootCost = 5;
@@ -30,6 +32,7 @@ namespace ClassLibrary.Entities.Player {
         public readonly AchievementsController AchievementsController = new AchievementsController();
         public readonly int MaxEnergy = 20;
         public readonly string Name;
+        public readonly GameModesEnum GameMode;
 
         public Player(
             int i,
@@ -40,7 +43,7 @@ namespace ClassLibrary.Entities.Player {
             Action lose,
             Action<SoundFilesEnum> playSound,
             Action<Player> setPlayer,
-            int diamondsTowWin)
+            int diamondsTowWin, GameModesEnum gameMode, int enemiesToKill)
             : base(getLevel, i, j) {
             Name = name;
             _win = win;
@@ -50,6 +53,8 @@ namespace ClassLibrary.Entities.Player {
             MaxHp = 10;
             Hp = MaxHp;
             _diamondsTowWin = diamondsTowWin;
+            GameMode = gameMode;
+            _enemiesToKill = enemiesToKill;
             EntityEnumType = GameEntitiesEnum.Player;
             AllScores = new Dictionary<string, int[]> {
                 {"Collected diamonds", new[] {0, 0}},
@@ -68,13 +73,16 @@ namespace ClassLibrary.Entities.Player {
             Inventory.StoneInDiamondsConverterQuantity = 5;
         }
 
-        public MoveDirectionExtended LastMove = MoveDirectionExtended.Right;        
+        public MoveDirectionExtended LastMove = MoveDirectionExtended.Right;
 
-        
         public int Energy { get; private set; } = 20;
 
         public int Adrenaline { get; private set; }
         public int CollectedDiamonds { get; set; }
+        public int KilledEnemies { get; set; }
+
+        public bool IsGoldenFishCollected { get; set; }
+
         public int EnergyRestoreTick { get; set; } = 1;
         public int ScoreMultiplier { get; set; } = 10;
         public int Score { get; set; }
@@ -116,7 +124,7 @@ namespace ClassLibrary.Entities.Player {
             SubstractPlayerHp(value);
             SetAnimation(animationEnum);
         }
-        
+
         public override void Move(MoveDirectionEnum direction, int value) {
             if (!EnoughEnergy()) return;
             SetAnimation(PlayerAnimationsEnum.Move);
@@ -236,6 +244,7 @@ namespace ClassLibrary.Entities.Player {
                         AddScore(tmp.ScoreForKill);
                         AllScores["Killed enemies"][0] += 1;
                         AllScores["Killed enemies"][1] += GetScoreToAdd(tmp.ScoreForKill);
+                        KilledEnemies++;
                     }
                 }
             }
@@ -244,19 +253,24 @@ namespace ClassLibrary.Entities.Player {
         public void Shoot() {
             if (Energy < _shootCost) return;
             Energy -= _shootCost;
+            AchievementsController.WasCandyLaunched = true;
             var level = GetLevel();
             switch (LastMove) {
                 case MoveDirectionExtended.Top:
-                    level[PositionX,PositionY] = new Candy(GetLevel,PositionX,PositionY, MoveDirectionEnum.Horizontal, -1, SubstractPlayerHp);
+                    level[PositionX, PositionY] = new Candy(GetLevel, PositionX, PositionY,
+                        MoveDirectionEnum.Horizontal, -1, SubstractPlayerHp);
                     break;
                 case MoveDirectionExtended.Right:
-                    level[PositionX,PositionY] = new Candy(GetLevel,PositionX,PositionY, MoveDirectionEnum.Vertical, 1, SubstractPlayerHp);
+                    level[PositionX, PositionY] = new Candy(GetLevel, PositionX, PositionY, MoveDirectionEnum.Vertical,
+                        1, SubstractPlayerHp);
                     break;
                 case MoveDirectionExtended.Bot:
-                    level[PositionX,PositionY] = new Candy(GetLevel,PositionX,PositionY, MoveDirectionEnum.Horizontal, 1, SubstractPlayerHp);
+                    level[PositionX, PositionY] = new Candy(GetLevel, PositionX, PositionY,
+                        MoveDirectionEnum.Horizontal, 1, SubstractPlayerHp);
                     break;
                 case MoveDirectionExtended.Left:
-                    level[PositionX,PositionY] = new Candy(GetLevel,PositionX,PositionY, MoveDirectionEnum.Vertical, -1, SubstractPlayerHp);
+                    level[PositionX, PositionY] = new Candy(GetLevel, PositionX, PositionY, MoveDirectionEnum.Vertical,
+                        -1, SubstractPlayerHp);
                     break;
             }
             Task task = new Task(() => {
@@ -265,11 +279,12 @@ namespace ClassLibrary.Entities.Player {
             });
             task.Start();
         }
-        
+
         public void UseDynamite() {
             if (Inventory.TntQuantity == 0) return;
             _playSound(SoundFilesEnum.BombSound);
             Inventory.TntQuantity--;
+            AchievementsController.WasBombUsed = true;
             var level = GetLevel();
             double dmg = 0;
 
@@ -292,8 +307,20 @@ namespace ClassLibrary.Entities.Player {
                 _lose();
         }
         private void CheckWin() {
-            if (CollectedDiamonds >= _diamondsTowWin)
-                _win();
+            switch (GameMode) {
+                case GameModesEnum.CollectDiamonds:
+                    if (CollectedDiamonds >= _diamondsTowWin)
+                        _win();
+                    break;
+                case GameModesEnum.KillEnemies:
+                    if (KilledEnemies >= _enemiesToKill)
+                        _win();
+                    break;
+                case GameModesEnum.HuntGoldenFish:
+                    if (IsGoldenFishCollected)
+                        _win();
+                    break;
+            }
         }
         private void RestoreEnergy() {
             if (Energy < MaxEnergy) Energy += EnergyRestoreTick;
