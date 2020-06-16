@@ -3,6 +3,7 @@
         Menu,
         Game,
         WinScreen,
-        LoseScreen
+        LoseScreen,
+        Redactor
     }
 }

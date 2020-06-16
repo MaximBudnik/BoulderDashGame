@@ -18,11 +18,13 @@
         <e p="FormsDrawers" t="Include">
           <e p="FormDrawer.cs" t="Include" />
           <e p="GameDrawer.cs" t="Include" />
+          <e p="LevelRedactorDrawer.cs" t="Include" />
           <e p="MenuDrawer.cs" t="Include" />
           <e p="ResultScreenDrawer.cs" t="Include" />
         </e>
         <e p="InputProcessors" t="Include">
           <e p="GameInputProcessor.cs" t="Include" />
+          <e p="LevelRedactorInputProcessor.cs" t="Include" />
           <e p="MenuInputProcessor.cs" t="Include" />
           <e p="ResultsInputProcessor.cs" t="Include" />
         </e>
@@ -171,6 +173,7 @@
           <e p="InputProcessor.cs" t="Include" />
           <e p="MenuInputProcessor.cs" t="Include" />
         </e>
+        <e p="LevelRedactor.cs" t="Include" />
         <e p="Matrix" t="Include">
           <e p="GameModesEnum.cs" t="Include" />
           <e p="Generation.cs" t="Include" />

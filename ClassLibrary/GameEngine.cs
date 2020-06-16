@@ -18,10 +18,16 @@ namespace ClassLibrary {
         }
         public GameStatusEnum GameStatus { get; private set; }
         public List<Save> Saves { get; private set; }
-
+        
+        
+        
         //TODO: settings validation
         public Save NewGameSave { get; private set; } = new Save();
+        public LevelRedactor LevelRedactor = new LevelRedactor();
+        public List<CustomLevel> CustomLevels { get; private set; }
 
+
+        
         public void ChangeVolume(float val) {
             _musicPlayer.ChangeVolume(val);
         }
@@ -64,6 +70,14 @@ namespace ClassLibrary {
                 _reDraw();
             }
         }
+        
+        private void RedactorGraphicsThread() {
+            while (GameStatus == GameStatusEnum.Redactor) {
+                Thread.Sleep(1000 / DataLayer.Settings.Fps);
+                _reDraw();
+            }
+        }
+        
 
         private void GameLogicThread() {
             while (GameStatus == GameStatusEnum.Game) {
@@ -74,8 +88,14 @@ namespace ClassLibrary {
         private void RefreshSaves() {
             Saves = DataLayer.GetAllGameSaves();
         }
+
+        private void RefreshCustomLevels() {
+            CustomLevels = DataLayer.GetAllCustomLevels();
+        }
+        
         public void Start() {
             RefreshSaves();
+            RefreshCustomLevels();
             MenuGameCycle();
 
             void MenuGameCycle() {
@@ -94,6 +114,11 @@ namespace ClassLibrary {
                         case GameStatusEnum.LoseScreen:
                             _musicPlayer.PlayTheme(SoundFilesEnum.ResultsTheme);
                             Parallel.Invoke(ResultsGraphicsThread);
+                            break;
+                        case GameStatusEnum.Redactor:
+                            _musicPlayer.PlayTheme(SoundFilesEnum.ResultsTheme);
+                            Parallel.Invoke(RedactorGraphicsThread);
+
                             break;
                         default:
                             throw new Exception("Unknown game status");

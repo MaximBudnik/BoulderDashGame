@@ -56,10 +56,11 @@ namespace BoulderDashForms.FormsDrawers {
                     break;
                 case 2:
                     blockHeader = "Create your own level";
+                    DrawCreateNewLevel(graphics, gameEngine, height);
+
                     break;
                 case 3:
                     blockHeader = "Play custom levels";
-
                     break;
                 case 4:
                     blockHeader = "Adjust your settings";
@@ -294,6 +295,22 @@ namespace BoulderDashForms.FormsDrawers {
                 MainFont, WhiteBrush, 520, height/6+300);
             graphics.DrawString("Use A and S to change parameters, press ENTER to save",
                 MainFont, WhiteBrush, 520, height/6+540);
+        }
+
+        private void DrawCreateNewLevel(Graphics graphics, GameEngine gameEngine, int height) {
+            var selected = new Rectangle(520, height/6+60 + gameEngine.CurrentSubAction * 60, 940, 40);
+            graphics.FillRectangle(gameEngine.IsNameEntered == false ? DarkBrush : RedBrush, selected);
+            graphics.DrawString($"Level name: {gameEngine.LevelRedactor.NewCustomLevel.Name}",
+                MainFont, WhiteBrush, 520, height/6+60);
+            graphics.DrawString($"Size X: {gameEngine.LevelRedactor.NewCustomLevel.SizeX}",
+                MainFont, WhiteBrush, 520, height/6+120);
+            graphics.DrawString($"Size Y: {gameEngine.LevelRedactor.NewCustomLevel.SizeY}",
+                MainFont, WhiteBrush, 520, height/6+180);
+            graphics.DrawString($"Aim: {gameEngine.LevelRedactor.NewCustomLevel.Aim}",
+                MainFont, WhiteBrush, 520, height/6+240);
+            graphics.DrawString($"Enter level editor",
+                MainFont, WhiteBrush, 520, height/6+300);
+
         }
     }
 }

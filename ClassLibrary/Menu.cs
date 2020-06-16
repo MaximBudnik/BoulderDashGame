@@ -60,8 +60,29 @@ namespace ClassLibrary {
                     }
                     break;
                 case 2:
+                    switch (CurrentSubAction) {
+                        case 0:
+                            ChangeIsNameEntered();
+                            break;
+                        case 1:
+                            LevelRedactor.NewCustomLevel.SizeX += i;
+                            if (LevelRedactor.NewCustomLevel.SizeX < 4) LevelRedactor.NewCustomLevel.SizeX = 4;
+                            break;
+                        case 2:
+                            LevelRedactor.NewCustomLevel.SizeY += i;
+                            if (LevelRedactor.NewCustomLevel.SizeY < 4) LevelRedactor.NewCustomLevel.SizeY = 4;
+                            break;
+                        case 3:
+                            LevelRedactor.NewCustomLevel.Aim += i;
+                            break;
+                        case 4:
+                            GameStatus = GameStatusEnum.Redactor;
+                            break;
+                    }
+                    // 
                     break;
                 case 3:
+                    // add new method to level to create level from new class
                     break;
                 case 4:
                     if (i == 0) {
@@ -107,9 +128,11 @@ namespace ClassLibrary {
                     break;
                 case 2:
                     IsActionActive = true;
+                    SetSubAction(5);
                     break;
                 case 3:
                     IsActionActive = true;
+                    SetSubAction(CustomLevels.Count);
                     break;
                 case 4:
                     IsActionActive = true;
