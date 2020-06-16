@@ -13,6 +13,7 @@ namespace BoulderDashForms.FormsDrawers {
         private readonly int kf = 6; //parameter to beautify hero sprite
         protected readonly SolidBrush ShieldBrush = new SolidBrush(Color.FromArgb(80, 220, 200, 100));
         private List<Action> _defferedFx;
+        private float scale = 2f;
 
         private void DrawPlayerAnimation(Player player, Graphics graphics, int i, int j) {
             var hero = DetectHeroSprite(player);
@@ -20,8 +21,9 @@ namespace BoulderDashForms.FormsDrawers {
             var width = 16;
             var pixelY = hero + kf;
             var destRect =
-                new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
-                    new Size(GameEntity.FormsSize * 2, GameEntity.FormsSize * 2));
+                new Rectangle(
+                    new Point((int) (j * GameEntity.FormsSize * scale), (int) (i * GameEntity.FormsSize * scale)),
+                    new Size((int) (GameEntity.FormsSize * scale), (int) (GameEntity.FormsSize * scale)));
             Rectangle srcRect;
             switch (player.PlayerAnimator.CurrentPlayerAnimationEnum) {
                 case PlayerAnimationsEnum.Move: {
@@ -39,7 +41,9 @@ namespace BoulderDashForms.FormsDrawers {
                     srcRect = new Rectangle(new Point(0 * 16 + player.CurrentFrame * 16, 0 * 16),
                         new Size(player.PlayerAnimator.Reverse * 16, 16));
                     var tmpDestRect =
-                        new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
+                        new Rectangle(
+                            new Point((int) (j * GameEntity.FormsSize * scale),
+                                (int) (i * GameEntity.FormsSize * scale)),
                             new Size(GameEntity.FormsSize * 3, GameEntity.FormsSize * 3));
                     var rect = srcRect;
                     _defferedFx.Add(
@@ -54,7 +58,9 @@ namespace BoulderDashForms.FormsDrawers {
                     srcRect = new Rectangle(new Point(5 * 32 + player.CurrentFrame * 32, 5 * 16),
                         new Size(32, 32));
                     var tmpDestRect =
-                        new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
+                        new Rectangle(
+                            new Point((int) (j * GameEntity.FormsSize * scale),
+                                (int) (i * GameEntity.FormsSize * scale)),
                             new Size(GameEntity.FormsSize * 3, GameEntity.FormsSize * 3));
                     var rect = srcRect;
                     _defferedFx.Add(
@@ -69,7 +75,9 @@ namespace BoulderDashForms.FormsDrawers {
                     srcRect = new Rectangle(new Point(6 * 16 + player.CurrentFrame * 16, 2 * 16),
                         new Size(16, 16));
                     var tmpDestRect =
-                        new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
+                        new Rectangle(
+                            new Point((int) (j * GameEntity.FormsSize * scale),
+                                (int) (i * GameEntity.FormsSize * scale)),
                             new Size(GameEntity.FormsSize * 3, GameEntity.FormsSize * 3));
                     var rect = srcRect;
                     _defferedFx.Add(
@@ -81,7 +89,7 @@ namespace BoulderDashForms.FormsDrawers {
                     break;
                 }
                 case PlayerAnimationsEnum.Converting: {
-                    srcRect = new Rectangle(new Point(11 * 16 + player.CurrentFrame * 16, 2 * 16),
+                    srcRect = new Rectangle(new Point(11 * 16 + player.CurrentFrame * 16, (int) (scale * 16)),
                         new Size(16, 16));
                     graphics.DrawImage(Effects, destRect, srcRect, GraphicsUnit.Pixel);
                     srcRect = new Rectangle(new Point(12 * 16 + player.CurrentFrame * 16, pixelY),
@@ -185,17 +193,26 @@ namespace BoulderDashForms.FormsDrawers {
             return res;
         }
 
-        public void DrawGame(Graphics graphics, Level currentLevel, Player player) {
+        public void DrawGame(Graphics graphics, Level currentLevel, Player player, int width, int height, float scale) {
+            this.scale = scale;
+            DrawLevel(graphics, currentLevel, player);
+            DrawInterface(graphics, currentLevel, player, width, height);
+            DrawAchievements(graphics, player, width, height);
+            DrawKeys(graphics, player, width, height);
+        }
+        private void DrawLevel(Graphics graphics, Level currentLevel, Player player) {
             _defferedFx = new List<Action>();
             for (var i = 0; i < currentLevel.Width; i++) {
                 for (var j = 0; j < currentLevel.Height; j++) {
                     var destRect =
-                        new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
-                            new Size(GameEntity.FormsSize * 2, GameEntity.FormsSize * 2));
+                        new Rectangle(
+                            new Point((int) (j * GameEntity.FormsSize * scale),
+                                (int) (i * GameEntity.FormsSize * scale)),
+                            new Size((int) (GameEntity.FormsSize * scale), (int) (GameEntity.FormsSize * scale)));
                     Rectangle srcRect;
 
                     void DrawFloorTile() {
-                        srcRect = new Rectangle(new Point(2 * 16, 5 * 16), new Size(16, 16));
+                        srcRect = new Rectangle(new Point((2 * 16), 5 * 16), new Size(16, 16));
                         graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     }
                     switch (currentLevel[i, j].EntityEnumType) {
@@ -302,6 +319,12 @@ namespace BoulderDashForms.FormsDrawers {
                             DrawEnemyShield(graphics, smartDevil, destRect);
                             break;
 
+                        case GameEntitiesEnum.Bullet:
+                            DrawFloorTile();
+                            srcRect = new Rectangle(new Point(12 * 16, 4 * 16), new Size(16, 16));
+                            graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
+                            break;
+
                         case GameEntitiesEnum.SwordTile:
                             DrawFloorTile();
                             srcRect = new Rectangle(new Point(20 * 16, 2 * 12), new Size(16, 22));
@@ -334,9 +357,76 @@ namespace BoulderDashForms.FormsDrawers {
                 }
                 foreach (var a in _defferedFx) a.Invoke();
             }
-            DrawInterface(graphics, currentLevel, player);
-            DrawKeys(graphics, player);
         }
+
+        private int _achievementCounter = -100;
+        private string _achievementTitle = "";
+        private string _achievementSecondary = "";
+        private Point _achievementIcon;
+
+        private void DrawAchievements(Graphics graphics, Player player, int width, int height) {
+            var achievementsQueue = player.AchievementsController.AchievementsQueue;
+            if (_achievementCounter > -100) {
+                _achievementCounter -= 3;
+            }
+            else {
+                if (achievementsQueue.Count == 0) return;
+                var achievement = achievementsQueue.Dequeue();
+                switch (achievement) {
+                    case AchievementsEnum.Armored:
+                        _achievementTitle = "Armored";
+                        _achievementSecondary = "Have 5 armor";
+                        _achievementIcon = new Point(9 * 16, 15 * 16);
+                        break;
+
+                    case AchievementsEnum.Bomberman:
+                        _achievementTitle = "Bomberman";
+                        _achievementSecondary = "Use bomb";
+                        _achievementIcon = new Point(12 * 16, 11 * 16);
+                        break;
+
+                    case AchievementsEnum.Butcher:
+                        _achievementTitle = "Butcher";
+                        _achievementSecondary = "Kill 3 enemies";
+                        _achievementIcon = new Point(11 * 16, 18 * 16);
+                        break;
+
+                    case AchievementsEnum.CandyLauncher:
+                        _achievementTitle = "Candy launcher";
+                        _achievementSecondary = "Throw candy";
+                        _achievementIcon = new Point(12 * 16, 4 * 16);
+                        break;
+
+                    case AchievementsEnum.ItsShiny:
+                        _achievementTitle = "It`s shiny";
+                        _achievementSecondary = "Collect diamond";
+                        _achievementIcon = new Point(1 * 16, 7 * 16);
+                        break;
+
+                    case AchievementsEnum.Rage:
+                        _achievementTitle = "Rage";
+                        _achievementSecondary = "Have 100+ Adrenaline";
+                        _achievementIcon = new Point(13 * 16, 9 * 16);
+                        break;
+                }
+                _achievementCounter = 100;
+            }
+            var counterInfluence = _achievementCounter > 0 ? _achievementCounter : 0;
+            var baseYposition = height - 120 + counterInfluence;
+            var baseXposition = width / 14 - 50;
+            graphics.FillRectangle(RedBrushHalfTransparent,
+                new Rectangle(baseXposition, baseYposition, 300, 60)
+            );
+            var destRect =
+                new Rectangle(new Point(baseXposition + 5, baseYposition + 5),
+                    new Size(50, 50));
+            var srcRect = new Rectangle(_achievementIcon, new Size(15, 15));
+            graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
+            graphics.DrawString(_achievementTitle, MenuFont, WhiteBrush, baseXposition + 5 + 55, baseYposition + 5);
+            graphics.DrawString(_achievementSecondary, MenuFont, WhiteBrush, baseXposition + 5 + 55,
+                baseYposition + 25);
+        }
+
         private void DrawEnemyShield(Graphics graphics, SmartEnemy enemy, Rectangle destRect) {
             if (enemy != null && enemy.IsShieldActive) graphics.FillEllipse(ShieldBrush, destRect);
         }
@@ -345,29 +435,31 @@ namespace BoulderDashForms.FormsDrawers {
             var enemyWalkerHp = enemyWalker.Hp;
             if (enemyWalkerHp < enemyWalker.MaxHp) {
                 var hpRectangle =
-                    new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2 - 4),
-                        new Size(GameEntity.FormsSize * 2 * enemyWalkerHp / enemyWalker.MaxHp, 4));
+                    new Rectangle(
+                        new Point((int) (j * GameEntity.FormsSize * scale),
+                            (int) (i * GameEntity.FormsSize * scale - 4)),
+                        new Size((int) (GameEntity.FormsSize * scale * enemyWalkerHp / enemyWalker.MaxHp), 4));
                 graphics.FillRectangle(RedBrushHalfTransparent, hpRectangle);
             }
         }
-        private void DrawInterface(Graphics graphics, Level currentLevel, Player player) {
+        private void DrawInterface(Graphics graphics, Level currentLevel, Player player, int width, int height) {
             DrawPlayerHp(graphics, player);
             DrawPlayerArmor(graphics, player);
             DrawPlayerEnergy(graphics, player);
             DrawPlayerSword(graphics, player);
             DrawPlayerTnt(graphics, player);
             DrawPlayerConverters(graphics, player);
-            DrawDiamondsLeftToWin(graphics, currentLevel, player);
-            graphics.DrawString($"{currentLevel.Aim}", MenuFont, GuiBrush, 1000, 8);
-            graphics.DrawString($"Level {currentLevel.LevelName}", BoldFont, GuiBrush, 1200, 8);
-            //graphics.DrawString($"{player.Name}", BoldFont, GuiBrush, 1200, 30);
-            graphics.DrawString($"Score x{player.ScoreMultiplier.ToString()}", BoldFont, GuiBrush, 1330, 8);
-            graphics.DrawString(player.Score.ToString(), BoldFont, GuiBrush, 1330, 30);
+            DrawDiamondsLeftToWin(graphics, currentLevel, player, width);
+            graphics.DrawString($"{currentLevel.Aim}", MenuFont, GuiBrush, width - 500, 8);
+            graphics.DrawString($"Level {currentLevel.LevelName}", BoldFont, GuiBrush, width - 300, 8);
+            //graphics.DrawString($"{player.Name}", BoldFont, GuiBrush, width - 300, 30);
+            graphics.DrawString($"Score x{player.ScoreMultiplier.ToString()}", BoldFont, GuiBrush, width - 170, 8);
+            graphics.DrawString(player.Score.ToString(), BoldFont, GuiBrush, width - 170, 30);
         }
-        private void DrawDiamondsLeftToWin(Graphics graphics, Level currentLevel, Player player) {
+        private void DrawDiamondsLeftToWin(Graphics graphics, Level currentLevel, Player player, int width) {
             for (var i = 0; i < currentLevel.DiamondsQuantityToWin - player.CollectedDiamonds; i++) {
                 var destRect =
-                    new Rectangle(new Point(8 * i + 1000, 32),
+                    new Rectangle(new Point(8 * i + width - 500, 32),
                         new Size(16, 16));
                 var srcRect = new Rectangle(new Point(1 * 16, 7 * 16), new Size(16, 16));
                 graphics.DrawImage(Icons, destRect, srcRect, GraphicsUnit.Pixel);
@@ -438,79 +530,79 @@ namespace BoulderDashForms.FormsDrawers {
             }
         }
 
-        private void DrawKeys(Graphics graphics, Player player) {
+        private void DrawKeys(Graphics graphics, Player player, int width, int height) {
             var key = player.Keyboard;
-            DrawKeyW(graphics, key);
-            DrawKeyA(graphics, key);
-            DrawKeyS(graphics, key);
-            DrawKeyD(graphics, key);
-            DrawKeySpace(graphics, key);
-            DrawKeyT(graphics, key);
-            DrawKeyQ(graphics, key);
-            DrawKeyE(graphics, key);
-            DrawKeyR(graphics, key);
+            DrawKeyW(graphics, key, width, height);
+            DrawKeyA(graphics, key, width, height);
+            DrawKeyS(graphics, key, width, height);
+            DrawKeyD(graphics, key, width, height);
+            DrawKeySpace(graphics, key, width, height);
+            DrawKeyT(graphics, key, width, height);
+            DrawKeyQ(graphics, key, width, height);
+            DrawKeyE(graphics, key, width, height);
+            DrawKeyR(graphics, key, width, height);
         }
-        private void DrawKeyR(Graphics graphics, Keyboard key) {
-            var destRect = new Rectangle(new Point(1364, 750),
+        private void DrawKeyR(Graphics graphics, Keyboard key, int width, int height) {
+            var destRect = new Rectangle(new Point(width - 136, height - 157),
                 new Size(32, 32));
             var srcRect = new Rectangle(new Point(6 * 16, 2 * 16 + (int) key.R * 16), new Size(16, 16));
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void DrawKeyE(Graphics graphics, Keyboard key) {
-            var destRect = new Rectangle(new Point(1332, 750),
+        private void DrawKeyE(Graphics graphics, Keyboard key, int width, int height) {
+            var destRect = new Rectangle(new Point(width - 168, height - 157),
                 new Size(32, 32));
             var srcRect = new Rectangle(new Point(5 * 16, 2 * 16 + (int) key.E * 16), new Size(16, 16));
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void DrawKeyQ(Graphics graphics, Keyboard key) {
-            var destRect = new Rectangle(new Point(1268, 750),
+        private void DrawKeyQ(Graphics graphics, Keyboard key, int width, int height) {
+            var destRect = new Rectangle(new Point(width - 232, height - 157),
                 new Size(32, 32));
             var srcRect = new Rectangle(new Point(3 * 16, 2 * 16 + (int) key.Q * 16), new Size(16, 16));
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void DrawKeyT(Graphics graphics, Keyboard key) {
-            var destRect = new Rectangle(new Point(1396, 750),
+        private void DrawKeyT(Graphics graphics, Keyboard key, int width, int height) {
+            var destRect = new Rectangle(new Point(width - 104, height - 157),
                 new Size(32, 32));
             var srcRect = new Rectangle(new Point(7 * 16, 2 * 16 + (int) key.T * 16), new Size(16, 16));
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void DrawKeySpace(Graphics graphics, Keyboard key) {
+        private void DrawKeySpace(Graphics graphics, Keyboard key, int width, int height) {
             Rectangle destRect;
             Rectangle srcRect;
             if (key.Space == 0) {
                 destRect =
-                    new Rectangle(new Point(1268, 814),
+                    new Rectangle(new Point(width - 232, height - 93),
                         new Size(160, 32));
                 srcRect = new Rectangle(new Point(5 * 16, 5 * 16 + (int) key.Space * 16), new Size(80, 16));
             }
             else {
                 destRect =
-                    new Rectangle(new Point(1268, 814),
+                    new Rectangle(new Point(width - 236, height - 93),
                         new Size(144, 32));
                 srcRect = new Rectangle(new Point(6 * 16, 5 * 16 + (int) key.Space * 16), new Size(64, 16));
             }
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void DrawKeyD(Graphics graphics, Keyboard key) {
-            var destRect = new Rectangle(new Point(1332, 782),
+        private void DrawKeyD(Graphics graphics, Keyboard key, int width, int height) {
+            var destRect = new Rectangle(new Point(width - 168, height - 125),
                 new Size(32, 32));
             var srcRect = new Rectangle(new Point(5 * 16, 3 * 16 + (int) key.D * 16), new Size(16, 16));
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void DrawKeyS(Graphics graphics, Keyboard key) {
-            var destRect = new Rectangle(new Point(1300, 782),
+        private void DrawKeyS(Graphics graphics, Keyboard key, int width, int height) {
+            var destRect = new Rectangle(new Point(width - 200, height - 125),
                 new Size(32, 32));
             var srcRect = new Rectangle(new Point(4 * 16, 3 * 16 + (int) key.S * 16), new Size(16, 16));
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void DrawKeyA(Graphics graphics, Keyboard key) {
-            var destRect = new Rectangle(new Point(1268, 782),
+        private void DrawKeyA(Graphics graphics, Keyboard key, int width, int height) {
+            var destRect = new Rectangle(new Point(width - 232, height - 125),
                 new Size(32, 32));
             var srcRect = new Rectangle(new Point(3 * 16, 3 * 16 + (int) key.A * 16), new Size(16, 16));
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void DrawKeyW(Graphics graphics, Keyboard key) {
-            var destRect = new Rectangle(new Point(1300, 750),
+        private void DrawKeyW(Graphics graphics, Keyboard key, int width, int height) {
+            var destRect = new Rectangle(new Point(width - 200, height - 157),
                 new Size(32, 32));
             var srcRect = new Rectangle(new Point(4 * 16, 2 * 16 + (int) key.W * 16), new Size(16, 16));
             graphics.DrawImage(Keyboard, destRect, srcRect, GraphicsUnit.Pixel);

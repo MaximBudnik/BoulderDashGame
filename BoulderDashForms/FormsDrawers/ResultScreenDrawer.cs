@@ -32,28 +32,30 @@ namespace BoulderDashForms.FormsDrawers {
             GameStatusEnum gameStatus,
             string playerName,
             int playerScore,
-            Dictionary<string, int[]> allPlayerScores
+            Dictionary<string, int[]> allPlayerScores,
+            int width, int height
         ) {
-            FillBackground(graphics, gameStatus);
-            DrawCenterBlock(graphics);
+            var center = width / 2;
+            FillBackground(graphics, gameStatus, width, height);
+            DrawCenterBlock(graphics, width, height);
             var header = gameStatus == GameStatusEnum.WinScreen ? "LEVEL COMPLETED" : "YOU LOST";
-            graphics.DrawString(header, HeaderFont, RedBrush, 750, 100, _alignCenter);
-            graphics.DrawString($"{playerName} total score: {playerScore}", MainFont, WhiteBrush, 750, 160,
+            graphics.DrawString(header, HeaderFont, RedBrush, center, 100, _alignCenter);
+            graphics.DrawString($"{playerName} total score: {playerScore}", MainFont, WhiteBrush, center, 160,
                 _alignCenter);
             var counter = 0;
-            graphics.DrawString("Level results", BoldFont, WhiteBrush, 750, 250, _alignCenter);
+            graphics.DrawString("Level results", BoldFont, WhiteBrush, center, 250, _alignCenter);
             foreach (var (key, value) in allPlayerScores) {
-                graphics.DrawString(key, MainFont, RedBrush, 750, 300 + counter * 80, _alignCenter);
+                graphics.DrawString(key, MainFont, RedBrush, center, 300 + counter * 80, _alignCenter);
                 graphics.DrawString($"{value[0].ToString()}...................{value[1].ToString()}",
-                    MainFont, WhiteBrush, 750, 335 + counter * 80, _alignCenter);
+                    MainFont, WhiteBrush, center, 335 + counter * 80, _alignCenter);
                 counter++;
             }
-            graphics.DrawString("Press ENTER to continue", MainFont, WhiteBrush, 750, 750, _alignCenter);
+            graphics.DrawString("Press ENTER to continue", MainFont, WhiteBrush, center, 750, _alignCenter);
         }
 
-        private void FillBackground(Graphics graphics, GameStatusEnum gameStatus) {
-            for (var i = 0; i < 31; i++)
-            for (var j = 0; j < 53; j++) {
+        private void FillBackground(Graphics graphics, GameStatusEnum gameStatus, int width, int height) {
+            for (var i = 0; i < height/16; i++)
+            for (var j = 0; j < width/16; j++) {
                 var destRect =
                     new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
                         new Size(GameEntity.FormsSize * 2, GameEntity.FormsSize * 2));
@@ -63,12 +65,12 @@ namespace BoulderDashForms.FormsDrawers {
             var semiTransBrush = gameStatus == GameStatusEnum.WinScreen
                 ? new SolidBrush(Color.FromArgb(100, 4, 114, 77))
                 : new SolidBrush(Color.FromArgb(100, 178, 13, 48));
-            var rect = new Rectangle(0, 0, 1500, 900);
+            var rect = new Rectangle(0, 0, width, height);
             graphics.FillRectangle(semiTransBrush, rect);
         }
 
-        private void DrawCenterBlock(Graphics graphics) {
-            var rect = new Rectangle(500, 0, 500, 900);
+        private void DrawCenterBlock(Graphics graphics, int width, int height) {
+            var rect = new Rectangle(width/3, 0, width/3, height);
             graphics.FillRectangle(DarkBrush, rect);
         }
     }

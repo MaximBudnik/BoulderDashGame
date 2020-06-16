@@ -9,7 +9,9 @@ using ClassLibrary.Entities;
 
 namespace BoulderDashForms.FormsDrawers {
     public class MenuDrawer : FormDrawer {
-        private readonly string[] _menuActions = {"Continue", "New game", "Settings", "Scores", "Help", "Exit"};
+        private readonly string[] _menuActions =
+            {"Continue", "New game", "Create level", "Saved levels", "Settings", "Scores", "Help", "Exit"};
+
         private readonly int maxFramesForEnemies = 4;
         private int _currentFrameForEnemies;
         private int _enemyPosition;
@@ -33,45 +35,52 @@ namespace BoulderDashForms.FormsDrawers {
             _rightBlockWidth = 0;
         }
 
-        public void DrawMenu(Graphics graphics, GameEngine gameEngine) {
-            FillBackground(graphics);
-            FrontSpritesAnimation(graphics);
-            DrawMainMenuBlock(graphics, gameEngine);
-            DrawRightBlock(graphics, gameEngine);
-            DrawRightBlockContent(graphics, gameEngine);
+        public void DrawMenu(Graphics graphics, GameEngine gameEngine, int width, int height) {
+            FillBackground(graphics, width, height);
+            FrontSpritesAnimation(graphics, width, height);
+            DrawMainMenuBlock(graphics, gameEngine, width, height);
+            DrawRightBlock(graphics, gameEngine, width, height);
+            DrawRightBlockContent(graphics, gameEngine,width, height);
         }
-        private void DrawRightBlockContent(Graphics graphics, GameEngine gameEngine) {
+        private void DrawRightBlockContent(Graphics graphics, GameEngine gameEngine,int width,int height) {
             if (_rightBlockWidth < 1000) return;
             var blockHeader = "";
             switch (gameEngine.CurrentMenuAction) {
                 case 0:
                     blockHeader = "Select save";
-                    DrawContinue(graphics, gameEngine);
+                    DrawContinue(graphics, gameEngine,height);
                     break;
                 case 1:
                     blockHeader = "Create new game";
-                    DrawNewGame(graphics, gameEngine);
+                    DrawNewGame(graphics, gameEngine, height, width);
                     break;
                 case 2:
-                    blockHeader = "Adjust your settings";
-                    DrawSettings(graphics, gameEngine);
+                    blockHeader = "Create your own level";
                     break;
                 case 3:
-                    blockHeader = "Best results";
-                    DrawBestScores(graphics, gameEngine);
+                    blockHeader = "Play custom levels";
+
                     break;
                 case 4:
+                    blockHeader = "Adjust your settings";
+                    DrawSettings(graphics, gameEngine, height);
+                    break;
+                case 5:
+                    blockHeader = "Best results";
+                    DrawBestScores(graphics, gameEngine, height);
+                    break;
+                case 6:
                     blockHeader = "Game guide";
                     DrawHelp(graphics);
                     break;
-                case 5:
+                case 7:
                     blockHeader = "Press ENTER to exit game";
                     break;
             }
-            graphics.DrawString(blockHeader, HeaderFont, WhiteBrush, 520, 160);
+            graphics.DrawString(blockHeader, HeaderFont, WhiteBrush, 520, height/6+10);
         }
-        private void DrawNewGame(Graphics graphics, GameEngine gameEngine) {
-            var selected = new Rectangle(520, 220 + gameEngine.CurrentSubAction * 60, 940, 40);
+        private void DrawNewGame(Graphics graphics, GameEngine gameEngine, int height, int width) {
+            var selected = new Rectangle(520, height/6+60 + gameEngine.CurrentSubAction * 60, (int)(width*0.6 + 40), 40);
             graphics.FillRectangle(gameEngine.IsNameEntered == false ? DarkBrush : RedBrush, selected);
             var hero = 36;
             switch (gameEngine.NewGameSave.Hero) {
@@ -97,27 +106,27 @@ namespace BoulderDashForms.FormsDrawers {
             const int kf = 3;
             var pixelY = hero + kf;
             var destRect =
-                new Rectangle(new Point(820, 210),
+                new Rectangle(new Point(820, height/6+50),
                     new Size(32, 52));
             var srcRect = new Rectangle(new Point(9 * 16, pixelY),
                 new Size(16, 26));
             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
 
             graphics.DrawString("Choose your hero: ",
-                MainFont, WhiteBrush, 520, 220);
+                MainFont, WhiteBrush, 520, height/6+60);
             graphics.DrawString($"Enter your name: {gameEngine.NewGameSave.Name}",
-                MainFont, WhiteBrush, 520, 280);
+                MainFont, WhiteBrush, 520, height/6+120);
             graphics.DrawString("Start game",
-                MainFont, WhiteBrush, 520, 340);
+                MainFont, WhiteBrush, 520, height/6+180);
         }
-        private void DrawRightBlock(Graphics graphics, GameEngine gameEngine) {
-            var rightBlock = new Rectangle(500, 150, _rightBlockWidth, 600);
+        private void DrawRightBlock(Graphics graphics, GameEngine gameEngine, int width, int height) {
+            var rightBlock = new Rectangle(500, height/6, _rightBlockWidth, height/3*2);
             graphics.FillRectangle(gameEngine.IsActionActive ? RedBrushHalfTransparent : RedBrushTransparent,
                 rightBlock);
-            if (_rightBlockWidth < 1000) _rightBlockWidth += 100;
+            if (_rightBlockWidth < width-500) _rightBlockWidth += 100;
         }
-        private void DrawMainMenuBlock(Graphics graphics, GameEngine gameEngine) {
-            var rect = new Rectangle(150, 0, 350, 900);
+        private void DrawMainMenuBlock(Graphics graphics, GameEngine gameEngine, int width, int height) {
+            var rect = new Rectangle(150, 0, 350, height);
             graphics.FillRectangle(DarkBrush, rect);
             graphics.DrawString("DUNGEON", HeaderFont, RedBrush, 160, 30);
             graphics.DrawString("DASH", HeaderFont, RedBrush, 160, 68);
@@ -127,18 +136,18 @@ namespace BoulderDashForms.FormsDrawers {
                 else
                     graphics.DrawString(_menuActions[i], MainFont, RedBrush, 160, 200 + i * 36);
         }
-        private void DrawContinue(Graphics graphics, GameEngine gameEngine) {
+        private void DrawContinue(Graphics graphics, GameEngine gameEngine, int height) {
             var counter = 1;
-            var selected = new Rectangle(520, 220 + gameEngine.CurrentSubAction * 40, 940, 40);
+            var selected = new Rectangle(520, height/6+80 + gameEngine.CurrentSubAction * 40, 940, 40);
             graphics.FillRectangle(DarkBrush,
                 selected);
             foreach (var result in gameEngine.Saves) {
                 graphics.DrawString($" Name: {result.Name}",
-                    MainFont, WhiteBrush, 520, 180 + 40 * counter);
+                    MainFont, WhiteBrush, 520, height/6+40 + 40 * counter);
                 graphics.DrawString($"Score: {result.Score}",
-                    MainFont, WhiteBrush, 910, 180 + 40 * counter);
+                    MainFont, WhiteBrush, 910, height/6+40 + 40 * counter);
                 graphics.DrawString($"Level: {result.LevelName}",
-                    MainFont, WhiteBrush, 1200, 180 + 40 * counter);
+                    MainFont, WhiteBrush, 1200, height/6+40 + 40 * counter);
                 counter++;
             }
         }
@@ -220,20 +229,20 @@ namespace BoulderDashForms.FormsDrawers {
             srcRect = new Rectangle(new Point(14 * 16, 13 * 16), new Size(15, 16));
             graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
         }
-        private void FrontSpritesAnimation(Graphics graphics) {
+        private void FrontSpritesAnimation(Graphics graphics, int width, int height) {
             var destination =
-                new Rectangle(new Point(0 + _enemyPosition, 810),
+                new Rectangle(new Point(0 + _enemyPosition, height-90),
                     new Size(32, 32));
             var res = new Rectangle(new Point(12 * 16 + _currentFrameForEnemies * 16, 74), new Size(16, 21));
             graphics.DrawImage(MainSprites, destination, res, GraphicsUnit.Pixel);
             destination =
-                new Rectangle(new Point(0 + _enemyPosition - 72, 810),
+                new Rectangle(new Point(0 + _enemyPosition - 72, height-90),
                     new Size(32, 32));
             res = new Rectangle(new Point(27 * 16 + _currentFrameForEnemies * 16, 5 * 16), new Size(16, 16));
             graphics.DrawImage(MainSprites, destination, res, GraphicsUnit.Pixel);
 
             _enemyPosition += 3;
-            if (_enemyPosition >= 1500)
+            if (_enemyPosition >= width)
                 _enemyPosition = 0;
 
             if (_currentFrameForEnemies < maxFramesForEnemies - 1)
@@ -241,9 +250,9 @@ namespace BoulderDashForms.FormsDrawers {
             else
                 _currentFrameForEnemies = 0;
         }
-        private void FillBackground(Graphics graphics) {
-            for (var i = 0; i < 31; i++)
-            for (var j = 0; j < 53; j++) {
+        private void FillBackground(Graphics graphics, int width, int height) {
+            for (var i = 0; i < height/16; i++)
+            for (var j = 0; j < width/16; j++) {
                 var destRect =
                     new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
                         new Size(GameEntity.FormsSize * 2, GameEntity.FormsSize * 2));
@@ -255,36 +264,36 @@ namespace BoulderDashForms.FormsDrawers {
                 }
             }
             var semiTransBrush = new SolidBrush(Color.FromArgb(200, 0, 0, 0));
-            var rect = new Rectangle(0, 0, 1500, 900);
+            var rect = new Rectangle(0, 0, width, height);
             graphics.FillRectangle(semiTransBrush, rect);
         }
-        private void DrawBestScores(Graphics graphics, GameEngine gameEngine) {
+        private void DrawBestScores(Graphics graphics, GameEngine gameEngine, int height) {
             _results ??= gameEngine.DataLayer.GetBestScores();
             var counter = 1;
             var keyValuePairs = _results.Reverse();
             foreach (var result in keyValuePairs) {
                 graphics.DrawString($"{counter}. {result.Value}: {result.Key}",
-                    MainFont, WhiteBrush, 520, 180 + 30 * counter);
+                    MainFont, WhiteBrush, 520, height/6+40 + 30 * counter);
                 counter++;
                 if (counter == 18) break;
             }
         }
-        private void DrawSettings(Graphics graphics, GameEngine gameEngine) {
-            var selected = new Rectangle(520, 210 + gameEngine.CurrentSubAction * 40, 940, 40);
+        private void DrawSettings(Graphics graphics, GameEngine gameEngine, int height) {
+            var selected = new Rectangle(520, height/6+60 + gameEngine.CurrentSubAction * 60, 940, 40);
             graphics.FillRectangle(DarkBrush,
                 selected);
             graphics.DrawString($"Difficulty: {gameEngine.DataLayer.Settings.Difficulty}",
-                MainFont, WhiteBrush, 520, 210);
+                MainFont, WhiteBrush, 520, height/6+60);
             graphics.DrawString($"Size X: {gameEngine.DataLayer.Settings.SizeX}",
-                MainFont, WhiteBrush, 520, 250);
+                MainFont, WhiteBrush, 520, height/6+120);
             graphics.DrawString($"Size Y: {gameEngine.DataLayer.Settings.SizeY}",
-                MainFont, WhiteBrush, 520, 290);
+                MainFont, WhiteBrush, 520, height/6+180);
             graphics.DrawString($"Fps: {gameEngine.DataLayer.Settings.Fps}",
-                MainFont, WhiteBrush, 520, 330);
+                MainFont, WhiteBrush, 520, height/6+240);
             graphics.DrawString($"Tick Rate: {gameEngine.DataLayer.Settings.TickRate}",
-                MainFont, WhiteBrush, 520, 370);
+                MainFont, WhiteBrush, 520, height/6+300);
             graphics.DrawString("Use A and S to change parameters, press ENTER to save",
-                MainFont, WhiteBrush, 520, 700);
+                MainFont, WhiteBrush, 520, height/6+540);
         }
     }
 }
