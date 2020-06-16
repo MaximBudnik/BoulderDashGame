@@ -11,6 +11,7 @@ namespace ClassLibrary {
         private readonly Action _reDraw;
         public readonly DataLayer.DataLayer DataLayer = new DataLayer.DataLayer();
         public readonly GameLogic GameLogic;
+        public float GuiScale = 2f;
         public GameEngine(Action reDraw) {
             _reDraw = reDraw;
             GameLogic = new GameLogic(ChangeGameStatus, () => DataLayer, RefreshSaves, _musicPlayer.PlaySound);

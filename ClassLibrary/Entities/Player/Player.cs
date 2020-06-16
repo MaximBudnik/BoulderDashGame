@@ -17,6 +17,7 @@ namespace ClassLibrary.Entities.Player {
         private readonly int _diamondsTowWin;
         private readonly Action _lose;
         private readonly int _moveEnergyCost = 1;
+        private readonly int _shootCost = 5;
         private readonly int _moveRockEnergyCost = 5;
         private readonly Action<SoundFilesEnum> _playSound;
         private readonly Action<Player> _setPlayer;
@@ -26,6 +27,7 @@ namespace ClassLibrary.Entities.Player {
         private readonly int DefaultArmorCellHp = 10;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
+        public readonly AchievementsController AchievementsController = new AchievementsController();
         public readonly int MaxEnergy = 20;
         public readonly string Name;
 
@@ -48,7 +50,7 @@ namespace ClassLibrary.Entities.Player {
             MaxHp = 10;
             Hp = MaxHp;
             _diamondsTowWin = diamondsTowWin;
-            EntityEnumType = 0;
+            EntityEnumType = GameEntitiesEnum.Player;
             AllScores = new Dictionary<string, int[]> {
                 {"Collected diamonds", new[] {0, 0}},
                 {"Collected lucky boxes", new[] {0, 0}},
@@ -65,6 +67,10 @@ namespace ClassLibrary.Entities.Player {
             Inventory.TntQuantity = 5;
             Inventory.StoneInDiamondsConverterQuantity = 5;
         }
+
+        public MoveDirectionExtended LastMove = MoveDirectionExtended.Right;        
+
+        
         public int Energy { get; private set; } = 20;
 
         public int Adrenaline { get; private set; }
@@ -84,6 +90,7 @@ namespace ClassLibrary.Entities.Player {
         }
 
         public override void GameLoopAction() {
+            AchievementsController.CheckAchievements(this);
             CheckWin();
             CheckLose();
             RestoreEnergy();
@@ -109,7 +116,7 @@ namespace ClassLibrary.Entities.Player {
             SubstractPlayerHp(value);
             SetAnimation(animationEnum);
         }
-
+        
         public override void Move(MoveDirectionEnum direction, int value) {
             if (!EnoughEnergy()) return;
             SetAnimation(PlayerAnimationsEnum.Move);
@@ -233,6 +240,32 @@ namespace ClassLibrary.Entities.Player {
                 }
             }
         }
+
+        public void Shoot() {
+            if (Energy < _shootCost) return;
+            Energy -= _shootCost;
+            var level = GetLevel();
+            switch (LastMove) {
+                case MoveDirectionExtended.Top:
+                    level[PositionX,PositionY] = new Candy(GetLevel,PositionX,PositionY, MoveDirectionEnum.Horizontal, -1, SubstractPlayerHp);
+                    break;
+                case MoveDirectionExtended.Right:
+                    level[PositionX,PositionY] = new Candy(GetLevel,PositionX,PositionY, MoveDirectionEnum.Vertical, 1, SubstractPlayerHp);
+                    break;
+                case MoveDirectionExtended.Bot:
+                    level[PositionX,PositionY] = new Candy(GetLevel,PositionX,PositionY, MoveDirectionEnum.Horizontal, 1, SubstractPlayerHp);
+                    break;
+                case MoveDirectionExtended.Left:
+                    level[PositionX,PositionY] = new Candy(GetLevel,PositionX,PositionY, MoveDirectionEnum.Vertical, -1, SubstractPlayerHp);
+                    break;
+            }
+            Task task = new Task(() => {
+                Thread.Sleep(50);
+                level[PositionX, PositionY] = this;
+            });
+            task.Start();
+        }
+        
         public void UseDynamite() {
             if (Inventory.TntQuantity == 0) return;
             _playSound(SoundFilesEnum.BombSound);

@@ -3,7 +3,7 @@ using ClassLibrary.DataLayer;
 
 namespace ClassLibrary {
     public partial class GameEngine {
-        private readonly int _menuItems = 6;
+        private readonly int _menuItems = 8;
         private int _subActionSize = 5;
         public int CurrentMenuAction { get; private set; } = 1;
         public int CurrentSubAction { get; private set; }
@@ -60,6 +60,10 @@ namespace ClassLibrary {
                     }
                     break;
                 case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
                     if (i == 0) {
                         DataLayer.SaveSettings();
                         IsActionActive = false;
@@ -103,17 +107,23 @@ namespace ClassLibrary {
                     break;
                 case 2:
                     IsActionActive = true;
-                    SetSubAction(5);
                     break;
                 case 3:
                     IsActionActive = true;
-                    SetSubAction(0);
                     break;
                 case 4:
                     IsActionActive = true;
-                    SetSubAction(0);
+                    SetSubAction(5);
                     break;
                 case 5:
+                    IsActionActive = true;
+                    SetSubAction(0);
+                    break;
+                case 6:
+                    IsActionActive = true;
+                    SetSubAction(0);
+                    break;
+                case 7:
                     Environment.Exit(0);
                     break;
             }

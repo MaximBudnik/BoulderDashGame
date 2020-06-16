@@ -10,7 +10,7 @@ namespace ClassLibrary.Entities {
         protected AdvancedLogic(Func<Level> getLevel, int i, int j) : base(i, j) {
             GetLevel = getLevel;
         }
-        public int MaxHp { get; set; }
+        public int MaxHp { get; protected set; }
         public int Hp { get; set; }
         public override void GameLoopAction() { }
         public virtual void Move(MoveDirectionEnum direction, int value) {
@@ -25,8 +25,6 @@ namespace ClassLibrary.Entities {
                     PositionX += value;
                     if (!IsValid(level)) PositionX -= value;
                     break;
-                default:
-                    throw new Exception("Unknown move direction in Movable.cs");
             }
             level[PositionX, PositionY] = this;
         }

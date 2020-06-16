@@ -9,5 +9,6 @@
         public KeyboardEnum Space = KeyboardEnum.Disabled;
         public KeyboardEnum T = KeyboardEnum.Disabled;
         public KeyboardEnum W = KeyboardEnum.Disabled;
+        public KeyboardEnum F = KeyboardEnum.Disabled;
     }
 }

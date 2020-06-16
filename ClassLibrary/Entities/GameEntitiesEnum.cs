@@ -16,6 +16,7 @@
         EnemyWalker = 14,
         SmartPeaceful = 15,
         SmartDevil = 16,
+        Bullet = 17,
 
         SwordTile = 20,
         ConverterTile = 21,

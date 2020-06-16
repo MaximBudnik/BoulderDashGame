@@ -15,20 +15,24 @@ namespace BoulderDashForms.InputProcessors {
                 case Keys.W:
                     player.Move(MoveDirectionEnum.Horizontal, -1);
                     player.Keyboard.W = KeyboardEnum.Enabled;
+                    player.LastMove = MoveDirectionExtended.Top;
                     break;
                 case Keys.S:
                     player.Move(MoveDirectionEnum.Horizontal, 1);
                     player.Keyboard.S = KeyboardEnum.Enabled;
+                    player.LastMove = MoveDirectionExtended.Bot;
                     break;
                 case Keys.A:
                     player.Move(MoveDirectionEnum.Vertical, -1);
                     player.PlayerAnimator.Reverse = -1;
                     player.Keyboard.A = KeyboardEnum.Enabled;
+                    player.LastMove = MoveDirectionExtended.Left;
                     break;
                 case Keys.D:
                     player.Move(MoveDirectionEnum.Vertical, 1);
                     player.PlayerAnimator.Reverse = 1;
                     player.Keyboard.D = KeyboardEnum.Enabled;
+                    player.LastMove = MoveDirectionExtended.Right;
                     break;
                 case Keys.T:
                     player.Teleport();
@@ -48,7 +52,10 @@ namespace BoulderDashForms.InputProcessors {
                     break;
                 case Keys.R:
                     player.Attack();
-                    player.Keyboard.R = KeyboardEnum.Enabled;
+                    player.Keyboard.F = KeyboardEnum.Enabled;
+                    break;
+                case Keys.F:
+                    player.Shoot();
                     break;
                 case Keys.Add:
                     changeVolume(0.1f);
@@ -95,6 +102,9 @@ namespace BoulderDashForms.InputProcessors {
                     break;
                 case Keys.R:
                     player.Keyboard.R = KeyboardEnum.Disabled;
+                    break;
+                case Keys.F:
+                    player.Keyboard.F = KeyboardEnum.Disabled;
                     break;
                 case Keys.Escape:
                     changeGameStatus(GameStatusEnum.Menu);

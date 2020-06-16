@@ -83,6 +83,7 @@
           <e p="UserInterface.cs" t="Include" />
         </e>
         <e p="DataLayer" t="Include">
+          <e p="CustomLevel.cs" t="Include" />
           <e p="DataLayer.cs" t="Include" />
           <e p="Save.cs" t="Include" />
           <e p="Score.cs" t="Include" />
@@ -109,6 +110,7 @@
             <e p="LuckyBox.cs" t="Include" />
           </e>
           <e p="Enemies" t="Include">
+            <e p="Candy.cs" t="Include" />
             <e p="Enemy.cs" t="Include" />
             <e p="EnemyDigger.cs" t="Include" />
             <e p="EnemyWalker.cs" t="Include" />
@@ -139,9 +141,12 @@
           <e p="Movable.cs" t="Include" />
           <e p="MoveDirectionEnum.cs" t="Include" />
           <e p="Player" t="Include">
+            <e p="AchievementsController.cs" t="Include" />
+            <e p="AchievementsEnum.cs" t="Include" />
             <e p="Inventory.cs" t="Include" />
             <e p="Keyboard.cs" t="Include" />
             <e p="KeyboardEnum.cs" t="Include" />
+            <e p="MoveDirectionExtended.cs" t="Include" />
             <e p="Player.cs" t="Include" />
             <e p="PlayerAnimationsEnum.cs" t="Include" />
             <e p="PlayerAnimator.cs" t="Include" />
@@ -151,6 +156,7 @@
         <e p="GameEngineConsole.cs" t="Include" />
         <e p="gameFiles" t="Include">
           <e p="BestScores.db" t="Include" />
+          <e p="CustomLevels.db" t="Include" />
           <e p="Saves.db" t="Include" />
           <e p="saves.txt" t="Include" />
           <e p="scores.txt" t="Include" />

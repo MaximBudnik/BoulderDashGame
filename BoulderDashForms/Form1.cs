@@ -24,6 +24,7 @@ namespace BoulderDashForms {
                 _resultScreenDrawer = new ResultScreenDrawer();
                 KeyDown += KeyDownProcessor;
                 KeyUp += KeyUpProcessor;
+                MouseWheel += MouseWheelProcessor;
                 InitEngine();
             }
             catch (Exception e) {
@@ -77,23 +78,32 @@ namespace BoulderDashForms {
                     _gameEngine.ChangeGameStatus);
         }
 
+        private void MouseWheelProcessor(object sender, MouseEventArgs  e) {
+            if (e.Delta>0) {
+                _gameEngine.GuiScale += 0.1f;
+            }
+            else {
+                _gameEngine.GuiScale -= 0.1f;
+            }
+        }
+        
         private void OnPaint(object sender, PaintEventArgs e) {
             var graphics = e.Graphics;
             if (_gameEngine == null) return;
             switch (_gameEngine.GameStatus) {
                 case GameStatusEnum.Menu:
-                    _menuDrawer.DrawMenu(graphics, _gameEngine);
+                    _menuDrawer.DrawMenu(graphics, _gameEngine, Width, Height);
                     break;
                 case GameStatusEnum.Game: {
                     var currentLevel = _gameEngine.GameLogic.CurrentLevel;
                     var player = _gameEngine.GameLogic.Player;
-                    _gameDrawer.DrawGame(graphics, currentLevel, player);
+                    _gameDrawer.DrawGame(graphics, currentLevel, player, Width, Height, _gameEngine.GuiScale);
                     break;
                 }
                 case GameStatusEnum.WinScreen:
                 case GameStatusEnum.LoseScreen:
                     _resultScreenDrawer.DrawResults(graphics, _gameEngine.GameStatus, _gameEngine.GetPlayerName(),
-                        _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores());
+                        _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores(), Width, Height);
                     break;
                 default:
                     throw new Exception($"Unhandled game status, can be 0-3, is {_gameEngine.GameStatus}");
