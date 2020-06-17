@@ -14,20 +14,23 @@ namespace ClassLibrary {
         public float GuiScale = 2f;
         public GameEngine(Action reDraw) {
             _reDraw = reDraw;
+            LevelRedactor = new LevelRedactor();
             GameLogic = new GameLogic(ChangeGameStatus, () => DataLayer, RefreshSaves, _musicPlayer.PlaySound);
         }
         public GameStatusEnum GameStatus { get; private set; }
         public List<Save> Saves { get; private set; }
-        
-        
-        
+
         //TODO: settings validation
         public Save NewGameSave { get; private set; } = new Save();
-        public LevelRedactor LevelRedactor = new LevelRedactor();
-        public List<CustomLevel> CustomLevels { get; private set; }
+        public LevelRedactor LevelRedactor;
+        public List<CustomLevel> CustomLevels { get; } = new List<CustomLevel>();
 
+        public void SaveCustomLevel() {
+            DataLayer.AddCustomLevel(LevelRedactor.NewCustomLevel);
+            CustomLevels.Add(LevelRedactor.NewCustomLevel);
+            RefreshCustomLevels();
+        }
 
-        
         public void ChangeVolume(float val) {
             _musicPlayer.ChangeVolume(val);
         }
@@ -70,14 +73,13 @@ namespace ClassLibrary {
                 _reDraw();
             }
         }
-        
+
         private void RedactorGraphicsThread() {
             while (GameStatus == GameStatusEnum.Redactor) {
                 Thread.Sleep(1000 / DataLayer.Settings.Fps);
                 _reDraw();
             }
         }
-        
 
         private void GameLogicThread() {
             while (GameStatus == GameStatusEnum.Game) {
@@ -90,9 +92,9 @@ namespace ClassLibrary {
         }
 
         private void RefreshCustomLevels() {
-            CustomLevels = DataLayer.GetAllCustomLevels();
+            //CustomLevels = DataLayer.GetAllCustomLevels();
         }
-        
+
         public void Start() {
             RefreshSaves();
             RefreshCustomLevels();
@@ -116,6 +118,8 @@ namespace ClassLibrary {
                             Parallel.Invoke(ResultsGraphicsThread);
                             break;
                         case GameStatusEnum.Redactor:
+                            LevelRedactor.FillNewLevel();
+                            LevelRedactor.FillToolArray();
                             _musicPlayer.PlayTheme(SoundFilesEnum.ResultsTheme);
                             Parallel.Invoke(RedactorGraphicsThread);
 
@@ -138,6 +142,12 @@ namespace ClassLibrary {
             GameLogic.Player.Hero = save.Hero;
             GameLogic.CurrentSave = save;
             GameStatus = GameStatusEnum.Game;
+        }
+
+        private void LaunchCustomLevel(int i) {
+            var level = CustomLevels[i];
+            GameLogic.LoadLevel(0, level.Name, level.SizeX, level.SizeY, DataLayer.Settings.Difficulty,
+                PlaySound, level.Aim, level.Map);
         }
     }
 }

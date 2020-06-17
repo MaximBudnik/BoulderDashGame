@@ -60,6 +60,42 @@ namespace ClassLibrary.Matrix {
             matrix = new GameEntity[width, height];
             DiggerAlgorithm();
         }
+
+        public Level(int levelName, string playerName,
+            Action win, Action lose,
+            Func<int> getPlayerPositionX,
+            Func<int> getPlayerPositionY,
+            Action<int> substractPlayerHp, Action<Player> setPlayer,
+            int sizeX, int sizeY, int difficulty, Action<SoundFilesEnum> playSound, Action acidGameLoopAction,
+            Func<Player> getOutdatedPlayer, GameModesEnum mode, GameEntitiesEnum[,] map) {
+            width = sizeX; //20 for console
+            height = sizeY; //65 for console
+            LevelName = levelName;
+            _playerName = playerName;
+            _getLevel = () => this;
+            _win = win;
+            _lose = lose;
+            _getPlayerPositionX = getPlayerPositionX;
+            _getPlayerPositionY = getPlayerPositionY;
+            _substractPlayerHp = substractPlayerHp;
+            _setPlayer = setPlayer;
+            _playSound = playSound;
+            _acidGameLoopAction = acidGameLoopAction;
+            _getOutdatedPlayer = getOutdatedPlayer;
+            matrix = new GameEntity[height,width];
+            GameMode = mode;
+            LoadMap(map);
+        }
+
+        private void LoadMap(GameEntitiesEnum[,] map) {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    FillOneTitle(i, j, map[i, j]);
+                }
+            }
+        }
+        
+        
         public int DiamondsQuantityToWin { get; private set; }
         public int KillEnemiesToWin { get; private set; }
         public int GoldFishToWin { get; private set; }
@@ -74,6 +110,9 @@ namespace ClassLibrary.Matrix {
         private int DiggersCount { get; set; }
         private int WalkersCount { get; set; }
 
+        
+        
+        
         //fields for creating level
 
         private void SetGoal() {

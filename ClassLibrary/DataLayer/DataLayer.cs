@@ -44,17 +44,17 @@ namespace ClassLibrary.DataLayer {
         }
 
         public void AddCustomLevel(CustomLevel level) {
-            using var db = new LiteDatabase(_customLevelsDatabase);
-            var col = db.GetCollection<CustomLevel>("levels");
-            col.Insert(level);
+            // using var db = new LiteDatabase(_customLevelsDatabase);
+            // var col = db.GetCollection<CustomLevel>("levels");
+            // col.Insert(level);
         }
 
-        public List<CustomLevel> GetAllCustomLevels() {
-            using var db = new LiteDatabase(_customLevelsDatabase);
-            var col = db.GetCollection<CustomLevel>("levels");
-            var searchResult = col.FindAll();
-            return searchResult.ToList();
-        }
+        // public List<CustomLevel> GetAllCustomLevels() {
+        //     // using var db = new LiteDatabase(_customLevelsDatabase);
+        //     // var col = db.GetCollection<CustomLevel>("levels");
+        //     // var searchResult = col.FindAll();
+        //     // return searchResult.ToList();
+        // }
 
         public void DeleteGameSave(Save save) {
             using var db = new LiteDatabase(_savesDatabase);

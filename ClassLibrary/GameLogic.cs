@@ -66,6 +66,32 @@ namespace ClassLibrary {
             _difficulty = difficulty;
         }
 
+        public void LoadLevel(int levelName, string playerName, int sizeX, int sizeY, int difficulty,
+            Action<SoundFilesEnum> playSound, GameModesEnum mode, GameEntitiesEnum[,] map) {
+            _difficulty = difficulty;
+            CurrentLevel = new Level(
+                levelName, playerName,
+                //() => CurrentLevel,
+                Win,
+                Lose,
+                () => Player.PositionX,
+                () => Player.PositionY,
+                SubstractPlayerHp,
+                SetPlayer,
+                sizeX,
+                sizeY,
+                difficulty,
+                playSound,
+                () => {
+                    _chanceToDeleteAcidBlock += 1;
+                    CheckIfDeleteAllAcidBlocks();
+                },
+                () => Player,
+                mode,
+                map
+            );
+        }
+
         public void GameLoop() {
             try {
                 var used = new List<GameEntity>();

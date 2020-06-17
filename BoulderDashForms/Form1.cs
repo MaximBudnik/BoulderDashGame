@@ -59,7 +59,7 @@ namespace BoulderDashForms {
                     _gameEngine.IsNameEntered,
                     _gameEngine.ChangeIsNameEntered,
                     s => {
-                        if (_gameEngine.CurrentMenuAction==1) {
+                        if (_gameEngine.CurrentMenuAction == 1) {
                             if (s == Keys.Back.ToString()) {
                                 _gameEngine.NewGameSave.Name =
                                     _gameEngine.NewGameSave.Name.Substring(0, _gameEngine.NewGameSave.Name.Length - 1);
@@ -67,10 +67,11 @@ namespace BoulderDashForms {
                             }
                             _gameEngine.NewGameSave.Name += s;
                         }
-                        else if (_gameEngine.CurrentMenuAction==2) {
+                        else if (_gameEngine.CurrentMenuAction == 2) {
                             if (s == Keys.Back.ToString()) {
                                 _gameEngine.LevelRedactor.NewCustomLevel.Name =
-                                    _gameEngine.LevelRedactor.NewCustomLevel.Name.Substring(0, _gameEngine.LevelRedactor.NewCustomLevel.Name.Length - 1);
+                                    _gameEngine.LevelRedactor.NewCustomLevel.Name.Substring(0,
+                                        _gameEngine.LevelRedactor.NewCustomLevel.Name.Length - 1);
                                 return;
                             }
                             _gameEngine.LevelRedactor.NewCustomLevel.Name += s;
@@ -84,8 +85,11 @@ namespace BoulderDashForms {
                 _resultsInputProcessor.ProcessKeyDown(
                     e.KeyCode, _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound,
                     _gameEngine.PerformSubAction);
-            else if(_gameEngine.GameStatus == GameStatusEnum.Redactor) {
-                _levelRedactorInputProcessor.ProcessKeyDown();
+            else if (_gameEngine.GameStatus == GameStatusEnum.Redactor) {
+                _levelRedactorInputProcessor.ProcessKeyDown(e.KeyCode, _gameEngine.ChangeGameStatus,
+                    _gameEngine.LevelRedactor.ChangeAnchorPosition, _gameEngine.ChangeVolume, _gameEngine.PlaySound,
+                    _gameEngine.LevelRedactor.PlaceBlock, _gameEngine.LevelRedactor.ChangeTool,
+                    _gameEngine.SaveCustomLevel);
             }
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
@@ -94,15 +98,15 @@ namespace BoulderDashForms {
                     _gameEngine.ChangeGameStatus);
         }
 
-        private void MouseWheelProcessor(object sender, MouseEventArgs  e) {
-            if (e.Delta>0) {
+        private void MouseWheelProcessor(object sender, MouseEventArgs e) {
+            if (e.Delta > 0) {
                 _gameEngine.GuiScale += 0.1f;
             }
             else {
                 _gameEngine.GuiScale -= 0.1f;
             }
         }
-        
+
         private void OnPaint(object sender, PaintEventArgs e) {
             var graphics = e.Graphics;
             if (_gameEngine == null) return;
@@ -122,7 +126,7 @@ namespace BoulderDashForms {
                         _gameEngine.GetScores(), _gameEngine.GetAllPlayerScores(), Width, Height);
                     break;
                 case GameStatusEnum.Redactor:
-                    _levelRedactorDrawer.DrawRedactor(graphics,_gameEngine, Width, Height);
+                    _levelRedactorDrawer.DrawRedactor(graphics, _gameEngine, Width, Height);
                     break;
                 default:
                     throw new Exception($"Unhandled game status, can be 0-3, is {_gameEngine.GameStatus}");

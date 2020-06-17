@@ -57,10 +57,10 @@ namespace BoulderDashForms.FormsDrawers {
                 case 2:
                     blockHeader = "Create your own level";
                     DrawCreateNewLevel(graphics, gameEngine, height);
-
                     break;
                 case 3:
                     blockHeader = "Play custom levels";
+                    DrawSelectCustomLevel(graphics, gameEngine, height);
                     break;
                 case 4:
                     blockHeader = "Adjust your settings";
@@ -302,15 +302,33 @@ namespace BoulderDashForms.FormsDrawers {
             graphics.FillRectangle(gameEngine.IsNameEntered == false ? DarkBrush : RedBrush, selected);
             graphics.DrawString($"Level name: {gameEngine.LevelRedactor.NewCustomLevel.Name}",
                 MainFont, WhiteBrush, 520, height/6+60);
-            graphics.DrawString($"Size X: {gameEngine.LevelRedactor.NewCustomLevel.SizeX}",
+            graphics.DrawString($"Size X: {gameEngine.LevelRedactor.NewCustomLevel.SizeY}",
                 MainFont, WhiteBrush, 520, height/6+120);
-            graphics.DrawString($"Size Y: {gameEngine.LevelRedactor.NewCustomLevel.SizeY}",
+            graphics.DrawString($"Size Y: {gameEngine.LevelRedactor.NewCustomLevel.SizeX}",
                 MainFont, WhiteBrush, 520, height/6+180);
             graphics.DrawString($"Aim: {gameEngine.LevelRedactor.NewCustomLevel.Aim}",
                 MainFont, WhiteBrush, 520, height/6+240);
             graphics.DrawString($"Enter level editor",
                 MainFont, WhiteBrush, 520, height/6+300);
 
+        }
+
+        private void DrawSelectCustomLevel(Graphics graphics, GameEngine gameEngine, int height) {
+            var counter = 1;
+            var selected = new Rectangle(520, height/6+80 + gameEngine.CurrentSubAction * 40, 940, 40);
+            graphics.FillRectangle(DarkBrush,
+                selected);
+            foreach (var result in gameEngine.CustomLevels) {
+                graphics.DrawString($" Name: {result.Name}",
+                    MainFont, WhiteBrush, 520, height/6+40 + 40 * counter);
+                graphics.DrawString($"Aim: {result.Aim}",
+                    MainFont, WhiteBrush, 800, height/6+40 + 40 * counter);
+                graphics.DrawString($"X: {result.SizeX}",
+                    MainFont, WhiteBrush, 1220, height/6+40 + 40 * counter);
+                graphics.DrawString($"Y: {result.SizeY}",
+                    MainFont, WhiteBrush, 1340, height/6+40 + 40 * counter);
+                counter++;
+            }
         }
     }
 }

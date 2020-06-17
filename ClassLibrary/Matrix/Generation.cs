@@ -350,6 +350,12 @@ namespace ClassLibrary.Matrix {
                     return new FutureRooms(i, j);
                 case GameEntitiesEnum.FutureWallsAndSand:
                     return new FutureWallsAndSand(i, j);
+                case GameEntitiesEnum.Player:
+                    var player = new Player(i, j, _playerName,
+                            _getLevel, _win, _lose, _playSound, _setPlayer, DiamondsQuantityToWin, GameMode, KillEnemiesToWin)
+                        {ScoreMultiplier = _difficulty};
+                    _setPlayer(player);
+                    return player;
                 default:
                     throw new Exception("Unknown EntityType in generation");
             }
