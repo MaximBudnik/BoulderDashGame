@@ -90,7 +90,7 @@ namespace ClassLibrary.Matrix {
         private void LoadMap(GameEntitiesEnum[,] map) {
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    FillOneTitle(i, j, map[i, j]);
+                    matrix[i,j] = FillOneTitle(i, j, map[i, j]);
                 }
             }
         }
@@ -98,8 +98,6 @@ namespace ClassLibrary.Matrix {
         
         public int DiamondsQuantityToWin { get; private set; }
         public int KillEnemiesToWin { get; private set; }
-        public int GoldFishToWin { get; private set; }
-
 
         public int LevelName { get; }
         public GameModesEnum GameMode { get; private set; } = GameModesEnum.CollectDiamonds;
@@ -124,7 +122,6 @@ namespace ClassLibrary.Matrix {
         private void SetDifficulty(int difficulty) {
             DiamondsQuantityToWin = difficulty * 3;
             KillEnemiesToWin = difficulty;
-            GoldFishToWin = 1;
             _difficulty = difficulty;
 
             while (difficulty > 0) {

@@ -7,6 +7,7 @@ using ClassLibrary.Entities.Collectable;
 using ClassLibrary.Entities.Collectable.ItemsTiles;
 using ClassLibrary.Entities.Enemies;
 using ClassLibrary.Entities.Enemies.SmartEnemies;
+using ClassLibrary.Entities.Expanding;
 using ClassLibrary.Entities.Generation;
 using ClassLibrary.Entities.Player;
 
@@ -101,8 +102,7 @@ namespace ClassLibrary.Matrix {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
                 if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
-                matrix[posX, posY] = new SmartSkeleton(posX, posY, _getLevel, _getPlayerPositionX,
-                    _getPlayerPositionY, _substractPlayerHp, _getOutdatedPlayer, _playSound);
+                matrix[posX, posY] = FillOneTitle(posX, posY, GameEntitiesEnum.SmartSkeleton);
                 SmartSkeletonsCount--;
             }
 
@@ -110,8 +110,7 @@ namespace ClassLibrary.Matrix {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
                 if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
-                matrix[posX, posY] = new EnemyDigger(posX, posY, _getLevel, _getPlayerPositionX,
-                    _getPlayerPositionY, _substractPlayerHp);
+                matrix[posX, posY] = FillOneTitle(posX, posY, GameEntitiesEnum.EnemyDigger);
                 DiggersCount--;
             }
 
@@ -119,8 +118,7 @@ namespace ClassLibrary.Matrix {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
                 if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
-                matrix[posX, posY] = new EnemyWalker(posX, posY, _getLevel, _getPlayerPositionX,
-                    _getPlayerPositionY, _substractPlayerHp);
+                matrix[posX, posY] = matrix[posX, posY] = FillOneTitle(posX, posY, GameEntitiesEnum.EnemyWalker);
                 WalkersCount--;
             }
 
@@ -128,8 +126,7 @@ namespace ClassLibrary.Matrix {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
                 if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
-                matrix[posX, posY] = new SmartPeaceful(posX, posY, _getLevel, _getPlayerPositionX,
-                    _getPlayerPositionY, _substractPlayerHp, _getOutdatedPlayer, _playSound);
+                matrix[posX, posY] = matrix[posX, posY] = FillOneTitle(posX, posY, GameEntitiesEnum.SmartPeaceful);
                 SmartPeacefulCount--;
             }
 
@@ -137,8 +134,7 @@ namespace ClassLibrary.Matrix {
                 var posX = rand.Next(width);
                 var posY = rand.Next(height);
                 if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
-                matrix[posX, posY] = new SmartDevil(posX, posY, _getLevel, _getPlayerPositionX,
-                    _getPlayerPositionY, _substractPlayerHp, _getOutdatedPlayer, _playSound);
+                matrix[posX, posY] = FillOneTitle(posX, posY, GameEntitiesEnum.SmartDevil);
                 SmartDevilCount--;
             }
 
@@ -148,7 +144,7 @@ namespace ClassLibrary.Matrix {
                     var posX = rand.Next(width);
                     var posY = rand.Next(height);
                     if (matrix[posX, posY].EntityEnumType != GameEntitiesEnum.FutureRooms) continue;
-                    matrix[posX, posY] = new GoldenFish(posX, posY, _playSound);
+                    matrix[posX, posY] = FillOneTitle(posX, posY, GameEntitiesEnum.GoldenFish);
                     goldFishCount--;
                 }
             }
@@ -352,10 +348,34 @@ namespace ClassLibrary.Matrix {
                     return new FutureWallsAndSand(i, j);
                 case GameEntitiesEnum.Player:
                     var player = new Player(i, j, _playerName,
-                            _getLevel, _win, _lose, _playSound, _setPlayer, DiamondsQuantityToWin, GameMode, KillEnemiesToWin)
+                            _getLevel, _win, _lose, _playSound, _setPlayer, DiamondsQuantityToWin, GameMode,
+                            KillEnemiesToWin)
                         {ScoreMultiplier = _difficulty};
                     _setPlayer(player);
                     return player;
+                case GameEntitiesEnum.SmartSkeleton:
+                    return new SmartSkeleton(i, j, _getLevel, _getPlayerPositionX,
+                        _getPlayerPositionY, _substractPlayerHp, _getOutdatedPlayer, _playSound);
+                case GameEntitiesEnum.Converter:
+                    return new StoneInDiamondConverter(i, j, _getLevel, _playSound);
+                case GameEntitiesEnum.Acid:
+                    return new Acid(i, j, _getLevel, _substractPlayerHp, _acidGameLoopAction);
+                case GameEntitiesEnum.EnemyDigger:
+                    return new EnemyDigger(i, j, _getLevel, _getPlayerPositionX,
+                        _getPlayerPositionY, _substractPlayerHp);
+                case GameEntitiesEnum.EnemyWalker:
+                    return new EnemyWalker(i, j, _getLevel, _getPlayerPositionX,
+                        _getPlayerPositionY, _substractPlayerHp);
+                case GameEntitiesEnum.SmartPeaceful:
+                    return new SmartPeaceful(i, j, _getLevel, _getPlayerPositionX,
+                        _getPlayerPositionY, _substractPlayerHp, _getOutdatedPlayer, _playSound);
+                case GameEntitiesEnum.SmartDevil:
+                    return new SmartDevil(i, j, _getLevel, _getPlayerPositionX,
+                        _getPlayerPositionY, _substractPlayerHp, _getOutdatedPlayer, _playSound);
+                case GameEntitiesEnum.Candy:
+                    return new Candy(_getLevel, i, j, MoveDirectionEnum.Vertical, 1, _substractPlayerHp);
+                case GameEntitiesEnum.GoldenFish:
+                    return new GoldenFish(i, j, _playSound);
                 default:
                     throw new Exception("Unknown EntityType in generation");
             }

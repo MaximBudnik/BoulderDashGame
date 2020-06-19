@@ -60,9 +60,8 @@ namespace ClassLibrary {
         }
 
         public void FillToolArray() {
-            foreach (GameEntitiesEnum entity in (GameEntitiesEnum[]) Enum.GetValues(typeof(GameEntitiesEnum))) {
+            foreach (var entity in (GameEntitiesEnum[]) Enum.GetValues(typeof(GameEntitiesEnum))) {
                 Tools.Add(entity);
-
             }
             // Tools.Add(GameEntitiesEnum.Player);
             // Tools.Add(GameEntitiesEnum.EmptySpace);
