@@ -87,10 +87,10 @@
         <e p="DataLayer" t="Include">
           <e p="CustomLevel.cs" t="Include" />
           <e p="DataLayer.cs" t="Include" />
+          <e p="JsonController.cs" t="Include" />
           <e p="Save.cs" t="Include" />
           <e p="Score.cs" t="Include" />
           <e p="Settings.cs" t="Include" />
-          <e p="SettingsController.cs" t="Include" />
         </e>
         <e p="Entities" t="Include">
           <e p="basic" t="Include">
@@ -160,6 +160,7 @@
         <e p="gameFiles" t="Include">
           <e p="BestScores.db" t="Include" />
           <e p="CustomLevels.db" t="Include" />
+          <e p="customLevels.json" t="Include" />
           <e p="Saves.db" t="Include" />
           <e p="saves.txt" t="Include" />
           <e p="scores.txt" t="Include" />
@@ -173,7 +174,10 @@
           <e p="InputProcessor.cs" t="Include" />
           <e p="MenuInputProcessor.cs" t="Include" />
         </e>
-        <e p="LevelRedactor.cs" t="Include" />
+        <e p="LevelRedactor" t="Include">
+          <e p="LevelRedactor.cs" t="Include" />
+          <e p="RedactorBrushes.cs" t="Include" />
+        </e>
         <e p="Matrix" t="Include">
           <e p="GameModesEnum.cs" t="Include" />
           <e p="Generation.cs" t="Include" />

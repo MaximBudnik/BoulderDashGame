@@ -10,12 +10,12 @@ namespace BoulderDashForms {
     public partial class Form1 : Form {
         private readonly GameDrawer _gameDrawer;
         private readonly GameInputProcessor _gameInputProcessor = new GameInputProcessor();
+        private readonly LevelRedactorDrawer _levelRedactorDrawer;
+        private readonly LevelRedactorInputProcessor _levelRedactorInputProcessor = new LevelRedactorInputProcessor();
         private readonly MenuDrawer _menuDrawer;
         private readonly MenuInputProcessor _menuInputProcessor = new MenuInputProcessor();
         private readonly ResultScreenDrawer _resultScreenDrawer;
         private readonly ResultsInputProcessor _resultsInputProcessor = new ResultsInputProcessor();
-        private readonly LevelRedactorDrawer _levelRedactorDrawer;
-        private readonly LevelRedactorInputProcessor _levelRedactorInputProcessor = new LevelRedactorInputProcessor();
         private GameEngine _gameEngine;
         public Form1() {
             InitializeComponent();
@@ -39,7 +39,7 @@ namespace BoulderDashForms {
         }
 
         private void InitEngine() {
-            _gameEngine = new GameEngine(ReDraw);
+            _gameEngine = new GameEngine(ReDraw, ShowAlert);
             var engineStart = new Task(() => { _gameEngine.Start(); });
             engineStart.Start();
         }
@@ -85,12 +85,13 @@ namespace BoulderDashForms {
                 _resultsInputProcessor.ProcessKeyDown(
                     e.KeyCode, _gameEngine.ChangeGameStatus, _gameEngine.ChangeVolume, _gameEngine.PlaySound,
                     _gameEngine.PerformSubAction);
-            else if (_gameEngine.GameStatus == GameStatusEnum.Redactor) {
+            else if (_gameEngine.GameStatus == GameStatusEnum.Redactor)
                 _levelRedactorInputProcessor.ProcessKeyDown(e.KeyCode, _gameEngine.ChangeGameStatus,
                     _gameEngine.LevelRedactor.ChangeAnchorPosition, _gameEngine.ChangeVolume, _gameEngine.PlaySound,
                     _gameEngine.LevelRedactor.PlaceBlock, _gameEngine.LevelRedactor.ChangeTool,
-                    _gameEngine.SaveCustomLevel);
-            }
+                    _gameEngine.SaveCustomLevel, _gameEngine.LevelRedactor.ChangeBrushSize,
+                    _gameEngine.LevelRedactor.SetActiveBrush, _gameEngine.LevelRedactor.FillAll,
+                    _gameEngine.LevelRedactor.ChangeShowHelp);
         }
         private void KeyUpProcessor(object sender, KeyEventArgs e) {
             if (_gameEngine.GameStatus == GameStatusEnum.Game)
@@ -99,12 +100,8 @@ namespace BoulderDashForms {
         }
 
         private void MouseWheelProcessor(object sender, MouseEventArgs e) {
-            if (e.Delta > 0) {
-                _gameEngine.GuiScale += 0.1f;
-            }
-            else {
-                _gameEngine.GuiScale -= 0.1f;
-            }
+            if (e.Delta > 0) _gameEngine.GuiScale += 0.1f;
+            else _gameEngine.GuiScale -= 0.1f;
         }
 
         private void OnPaint(object sender, PaintEventArgs e) {
@@ -135,6 +132,10 @@ namespace BoulderDashForms {
 
         private void ReDraw() {
             Invalidate();
+        }
+
+        private void ShowAlert(string message, string title) {
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
 }

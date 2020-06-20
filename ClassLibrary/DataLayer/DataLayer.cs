@@ -6,26 +6,27 @@ using LiteDB;
 
 namespace ClassLibrary.DataLayer {
     public class DataLayer {
-        private readonly string _savesDatabase = Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "Saves.db");
-
         private readonly string _customLevelsDatabase =
             Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "CustomLevels.db");
+
+        private readonly JsonController _jsonController = new JsonController();
+        private readonly string _savesDatabase = Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "Saves.db");
 
         private readonly string _scoresDatabase =
             Path.Combine(Environment.CurrentDirectory, @"gameFiles\", "BestScores.db");
 
-        private readonly SettingsController _settingsController = new SettingsController();
+        public List<CustomLevel> Levels;
         public Settings Settings;
 
         public DataLayer() {
             GetSettings();
         }
         private async void GetSettings() {
-            Settings = await _settingsController.GetSettings();
+            Settings = await _jsonController.GetSettings();
         }
 
         public async void SaveSettings() {
-            await _settingsController.WriteSettings(Settings);
+            await _jsonController.WriteSettings(Settings);
         }
 
         public List<Save> GetAllGameSaves() {
@@ -43,18 +44,13 @@ namespace ClassLibrary.DataLayer {
             else col.Insert(save);
         }
 
-        public void AddCustomLevel(CustomLevel level) {
-            // using var db = new LiteDatabase(_customLevelsDatabase);
-            // var col = db.GetCollection<CustomLevel>("levels");
-            // col.Insert(level);
+        public async void AddCustomLevel(List<CustomLevel> levels) {
+            await _jsonController.AddCustomLevel(levels);
         }
 
-        // public List<CustomLevel> GetAllCustomLevels() {
-        //     // using var db = new LiteDatabase(_customLevelsDatabase);
-        //     // var col = db.GetCollection<CustomLevel>("levels");
-        //     // var searchResult = col.FindAll();
-        //     // return searchResult.ToList();
-        // }
+        public async void GetAllCustomLevels() {
+            Levels = await _jsonController.GetCustomLevels();
+        }
 
         public void DeleteGameSave(Save save) {
             using var db = new LiteDatabase(_savesDatabase);

@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary.DataLayer;
+using ClassLibrary.Matrix;
 using ClassLibrary.SoundPlayer;
 
 namespace ClassLibrary {
     public partial class GameEngine {
         private readonly MusicPlayer _musicPlayer = new MusicPlayer();
         private readonly Action _reDraw;
+        private readonly Action<string, string> _showAlert;
         public readonly DataLayer.DataLayer DataLayer = new DataLayer.DataLayer();
         public readonly GameLogic GameLogic;
         public float GuiScale = 2f;
-        public GameEngine(Action reDraw) {
+        public LevelRedactor.LevelRedactor LevelRedactor;
+        public GameEngine(Action reDraw, Action<string, string> showAlert) {
             _reDraw = reDraw;
-            LevelRedactor = new LevelRedactor();
+            _showAlert = showAlert;
+            LevelRedactor = new LevelRedactor.LevelRedactor();
             GameLogic = new GameLogic(ChangeGameStatus, () => DataLayer, RefreshSaves, _musicPlayer.PlaySound);
         }
         public GameStatusEnum GameStatus { get; private set; }
@@ -22,13 +26,22 @@ namespace ClassLibrary {
 
         //TODO: settings validation
         public Save NewGameSave { get; private set; } = new Save();
-        public LevelRedactor LevelRedactor;
-        public List<CustomLevel> CustomLevels { get; } = new List<CustomLevel>();
+        public List<CustomLevel> CustomLevels { get; private set; } = new List<CustomLevel>();
 
         public void SaveCustomLevel() {
-            DataLayer.AddCustomLevel(LevelRedactor.NewCustomLevel);
-            CustomLevels.Add(LevelRedactor.NewCustomLevel);
-            RefreshCustomLevels();
+            if (LevelRedactor.PlayersQuantity != 1) {
+                _showAlert("There must be 1 and only 1 player on map!", "Error");
+            }
+            else if ((LevelRedactor.NewCustomLevel.Aim == GameModesEnum.HuntGoldenFish) &
+                     (LevelRedactor.FishQuantity < 1)) {
+                _showAlert("You must place at least 1 fish in this mode!", "Error");
+            }
+            else {
+                CustomLevels.Add(LevelRedactor.NewCustomLevel);
+                ChangeGameStatus(GameStatusEnum.Menu);
+                // DataLayer.AddCustomLevel(CustomLevels);
+                // RefreshCustomLevels();
+            }
         }
 
         public void ChangeVolume(float val) {
@@ -92,12 +105,13 @@ namespace ClassLibrary {
         }
 
         private void RefreshCustomLevels() {
-            //CustomLevels = DataLayer.GetAllCustomLevels();
+            DataLayer.GetAllCustomLevels();
+            CustomLevels = DataLayer.Levels;
         }
 
         public void Start() {
             RefreshSaves();
-            RefreshCustomLevels();
+            //RefreshCustomLevels();
             MenuGameCycle();
 
             void MenuGameCycle() {
@@ -118,11 +132,10 @@ namespace ClassLibrary {
                             Parallel.Invoke(ResultsGraphicsThread);
                             break;
                         case GameStatusEnum.Redactor:
-                            LevelRedactor.FillNewLevel();
+                            LevelRedactor.FillAll();
                             LevelRedactor.FillToolArray();
                             _musicPlayer.PlayTheme(SoundFilesEnum.ResultsTheme);
                             Parallel.Invoke(RedactorGraphicsThread);
-
                             break;
                         default:
                             throw new Exception("Unknown game status");

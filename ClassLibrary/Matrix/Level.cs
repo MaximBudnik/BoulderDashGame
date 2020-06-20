@@ -54,7 +54,7 @@ namespace ClassLibrary.Matrix {
             _playSound = playSound;
             _acidGameLoopAction = acidGameLoopAction;
             _getOutdatedPlayer = getOutdatedPlayer;
-            
+
             SetGoal();
             SetDifficulty(difficulty);
             matrix = new GameEntity[width, height];
@@ -82,20 +82,12 @@ namespace ClassLibrary.Matrix {
             _playSound = playSound;
             _acidGameLoopAction = acidGameLoopAction;
             _getOutdatedPlayer = getOutdatedPlayer;
-            matrix = new GameEntity[height,width];
+            matrix = new GameEntity[height, width];
+            SetDifficulty(difficulty);
             GameMode = mode;
             LoadMap(map);
         }
 
-        private void LoadMap(GameEntitiesEnum[,] map) {
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    matrix[i,j] = FillOneTitle(i, j, map[i, j]);
-                }
-            }
-        }
-        
-        
         public int DiamondsQuantityToWin { get; private set; }
         public int KillEnemiesToWin { get; private set; }
 
@@ -108,14 +100,19 @@ namespace ClassLibrary.Matrix {
         private int DiggersCount { get; set; }
         private int WalkersCount { get; set; }
 
-        
-        
-        
+        private void LoadMap(GameEntitiesEnum[,] map) {
+            for (var i = 0; i < height; i++)
+            for (var j = 0; j < width; j++)
+                matrix[i, j] = FillOneTitle(i, j, map[i, j]);
+        }
+
         //fields for creating level
 
         private void SetGoal() {
-            List<GameModesEnum> modesPool = new List<GameModesEnum>
-                {GameModesEnum.CollectDiamonds, GameModesEnum.KillEnemies, GameModesEnum.HuntGoldenFish,GameModesEnum.HuntGoldenFish};
+            var modesPool = new List<GameModesEnum> {
+                GameModesEnum.CollectDiamonds, GameModesEnum.KillEnemies, GameModesEnum.HuntGoldenFish,
+                GameModesEnum.HuntGoldenFish
+            };
             GameMode = Randomizer.GetRandomFromList(modesPool);
         }
 

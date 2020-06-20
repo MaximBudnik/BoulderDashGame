@@ -20,6 +20,7 @@ namespace ClassLibrary {
 
         private int _chanceToSpawnEnemy;
         private int _difficulty;
+        private bool _shouldUpdateSaves = true;
         public Save CurrentSave = null;
 
         public GameLogic(Action<GameStatusEnum> changeGameStatus,
@@ -64,6 +65,7 @@ namespace ClassLibrary {
                 () => Player
             );
             _difficulty = difficulty;
+            _shouldUpdateSaves = true;
         }
 
         public void LoadLevel(int levelName, string playerName, int sizeX, int sizeY, int difficulty,
@@ -90,6 +92,7 @@ namespace ClassLibrary {
                 mode,
                 map
             );
+            _shouldUpdateSaves = false;
         }
 
         public void GameLoop() {
@@ -160,9 +163,9 @@ namespace ClassLibrary {
                 _chanceToDeleteAcidBlock = 0;
             }
         }
-
         private void Win() {
             _changeGameStatus(GameStatusEnum.WinScreen);
+            if (!_shouldUpdateSaves) return;
             var dataInterlayer = _getDataLayer();
             CurrentSave.LevelName = CurrentLevel.LevelName;
             CurrentSave.Score = Player.Score;
@@ -173,6 +176,7 @@ namespace ClassLibrary {
 
         private void Lose() {
             _changeGameStatus(GameStatusEnum.LoseScreen);
+            if (!_shouldUpdateSaves) return;
             var dataInterlayer = _getDataLayer();
             dataInterlayer.AddBestScore(Player.Name, Player.Score);
             dataInterlayer.DeleteGameSave(CurrentSave);

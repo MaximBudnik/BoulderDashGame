@@ -13,7 +13,7 @@ namespace ClassLibrary {
         public static string GetRandomFromList(List<string> list) {
             return list[Rand.Next(list.Count)];
         }
-        
+
         public static GameModesEnum GetRandomFromList(List<GameModesEnum> list) {
             return list[Rand.Next(list.Count)];
         }

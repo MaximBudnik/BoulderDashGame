@@ -54,8 +54,8 @@ namespace BoulderDashForms.FormsDrawers {
         }
 
         private void FillBackground(Graphics graphics, GameStatusEnum gameStatus, int width, int height) {
-            for (var i = 0; i < height/16; i++)
-            for (var j = 0; j < width/16; j++) {
+            for (var i = 0; i < height / 16; i++)
+            for (var j = 0; j < width / 16; j++) {
                 var destRect =
                     new Rectangle(new Point(j * GameEntity.FormsSize * 2, i * GameEntity.FormsSize * 2),
                         new Size(GameEntity.FormsSize * 2, GameEntity.FormsSize * 2));
@@ -70,7 +70,7 @@ namespace BoulderDashForms.FormsDrawers {
         }
 
         private void DrawCenterBlock(Graphics graphics, int width, int height) {
-            var rect = new Rectangle(width/3, 0, width/3, height);
+            var rect = new Rectangle(width / 3, 0, width / 3, height);
             graphics.FillRectangle(DarkBrush, rect);
         }
     }

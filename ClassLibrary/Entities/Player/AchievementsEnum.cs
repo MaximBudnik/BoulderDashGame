@@ -5,6 +5,6 @@
         CandyLauncher,
         Armored,
         Bomberman,
-        Rage,
+        Rage
     }
 }

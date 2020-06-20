@@ -19,20 +19,22 @@ namespace ClassLibrary.Entities.Player {
 
         private readonly Action _lose;
         private readonly int _moveEnergyCost = 1;
-        private readonly int _shootCost = 5;
         private readonly int _moveRockEnergyCost = 5;
         private readonly Action<SoundFilesEnum> _playSound;
         private readonly Action<Player> _setPlayer;
+        private readonly int _shootCost = 5;
         private readonly int _teleportRange = 20;
         private readonly Action _win;
+        public readonly AchievementsController AchievementsController = new AchievementsController();
         public readonly Dictionary<string, int[]> AllScores;
         private readonly int DefaultArmorCellHp = 10;
+        public readonly GameModesEnum GameMode;
         public readonly Inventory Inventory = new Inventory();
         public readonly Keyboard Keyboard = new Keyboard();
-        public readonly AchievementsController AchievementsController = new AchievementsController();
         public readonly int MaxEnergy = 20;
         public readonly string Name;
-        public readonly GameModesEnum GameMode;
+
+        public MoveDirectionExtended LastMove = MoveDirectionExtended.Right;
 
         public Player(
             int i,
@@ -72,8 +74,6 @@ namespace ClassLibrary.Entities.Player {
             Inventory.TntQuantity = 5;
             Inventory.StoneInDiamondsConverterQuantity = 5;
         }
-
-        public MoveDirectionExtended LastMove = MoveDirectionExtended.Right;
 
         public int Energy { get; private set; } = 20;
 
@@ -273,7 +273,7 @@ namespace ClassLibrary.Entities.Player {
                         -1, SubstractPlayerHp);
                     break;
             }
-            Task task = new Task(() => {
+            var task = new Task(() => {
                 Thread.Sleep(50);
                 level[PositionX, PositionY] = this;
             });

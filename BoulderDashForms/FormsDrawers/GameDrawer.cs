@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using ClassLibrary.Entities;
 using ClassLibrary.Entities.Collectable;
@@ -13,6 +12,11 @@ namespace BoulderDashForms.FormsDrawers {
     public class GameDrawer : FormDrawer {
         private readonly int kf = 6; //parameter to beautify hero sprite
         protected readonly SolidBrush ShieldBrush = new SolidBrush(Color.FromArgb(80, 220, 200, 100));
+
+        private int _achievementCounter = -100;
+        private Point _achievementIcon;
+        private string _achievementSecondary = "";
+        private string _achievementTitle = "";
         private List<Action> _defferedFx;
         private float scale = 2f;
 
@@ -226,7 +230,7 @@ namespace BoulderDashForms.FormsDrawers {
                     Rectangle srcRect;
 
                     void DrawFloorTile() {
-                        srcRect = new Rectangle(new Point((2 * 16), 5 * 16), new Size(16, 16));
+                        srcRect = new Rectangle(new Point(2 * 16, 5 * 16), new Size(16, 16));
                         graphics.DrawImage(MainSprites, destRect, srcRect, GraphicsUnit.Pixel);
                     }
                     switch (currentLevel[i, j].EntityEnumType) {
@@ -379,11 +383,6 @@ namespace BoulderDashForms.FormsDrawers {
             }
         }
 
-        private int _achievementCounter = -100;
-        private string _achievementTitle = "";
-        private string _achievementSecondary = "";
-        private Point _achievementIcon;
-
         private void DrawAchievements(Graphics graphics, Player player, int width, int height) {
             var achievementsQueue = player.AchievementsController.AchievementsQueue;
             if (_achievementCounter > -100) {
@@ -495,12 +494,11 @@ namespace BoulderDashForms.FormsDrawers {
 
             var upper = player.GameMode switch {
                 GameModesEnum.CollectDiamonds => currentLevel.DiamondsQuantityToWin - player.CollectedDiamonds,
-                GameModesEnum.KillEnemies => currentLevel.KillEnemiesToWin - player.KilledEnemies+5,
+                GameModesEnum.KillEnemies => currentLevel.KillEnemiesToWin - player.KilledEnemies + 5,
                 GameModesEnum.HuntGoldenFish => 1,
                 _ => 0
             };
-            
-            
+
             for (var i = 0; i < upper; i++) {
                 var destRect =
                     new Rectangle(new Point(8 * i + width - 500, 32),

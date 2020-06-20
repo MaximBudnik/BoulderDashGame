@@ -1,10 +1,9 @@
-﻿using System;
-using ClassLibrary.Entities;
+﻿using ClassLibrary.Entities;
 using ClassLibrary.Matrix;
 
 namespace ClassLibrary.DataLayer {
     public class CustomLevel {
-        public Guid Id { get; set; }
+        // public Guid Id { get; set; }
         public string Name { get; set; } = "";
         public int SizeY { get; set; } = 20;
         public int SizeX { get; set; } = 20;
